@@ -28,8 +28,6 @@ export default function App() {
   // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  
-  // 🔥 NOVA ESTRATÉGIA: Controla se o usuário está vendo a "loja" ou a "conta"
   const [activeTab, setActiveTab] = useState<"store" | "account">("store");
 
   useEffect(() => {
@@ -39,7 +37,7 @@ export default function App() {
         setIsAuthOpen(false); 
       } else {
         setUser(null);
-        setActiveTab("store"); // Se deslogar, volta para a loja
+        setActiveTab("store");
       }
     });
     return () => unsub();
@@ -130,40 +128,37 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* 🔥 MENU DE ABAS EXCLUSIVO PARA USUÁRIO LOGADO (MOBILE/DESKTOP) */}
+      {/* 🔥 MENU DE ABAS DISCRETO E ALINHADO À DIREITA (ESTILO CLEAN) */}
       {user && (
-        <div className="bg-white border-b sticky top-0 z-40 flex justify-center gap-4 p-2 shadow-sm">
-          <button
-            onClick={() => setActiveTab("store")}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
-              activeTab === "store" 
-                ? "bg-slate-900 text-white shadow-md scale-105" 
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4" />
-            Ver Loja
-          </button>
-          <button
-            onClick={() => setActiveTab("account")}
-            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
-              activeTab === "account" 
-                ? "bg-emerald-600 text-white shadow-md scale-105" 
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
-            }`}
-          >
-            <User className="w-4 h-4" />
-            Minha Conta / Rastreio
-          </button>
+        <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+          <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
+            <button
+              onClick={() => setActiveTab("store")}
+              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+                activeTab === "store" 
+                  ? "bg-slate-900 text-white shadow-sm" 
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              Loja
+            </button>
+            <button
+              onClick={() => setActiveTab("account")}
+              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+                activeTab === "account" 
+                  ? "bg-emerald-600 text-white shadow-sm" 
+                  : "text-slate-600 hover:bg-slate-50"
+              }`}
+            >
+              Minha Conta & Rastreio
+            </button>
+          </div>
         </div>
       )}
 
-      {/* ========================================================= */}
-      {/* 🟢 CONDICIONAL DE TELAS: OU MOSTRA A LOJA OU MOSTRA A CONTA */}
-      {/* ========================================================= */}
+      {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
         <>
-          {/* CONTEÚDO ORIGINAL DA HOME */}
           <Hero />
           <main className="flex-1">
             <TrustBadges />
@@ -201,7 +196,7 @@ export default function App() {
           </main>
         </>
       ) : (
-        /* 🔥 PÁGINA COMPLETA E ISOLADA DA ÁREA DO CLIENTE */
+        /* PAINEL DO CLIENTE */
         <main className="flex-1 bg-slate-50 py-10 px-4 min-h-[80vh]">
           <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-slate-100">
             
@@ -225,7 +220,6 @@ export default function App() {
                 📦 Rastreamento de Encomendas
               </h2>
               
-              {/* Renderização limpa e isolada do widget */}
               <div className="w-full bg-white rounded-xl p-2 min-h-[300px]">
                 <TrackingWidget />
               </div>
@@ -235,7 +229,7 @@ export default function App() {
         </main>
       )}
 
-      {/* BOTTOM NAVIGATION PARA MOBILE (OPCIONAL / MELHORA UX) */}
+      {/* BOTTOM NAVIGATION PARA MOBILE */}
       {user && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-50 shadow-lg">
           <button 
@@ -257,10 +251,10 @@ export default function App() {
 
       {/* CARTRADWER & MODAIS */}
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => $.setBudgetModalOpen(false)} onSubmit={() => {}} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
-}
-
+    }
+  
