@@ -1,0 +1,22 @@
+import { initializeApp } from "firebase/app";
+import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
+// 🔥 SUA CONFIG REAL
+const firebaseConfig = {
+  apiKey: "AIzaSyCoPztqmG0b7lAIaWRg-iIVvQgsJLkV5_I",
+  authDomain: "jap-box-core-prod.firebaseapp.com",
+  projectId: "jap-box-core-prod",
+  storageBucket: "jap-box-core-prod.firebasestorage.app",
+  messagingSenderId: "842214047732",
+  appId: "1:842214047732:web:2ab310e943ef47f1c303a1",
+};
+
+// 🔥 INICIALIZA APP
+const app = initializeApp(firebaseConfig);
+
+// 🔥 BANCO DE DADOS (FIRESTORE)
+export const db = getFirestore(app);
+
+// 🔥 LOGIN (CASO USE FUTURO)
+export const auth = getAuth(app);
