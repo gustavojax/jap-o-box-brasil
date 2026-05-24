@@ -31,12 +31,14 @@ export default function App() {
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (u) => {
-      console.log("USER LOG:", u);
-      setUser(u);
+      console.log("MUDANÇA DE ESTADO FIREBASE:", u);
       
-      // 🔥 CORREÇÃO: Se o usuário logou com sucesso, fecha o modal automaticamente
       if (u) {
-        setIsAuthOpen(false);
+        // Copia o objeto para garantir que o React mude o estado e force o re-render
+        setUser({ ...u });
+        setIsAuthOpen(false); 
+      } else {
+        setUser(null);
       }
     });
 
@@ -45,6 +47,7 @@ export default function App() {
 
   const handleLogout = async () => {
     await signOut(auth);
+    setUser(null);
   };
 
   // =========================
@@ -152,6 +155,11 @@ export default function App() {
       {/* HERO */}
       <Hero />
 
+      {/* 🟥 BARRA DE DIAGNÓSTICO RÁPIDO (Remova depois de testar) */}
+      <div className="bg-amber-100 text-amber-900 text-center py-2 text-xs font-mono border-b border-amber-200">
+        Status do Usuário no App.tsx: {user ? `🟢 LOGADO (${user.email})` : "🔴 DESLOGADO (null)"}
+      </div>
+
       <main className="flex-1">
 
         <TrustBadges />
@@ -162,9 +170,9 @@ export default function App() {
         {user && (
           <section className="max-w-7xl mx-auto px-4 py-10">
 
-            <div className="bg-white rounded-2xl shadow-sm p-6">
+            <div className="bg-white rounded-2xl shadow-sm p-6 border border-emerald-500">
 
-              <h2 className="text-2xl font-black">
+              <h2 className="text-2xl font-black text-slate-900">
                 Minha Conta
               </h2>
 
@@ -174,7 +182,7 @@ export default function App() {
 
               <div className="border-t pt-6">
 
-                <h3 className="font-bold mb-4">
+                <h3 className="font-bold mb-4 text-slate-800">
                   Rastreamento de Pedidos
                 </h3>
 
@@ -255,4 +263,5 @@ export default function App() {
 
     </div>
   );
-}
+                                     }
+        
