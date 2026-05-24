@@ -1,8 +1,12 @@
-import React, { useState } from "react";
-import { orders, Order } from "../data/orders";
+import React, { useEffect, useState } from "react";
+import {
+  createOrder,
+  listenOrders,
+  updateOrderStatus,
+} from "../services/orders";
 
 export default function AdminPanel() {
-  const [list, setList] = useState<Order[]>(orders);
+  const [list, setList] = useState<any[]>([]);
 
   const [form, setForm] = useState({
     trackingCode: "",
@@ -10,9 +14,15 @@ export default function AdminPanel() {
     status: "Postado no Japão",
   });
 
-  function addOrder() {
-    const newOrder: Order = {
-      id: Date.now().toString(),
+  useEffect(() => {
+    const unsub = listenOrders(setList);
+    return () => unsub();
+  }, []);
+
+  async function addOrder() {
+    if (!form.trackingCode || !form.customerName) return;
+
+    await createOrder({
       trackingCode: form.trackingCode,
       customerName: form.customerName,
       status: form.status,
@@ -20,26 +30,24 @@ export default function AdminPanel() {
         "2-chōme-3-15 Matsutera, Yokkaichi, Mie 510-8021",
       destination: "Brasil",
       createdAt: new Date().toLocaleString(),
-    };
+    });
 
-    const updated = [newOrder, ...list];
-    setList(updated);
-    orders.unshift(newOrder);
+    setForm({
+      trackingCode: "",
+      customerName: "",
+      status: "Postado no Japão",
+    });
   }
 
-  function updateStatus(id: string, status: string) {
-    const updated = list.map((o) =>
-      o.id === id ? { ...o, status } : o
-    );
-
-    setList(updated);
+  async function updateStatus(id: string, status: string) {
+    await updateOrderStatus(id, status);
   }
 
   return (
     <div className="p-6 max-w-5xl mx-auto">
 
       <h1 className="text-2xl font-black mb-6">
-        📦 Painel Admin de Pedidos
+        📦 Painel Admin (FIREBASE REAL)
       </h1>
 
       {/* FORM */}
@@ -48,6 +56,7 @@ export default function AdminPanel() {
         <input
           placeholder="Tracking Code"
           className="border p-2 rounded"
+          value={form.trackingCode}
           onChange={(e) =>
             setForm({ ...form, trackingCode: e.target.value })
           }
@@ -56,6 +65,7 @@ export default function AdminPanel() {
         <input
           placeholder="Nome do cliente"
           className="border p-2 rounded"
+          value={form.customerName}
           onChange={(e) =>
             setForm({ ...form, customerName: e.target.value })
           }
