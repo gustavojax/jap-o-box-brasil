@@ -6,7 +6,7 @@ const firebaseConfig = {
   apiKey: "AIzaSyCoPztqmG0b7lAIaWRg-iIVvQgsJLkV5_I",
   authDomain: "jap-box-core-prod.firebaseapp.com",
   projectId: "jap-box-core-prod",
-  storageBucket: "jap-box-core-prod.firebasestorage.app",
+  storageBucket: "jap-box-core-prod.appspot.com",
   messagingSenderId: "842214047732",
   appId: "1:842214047732:web:2ab310e943ef47f1c303a1",
 };
