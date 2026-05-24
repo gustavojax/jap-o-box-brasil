@@ -33,6 +33,11 @@ export default function App() {
     const unsub = onAuthStateChanged(auth, (u) => {
       console.log("USER LOG:", u);
       setUser(u);
+      
+      // 🔥 CORREÇÃO: Se o usuário logou com sucesso, fecha o modal automaticamente
+      if (u) {
+        setIsAuthOpen(false);
+      }
     });
 
     return () => unsub();
@@ -173,7 +178,6 @@ export default function App() {
                   Rastreamento de Pedidos
                 </h3>
 
-                {/* 🔥 AQUI SÓ APARECE LOGADO */}
                 <TrackingWidget />
 
               </div>
