@@ -18,13 +18,13 @@ import type { Product, CartItem } from "./types";
 
 import { ArrowUpDown, CheckCircle2 } from "lucide-react";
 
-// 🔥 FIREBASE AUTH
+// FIREBASE AUTH
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function App() {
   // =========================
-  // AUTH (SEM BOTÃO DUPLICADO)
+  // AUTH
   // =========================
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
@@ -131,13 +131,13 @@ export default function App() {
 
       {/* NOTIFICAÇÃO */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-2xl text-sm font-semibold flex items-center gap-2">
-          <CheckCircle2 className="w-5 h-5 text-green-400" />
+        <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 bg-slate-900 text-white px-4 sm:px-5 py-3 sm:py-4 rounded-2xl shadow-2xl text-xs sm:text-sm font-semibold flex items-center gap-2">
+          <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 text-green-400" />
           {notification}
         </div>
       )}
 
-      {/* HEADER (LOGIN JÁ DENTRO DELE) */}
+      {/* HEADER RESPONSIVO (SEM DUPLICIDADE DE LOGIN) */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -154,22 +154,24 @@ export default function App() {
       <Hero />
 
       <main className="flex-1">
+
         <TrustBadges />
 
         {/* CATALOG */}
-        <section className="max-w-7xl mx-auto px-4 py-16">
+        <section className="max-w-7xl mx-auto px-3 sm:px-4 py-10 sm:py-16">
 
-          <div className="flex items-center justify-between mb-10">
-            <h2 className="text-3xl font-black">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8 sm:mb-10">
+
+            <h2 className="text-2xl sm:text-3xl font-black text-center sm:text-left">
               Produtos Exclusivos Importados
             </h2>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 justify-center sm:justify-end">
               <ArrowUpDown className="w-4 h-4" />
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded-xl px-4 py-2"
+                className="border rounded-xl px-3 py-2 sm:px-4 sm:py-2 text-sm"
               >
                 <option value="popular">Popularidade</option>
                 <option value="priceAsc">Menor preço</option>
@@ -177,10 +179,12 @@ export default function App() {
                 <option value="name">Nome A-Z</option>
               </select>
             </div>
+
           </div>
 
-          {/* PRODUCTS */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+          {/* PRODUCTS GRID RESPONSIVO */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-8">
+
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -188,6 +192,7 @@ export default function App() {
                 onAddToCart={handleAddToCart}
               />
             ))}
+
           </div>
 
         </section>
@@ -197,6 +202,7 @@ export default function App() {
         <Testimonials />
         <TrackingWidget />
         <BlogSection />
+
       </main>
 
       {/* CART */}
