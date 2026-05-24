@@ -24,37 +24,45 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 export default function App() {
 
   // =========================
-  // AUTH STATE
+  // AUTH STATE (SEGURO CONTRA TELA BRANCA)
   // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-    useEffect(() => {
-    // 1. Checagem imediata (força o mobile a ler o usuário atual se já entrar logado)
-    if (auth.currentUser) {
-      console.log("USUÁRIO DETECTADO IMEDIATAMENTE:", auth.currentUser);
-      setUser({ ...auth.currentUser });
-    }
-
-    // 2. Ouvinte normal para mudanças futuras
-    const unsub = onAuthStateChanged(auth, (u) => {
-      console.log("MUDANÇA DE ESTADO FIREBASE:", u);
-      if (u) {
-        setUser({ ...u });
-        setIsAuthOpen(false); 
-      } else {
-        setUser(null);
+  useEffect(() => {
+    try {
+      // 1. Checagem inicial ultra segura
+      if (auth && auth.currentUser) {
+        setUser({ ...auth.currentUser });
       }
-    });
 
-    return () => unsub();
+      // 2. Ouvinte do Firebase
+      const unsub = onAuthStateChanged(auth, (u) => {
+        try {
+          if (u) {
+            setUser({ ...u });
+            setIsAuthOpen(false); 
+          } else {
+            setUser(null);
+          }
+        } catch (innerError) {
+          console.error("Erro interno no onAuthStateChanged:", innerError);
+        }
+      });
+
+      return () => unsub();
+    } catch (error) {
+      console.error("Erro ao inicializar autenticação do Firebase:", error);
+    }
   }, []);
 
-    r
-
   const handleLogout = async () => {
-    await signOut(auth);
-    setUser(null);
+    try {
+      await signOut(auth);
+      setUser(null);
+    } catch (error) {
+      console.error("Erro ao deslogar:", error);
+    }
   };
 
   // =========================
@@ -80,49 +88,60 @@ export default function App() {
   // CATEGORIES
   // =========================
   const categories = useMemo(() => {
-    const list = new Set(PRODUCTS.map(p => p.category));
-    return ["Todos", ...Array.from(list)];
+    try {
+      const list = new Set(PRODUCTS.map(p => p?.category).filter(Boolean));
+      return ["Todos", ...Array.from(list)];
+    } catch (e) {
+      return ["Todos"];
+    }
   }, []);
 
   // =========================
   // FILTER PRODUCTS
   // =========================
   const filteredProducts = useMemo(() => {
-    return PRODUCTS.filter(p => {
-      const matchCategory =
-        selectedCategory === "Todos" || p.category === selectedCategory;
+    try {
+      return PRODUCTS.filter(p => {
+        if (!p) return false;
+        const matchCategory =
+          selectedCategory === "Todos" || p.category === selectedCategory;
 
-      const matchSearch =
-        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchSearch =
+          (p.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+          (p.jpName?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
+          (p.description?.toLowerCase() || "").includes(searchQuery.toLowerCase());
 
-      return matchCategory && matchSearch;
-    }).sort((a, b) => {
-      const totalA =
-        a.priceBRL + a.serviceFeeBRL + a.shippingEstBRL + a.estimatedTaxBRL;
+        return matchCategory && matchSearch;
+      }).sort((a, b) => {
+        const totalA =
+          (a.priceBRL || 0) + (a.serviceFeeBRL || 0) + (a.shippingEstBRL || 0) + (a.estimatedTaxBRL || 0);
 
-      const totalB =
-        b.priceBRL + b.serviceFeeBRL + b.shippingEstBRL + b.estimatedTaxBRL;
+        const totalB =
+          (b.priceBRL || 0) + (b.serviceFeeBRL || 0) + (b.shippingEstBRL || 0) + (b.estimatedTaxBRL || 0);
 
-      if (sortBy === "priceAsc") return totalA - totalB;
-      if (sortBy === "priceDesc") return totalB - totalA;
-      if (sortBy === "name") return a.name.localeCompare(b.name);
+        if (sortBy === "priceAsc") return totalA - totalB;
+        if (sortBy === "priceDesc") return totalB - totalA;
+        if (sortBy === "name") return (a.name || "").localeCompare(b.name || "");
 
-      return b.rating - a.rating;
-    });
+        return (b.rating || 0) - (a.rating || 0);
+      });
+    } catch (e) {
+      console.error("Erro ao filtrar produtos:", e);
+      return [];
+    }
   }, [selectedCategory, searchQuery, sortBy]);
 
   // =========================
   // CART
   // =========================
   const handleAddToCart = (product: Product) => {
+    if (!product) return;
     setCartItems(prev => {
-      const existing = prev.find(i => i.product.id === product.id);
+      const existing = prev.find(i => i.product?.id === product.id);
 
       if (existing) {
         return prev.map(i =>
-          i.product.id === product.id
+          i.product?.id === product.id
             ? { ...i, quantity: i.quantity + 1 }
             : i
         );
@@ -132,7 +151,7 @@ export default function App() {
     });
 
     setIsCartOpen(true);
-    showNotification(`${product.name} adicionado ao carrinho`);
+    showNotification(`${product.name || "Produto"} adicionado ao carrinho`);
   };
 
   return (
@@ -152,7 +171,7 @@ export default function App() {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
         categories={categories}
-        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        cartCount={cartItems.reduce((a, i) => a + (i.quantity || 0), 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         user={user}
@@ -170,11 +189,11 @@ export default function App() {
         </div>
 
         {/* ========================= */}
-        {/* 🔥 ÁREA DO CLIENTE - BLINDADA CONTRA ERROS */}
+        {/* 🔥 ÁREA DO CLIENTE - SEGUNDA TRAVA DE SEGURANÇA */}
         {/* ========================= */}
         {user ? (
           <section className="w-full max-w-7xl mx-auto px-4 py-8 block relative z-30">
-            <div className="bg-white rounded-2xl shadow-xl p-6 border-4 border-red-500 block text-left">
+            <div className="bg-white rounded-2xl shadow-xl p-6 border-4 border-emerald-500 block text-left">
 
               <h2 className="text-2xl font-black text-slate-900 block mb-1">
                 Minha Conta (Área Ativa)
@@ -196,11 +215,7 @@ export default function App() {
 
             </div>
           </section>
-        ) : (
-          <div className="text-center p-2 bg-gray-100 text-gray-400 text-[10px] font-mono">
-            [Aguardando login para ativar área do cliente]
-          </div>
-        )}
+        ) : null}
 
         {/* PRODUTOS */}
         <section className="max-w-7xl mx-auto px-4 py-10 block">
@@ -228,7 +243,7 @@ export default function App() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredProducts.map(p => (
               <ProductCard
-                key={p.id}
+                key={p?.id || Math.random()}
                 product={p}
                 onAddToCart={handleAddToCart}
               />
