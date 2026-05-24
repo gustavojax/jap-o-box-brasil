@@ -1,69 +1,55 @@
-import { db } from "../firebase";
-import {
-  collection,
-  query,
-  where,
-  getDocs,
-} from "firebase/firestore";
+import { db } from "./firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import type { TrackingData } from "../types";
 
-export async function getTrackingByCode(code: string) {
-  const q = query(
-    collection(db, "orders"),
-    where("trackingCode", "==", code)
-  );
+// ================================
+// FIREBASE - SALVAR TRACKING REAL
+// ================================
+export async function saveTracking(data: TrackingData) {
+  await setDoc(doc(db, "tracking", data.code), data);
+}
 
-  const snapshot = await getDocs(q);
+// ================================
+// FIREBASE - BUSCAR TRACKING REAL
+// ================================
+export async function getTracking(code: string) {
+  const ref = doc(db, "tracking", code);
+  const snap = await getDoc(ref);
 
-  if (snapshot.empty) {
-    throw new Error("Pedido não encontrado");
-  }
+  if (!snap.exists()) return null;
 
-  const doc = snapshot.docs[0].data();
+  return snap.data() as TrackingData;
+}
+
+// ================================
+// MOCK (USADO PARA NÃO QUEBRAR BUILD)
+// ================================
+export function getMockTracking(code: string) {
+  if (!code) return null;
 
   return {
-    currentStatus: doc.status,
-    currentDescription: generateDescription(doc.status),
-    steps: generateSteps(doc.status),
+    code,
+    steps: [
+      {
+        status: "Pedido recebido no Japão",
+        location: "Tóquio - JP",
+        date: "2026-05-20",
+      },
+      {
+        status: "Em separação no armazém",
+        location: "Osaka - JP",
+        date: "2026-05-21",
+      },
+      {
+        status: "Enviado para o Brasil",
+        location: "Aeroporto de Narita",
+        date: "2026-05-22",
+      },
+      {
+        status: "Em trânsito internacional",
+        location: "Oceano Pacífico",
+        date: "2026-05-23",
+      },
+    ],
   };
-}
-
-// 🔥 STATUS → TEXTO HUMANO
-function generateDescription(status: string) {
-  switch (status) {
-    case "Postado no Japão":
-      return "Seu pedido foi enviado do Japão e está em processamento internacional.";
-
-    case "Em trânsito internacional":
-      return "Seu pedido está voando para o Brasil.";
-
-    case "Recebido no Brasil":
-      return "Seu pedido já chegou ao Brasil e está na alfândega.";
-
-    case "Saiu para entrega":
-      return "Seu pedido está com o entregador.";
-
-    case "Entregue":
-      return "Seu pedido foi entregue com sucesso.";
-
-    default:
-      return "Status em atualização.";
-  }
-}
-
-// 🔥 TIMELINE AUTOMÁTICA
-function generateSteps(status: string) {
-  const flow = [
-    "Postado no Japão",
-    "Em trânsito internacional",
-    "Recebido no Brasil",
-    "Saiu para entrega",
-    "Entregue",
-  ];
-
-  const index = flow.indexOf(status);
-
-  return flow.map((step, i) => ({
-    status: step,
-    completed: i <= index,
-  }));
 }
