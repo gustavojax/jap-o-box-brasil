@@ -23,9 +23,9 @@ import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 
 export default function App() {
-  // =========================================
-  // AUTH
-  // =========================================
+  // =========================
+  // AUTH (SEM BOTÃO DUPLICADO)
+  // =========================
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
@@ -41,9 +41,9 @@ export default function App() {
     await signOut(auth);
   };
 
-  // =========================================
-  // UI STATES
-  // =========================================
+  // =========================
+  // STATES
+  // =========================
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
@@ -60,17 +60,17 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // =========================================
+  // =========================
   // CATEGORIAS
-  // =========================================
+  // =========================
   const categories = useMemo(() => {
     const list = new Set(PRODUCTS.map((p) => p.category));
     return ["Todos", ...Array.from(list)];
   }, []);
 
-  // =========================================
-  // FILTRO DE PRODUTOS
-  // =========================================
+  // =========================
+  // FILTRO PRODUTOS
+  // =========================
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
       const matchCategory =
@@ -104,9 +104,9 @@ export default function App() {
     });
   }, [selectedCategory, searchQuery, sortBy]);
 
-  // =========================================
+  // =========================
   // CART
-  // =========================================
+  // =========================
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -137,50 +137,18 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER + LOGIN */}
-      <div className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
-
-        <Header
-          onSearchChange={setSearchQuery}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          categories={categories}
-          cartCount={cartItems.reduce(
-            (acc, item) => acc + item.quantity,
-            0
-          )}
-          onOpenCart={() => setIsCartOpen(true)}
-          onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
-        />
-
-        {/* 🔥 BOTÃO LOGIN AQUI */}
-        <div className="flex gap-3 items-center">
-
-          {user ? (
-            <>
-              <span className="text-sm font-bold">
-                Olá, {user.email}
-              </span>
-
-              <button
-                onClick={handleLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-xl"
-              >
-                Sair
-              </button>
-            </>
-          ) : (
-            <button
-              onClick={() => setIsAuthOpen(true)}
-              className="bg-black text-white px-5 py-2 rounded-xl"
-            >
-              Entrar / Cadastro
-            </button>
-          )}
-
-        </div>
-
-      </div>
+      {/* HEADER (LOGIN JÁ DENTRO DELE) */}
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={categories}
+        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        user={user}
+        onLogout={handleLogout}
+      />
 
       {/* HERO */}
       <Hero />
@@ -239,7 +207,7 @@ export default function App() {
         />
       )}
 
-      {/* MODALS */}
+      {/* MODAIS */}
       <BudgetModal
         isOpen={isBudgetModalOpen}
         onClose={() => setIsBudgetModalOpen(false)}
