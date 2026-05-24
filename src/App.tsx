@@ -8,10 +8,10 @@ import ProductCard from "./components/ProductCard";
 import SubscriptionClub from "./components/SubscriptionClub";
 import Testimonials from "./components/Testimonials";
 import BlogSection from "./components/BlogSection";
+import TrackingWidget from "./components/TrackingWidget";
 import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
-import TrackingWidget from "./components/TrackingWidget";
 
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
@@ -24,26 +24,26 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 export default function App() {
 
   // =========================
-  // AUTH
+  // AUTH STATE
   // =========================
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-useEffect(() => {
-  const unsub = onAuthStateChanged(auth, (u) => {
-    console.log("USER:", u); // 🔥 DEBUG IMPORTANTE
-    setUser(u);
-  });
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      console.log("USER LOG:", u);
+      setUser(u);
+    });
 
-  return () => unsub();
-}, []);
+    return () => unsub();
+  }, []);
 
   const handleLogout = async () => {
     await signOut(auth);
   };
 
   // =========================
-  // UI
+  // UI STATES
   // =========================
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
@@ -51,6 +51,8 @@ useEffect(() => {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
 
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -60,7 +62,7 @@ useEffect(() => {
   };
 
   // =========================
-  // CATEGORIAS
+  // CATEGORIES
   // =========================
   const categories = useMemo(() => {
     const list = new Set(PRODUCTS.map(p => p.category));
@@ -68,7 +70,7 @@ useEffect(() => {
   }, []);
 
   // =========================
-  // FILTRO
+  // FILTER PRODUCTS
   // =========================
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(p => {
@@ -96,13 +98,35 @@ useEffect(() => {
     });
   }, [selectedCategory, searchQuery, sortBy]);
 
+  // =========================
+  // CART
+  // =========================
+  const handleAddToCart = (product: Product) => {
+    setCartItems(prev => {
+      const existing = prev.find(i => i.product.id === product.id);
+
+      if (existing) {
+        return prev.map(i =>
+          i.product.id === product.id
+            ? { ...i, quantity: i.quantity + 1 }
+            : i
+        );
+      }
+
+      return [...prev, { product, quantity: 1, selectedUpsells: [] }];
+    });
+
+    setIsCartOpen(true);
+    showNotification(`${product.name} adicionado ao carrinho`);
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col">
 
       {/* NOTIFICAÇÃO */}
       {notification && (
-        <div className="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl">
-          <CheckCircle2 className="inline mr-2 text-green-400" />
+        <div className="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
           {notification}
         </div>
       )}
@@ -113,7 +137,7 @@ useEffect(() => {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
         categories={categories}
-        cartCount={cartItems.length}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         user={user}
@@ -133,18 +157,26 @@ useEffect(() => {
         {user && (
           <section className="max-w-7xl mx-auto px-4 py-10">
 
-            <h2 className="text-2xl font-black mb-6">
-              Área do Cliente
-            </h2>
+            <div className="bg-white rounded-2xl shadow-sm p-6">
 
-            <div className="bg-white rounded-2xl p-6 shadow-sm">
+              <h2 className="text-2xl font-black">
+                Minha Conta
+              </h2>
 
-              <p className="mb-4 text-sm text-slate-600">
-                Acompanhe seus pedidos e rastreamentos abaixo:
+              <p className="text-sm text-gray-500 mt-1 mb-6">
+                Logado como: {user.email}
               </p>
 
-              {/* 🔥 RASTREAMENTO SÓ AQUI */}
-              <TrackingWidget />
+              <div className="border-t pt-6">
+
+                <h3 className="font-bold mb-4">
+                  Rastreamento de Pedidos
+                </h3>
+
+                {/* 🔥 AQUI SÓ APARECE LOGADO */}
+                <TrackingWidget />
+
+              </div>
 
             </div>
 
@@ -154,13 +186,35 @@ useEffect(() => {
         {/* PRODUTOS */}
         <section className="max-w-7xl mx-auto px-4 py-10">
 
+          <div className="flex items-center justify-between mb-8">
+
+            <h2 className="text-3xl font-black">
+              Produtos Importados
+            </h2>
+
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border rounded-xl px-4 py-2"
+              >
+                <option value="popular">Popularidade</option>
+                <option value="priceAsc">Menor preço</option>
+                <option value="priceDesc">Maior preço</option>
+                <option value="name">Nome A-Z</option>
+              </select>
+            </div>
+
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
 
             {filteredProducts.map(p => (
               <ProductCard
                 key={p.id}
                 product={p}
-                onAddToCart={() => {}}
+                onAddToCart={handleAddToCart}
               />
             ))}
 
@@ -185,8 +239,8 @@ useEffect(() => {
 
       {/* MODAIS */}
       <BudgetModal
-        isOpen={false}
-        onClose={() => {}}
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
         onSubmit={() => {}}
       />
 
