@@ -29,10 +29,14 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [user, setUser] = useState<any>(null);
 
-  useEffect(() => {
-    const unsub = onAuthStateChanged(auth, (u) => setUser(u));
-    return () => unsub();
-  }, []);
+useEffect(() => {
+  const unsub = onAuthStateChanged(auth, (u) => {
+    console.log("USER:", u); // 🔥 DEBUG IMPORTANTE
+    setUser(u);
+  });
+
+  return () => unsub();
+}, []);
 
   const handleLogout = async () => {
     await signOut(auth);
