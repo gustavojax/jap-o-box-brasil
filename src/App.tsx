@@ -16,7 +16,7 @@ import AuthModal from "./components/AuthModal";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2 } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User } from "lucide-react";
 
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -24,45 +24,31 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 export default function App() {
 
   // =========================
-  // AUTH STATE (SEGURO CONTRA TELA BRANCA)
+  // AUTH & NAVIGATION STATE
   // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  
+  // 🔥 NOVA ESTRATÉGIA: Controla se o usuário está vendo a "loja" ou a "conta"
+  const [activeTab, setActiveTab] = useState<"store" | "account">("store");
 
   useEffect(() => {
-    try {
-      // 1. Checagem inicial ultra segura
-      if (auth && auth.currentUser) {
-        setUser({ ...auth.currentUser });
+    const unsub = onAuthStateChanged(auth, (u) => {
+      if (u) {
+        setUser({ ...u });
+        setIsAuthOpen(false); 
+      } else {
+        setUser(null);
+        setActiveTab("store"); // Se deslogar, volta para a loja
       }
-
-      // 2. Ouvinte do Firebase
-      const unsub = onAuthStateChanged(auth, (u) => {
-        try {
-          if (u) {
-            setUser({ ...u });
-            setIsAuthOpen(false); 
-          } else {
-            setUser(null);
-          }
-        } catch (innerError) {
-          console.error("Erro interno no onAuthStateChanged:", innerError);
-        }
-      });
-
-      return () => unsub();
-    } catch (error) {
-      console.error("Erro ao inicializar autenticação do Firebase:", error);
-    }
+    });
+    return () => unsub();
   }, []);
 
   const handleLogout = async () => {
-    try {
-      await signOut(auth);
-      setUser(null);
-    } catch (error) {
-      console.error("Erro ao deslogar:", error);
-    }
+    await signOut(auth);
+    setUser(null);
+    setActiveTab("store");
   };
 
   // =========================
@@ -74,9 +60,7 @@ export default function App() {
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
-
   const [notification, setNotification] = useState<string | null>(null);
 
   const showNotification = (msg: string) => {
@@ -85,81 +69,49 @@ export default function App() {
   };
 
   // =========================
-  // CATEGORIES
+  // CATEGORIES & FILTER PRODUCTS
   // =========================
   const categories = useMemo(() => {
-    try {
-      const list = new Set(PRODUCTS.map(p => p?.category).filter(Boolean));
-      return ["Todos", ...Array.from(list)];
-    } catch (e) {
-      return ["Todos"];
-    }
+    const list = new Set(PRODUCTS.map(p => p.category));
+    return ["Todos", ...Array.from(list)];
   }, []);
 
-  // =========================
-  // FILTER PRODUCTS
-  // =========================
   const filteredProducts = useMemo(() => {
-    try {
-      return PRODUCTS.filter(p => {
-        if (!p) return false;
-        const matchCategory =
-          selectedCategory === "Todos" || p.category === selectedCategory;
-
-        const matchSearch =
-          (p.name?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-          (p.jpName?.toLowerCase() || "").includes(searchQuery.toLowerCase()) ||
-          (p.description?.toLowerCase() || "").includes(searchQuery.toLowerCase());
-
-        return matchCategory && matchSearch;
-      }).sort((a, b) => {
-        const totalA =
-          (a.priceBRL || 0) + (a.serviceFeeBRL || 0) + (a.shippingEstBRL || 0) + (a.estimatedTaxBRL || 0);
-
-        const totalB =
-          (b.priceBRL || 0) + (b.serviceFeeBRL || 0) + (b.shippingEstBRL || 0) + (b.estimatedTaxBRL || 0);
-
-        if (sortBy === "priceAsc") return totalA - totalB;
-        if (sortBy === "priceDesc") return totalB - totalA;
-        if (sortBy === "name") return (a.name || "").localeCompare(b.name || "");
-
-        return (b.rating || 0) - (a.rating || 0);
-      });
-    } catch (e) {
-      console.error("Erro ao filtrar produtos:", e);
-      return [];
-    }
+    return PRODUCTS.filter(p => {
+      const matchCategory = selectedCategory === "Todos" || p.category === selectedCategory;
+      const matchSearch =
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCategory && matchSearch;
+    }).sort((a, b) => {
+      const totalA = a.priceBRL + a.serviceFeeBRL + a.shippingEstBRL + a.estimatedTaxBRL;
+      const totalB = b.priceBRL + b.serviceFeeBRL + b.shippingEstBRL + b.estimatedTaxBRL;
+      if (sortBy === "priceAsc") return totalA - totalB;
+      if (sortBy === "priceDesc") return totalB - totalA;
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      return b.rating - a.rating;
+    });
   }, [selectedCategory, searchQuery, sortBy]);
 
-  // =========================
-  // CART
-  // =========================
   const handleAddToCart = (product: Product) => {
-    if (!product) return;
     setCartItems(prev => {
-      const existing = prev.find(i => i.product?.id === product.id);
-
+      const existing = prev.find(i => i.product.id === product.id);
       if (existing) {
-        return prev.map(i =>
-          i.product?.id === product.id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
-        );
+        return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
       }
-
       return [...prev, { product, quantity: 1, selectedUpsells: [] }];
     });
-
     setIsCartOpen(true);
-    showNotification(`${product.name || "Produto"} adicionado ao carrinho`);
+    showNotification(`${product.name} adicionado ao carrinho`);
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col">
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0">
 
       {/* NOTIFICAÇÃO */}
       {notification && (
-        <div className="fixed bottom-4 right-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2">
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2">
           <CheckCircle2 className="w-5 h-5 text-green-400" />
           {notification}
         </div>
@@ -171,114 +123,144 @@ export default function App() {
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
         categories={categories}
-        cartCount={cartItems.reduce((a, i) => a + (i.quantity || 0), 0)}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         user={user}
         onLogout={handleLogout}
       />
 
-      {/* HERO */}
-      <Hero />
-
-      <main className="flex-1 w-full relative z-10 clear-both block">
-
-        {/* TRUST BADGES */}
-        <div className="w-full block">
-          <TrustBadges />
+      {/* 🔥 MENU DE ABAS EXCLUSIVO PARA USUÁRIO LOGADO (MOBILE/DESKTOP) */}
+      {user && (
+        <div className="bg-white border-b sticky top-0 z-40 flex justify-center gap-4 p-2 shadow-sm">
+          <button
+            onClick={() => setActiveTab("store")}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
+              activeTab === "store" 
+                ? "bg-slate-900 text-white shadow-md scale-105" 
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            <ShoppingBag className="w-4 h-4" />
+            Ver Loja
+          </button>
+          <button
+            onClick={() => setActiveTab("account")}
+            className={`flex items-center gap-2 px-6 py-2.5 rounded-xl font-bold text-sm transition-all ${
+              activeTab === "account" 
+                ? "bg-emerald-600 text-white shadow-md scale-105" 
+                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+            }`}
+          >
+            <User className="w-4 h-4" />
+            Minha Conta / Rastreio
+          </button>
         </div>
+      )}
 
-        {/* ========================= */}
-        {/* 🔥 ÁREA DO CLIENTE - SEGUNDA TRAVA DE SEGURANÇA */}
-        {/* ========================= */}
-        {user ? (
-          <section className="w-full max-w-7xl mx-auto px-4 py-8 block relative z-30">
-            <div className="bg-white rounded-2xl shadow-xl p-6 border-4 border-emerald-500 block text-left">
-
-              <h2 className="text-2xl font-black text-slate-900 block mb-1">
-                Minha Conta (Área Ativa)
-              </h2>
-
-              <p className="text-sm text-gray-600 mb-6 block font-mono bg-slate-100 p-2 rounded">
-                ID do Usuário: {user?.uid || "ID Não encontrado"}
-              </p>
-
-              <div className="border-t border-gray-200 pt-6 block">
-                <h3 className="font-bold mb-4 text-slate-800 block">
-                  Rastreamento de Pedidos
-                </h3>
-                
-                <div className="w-full bg-slate-50 p-4 rounded-xl block min-h-[150px] border border-slate-200">
-                  <TrackingWidget />
+      {/* ========================================================= */}
+      {/* 🟢 CONDICIONAL DE TELAS: OU MOSTRA A LOJA OU MOSTRA A CONTA */}
+      {/* ========================================================= */}
+      {activeTab === "store" ? (
+        <>
+          {/* CONTEÚDO ORIGINAL DA HOME */}
+          <Hero />
+          <main className="flex-1">
+            <TrustBadges />
+            
+            {/* PRODUTOS */}
+            <section className="max-w-7xl mx-auto px-4 py-10">
+              <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl font-black text-slate-900">Produtos Importados</h2>
+                <div className="flex items-center gap-2">
+                  <ArrowUpDown className="w-4 h-4" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="border rounded-xl px-4 py-2 bg-white"
+                  >
+                    <option value="popular">Popularidade</option>
+                    <option value="priceAsc">Menor preço</option>
+                    <option value="priceDesc">Maior preço</option>
+                    <option value="name">Nome A-Z</option>
+                  </select>
                 </div>
               </div>
 
-            </div>
-          </section>
-        ) : null}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredProducts.map(p => (
+                  <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
+                ))}
+              </div>
+            </section>
 
-        {/* PRODUTOS */}
-        <section className="max-w-7xl mx-auto px-4 py-10 block">
-
-          <div className="flex items-center justify-between mb-8">
-            <h2 className="text-3xl font-black text-slate-900">
-              Produtos Importados
-            </h2>
-
-            <div className="flex items-center gap-2">
-              <ArrowUpDown className="w-4 h-4" />
-              <select
-                value={sortBy}
-                onChange={(e) => setSortBy(e.target.value)}
-                className="border rounded-xl px-4 py-2 bg-white"
+            <SubscriptionClub onSubscribe={() => {}} />
+            <CostCalculator onOpenBudgetModalWithData={() => {}} />
+            <Testimonials />
+            <BlogSection />
+          </main>
+        </>
+      ) : (
+        /* 🔥 PÁGINA COMPLETA E ISOLADA DA ÁREA DO CLIENTE */
+        <main className="flex-1 bg-slate-50 py-10 px-4 min-h-[80vh]">
+          <div className="max-w-3xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-slate-100">
+            
+            <div className="flex items-center justify-between border-b pb-6 mb-6">
+              <div>
+                <h1 className="text-3xl font-black text-slate-900">Painel do Cliente</h1>
+                <p className="text-sm text-slate-500 mt-1">
+                  Acessando como: <span className="font-semibold text-slate-700">{user?.email || "Cliente"}</span>
+                </p>
+              </div>
+              <button 
+                onClick={handleLogout}
+                className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors"
               >
-                <option value="popular">Popularidade</option>
-                <option value="priceAsc">Menor preço</option>
-                <option value="priceDesc">Maior preço</option>
-                <option value="name">Nome A-Z</option>
-              </select>
+                Sair da Conta
+              </button>
             </div>
+
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <h2 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
+                📦 Rastreamento de Encomendas
+              </h2>
+              
+              {/* Renderização limpa e isolada do widget */}
+              <div className="w-full bg-white rounded-xl p-2 min-h-[300px]">
+                <TrackingWidget />
+              </div>
+            </div>
+
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredProducts.map(p => (
-              <ProductCard
-                key={p?.id || Math.random()}
-                product={p}
-                onAddToCart={handleAddToCart}
-              />
-            ))}
-          </div>
-
-        </section>
-
-        <SubscriptionClub onSubscribe={() => {}} />
-        <CostCalculator onOpenBudgetModalWithData={() => {}} />
-        <Testimonials />
-        <BlogSection />
-
-      </main>
-
-      {/* CART */}
-      {isCartOpen && (
-        <CartDrawer
-          onClose={() => setIsCartOpen(false)}
-          cartItems={cartItems}
-        />
+        </main>
       )}
 
-      {/* MODAIS */}
-      <BudgetModal
-        isOpen={isBudgetModalOpen}
-        onClose={() => setIsBudgetModalOpen(false)}
-        onSubmit={() => {}}
-      />
+      {/* BOTTOM NAVIGATION PARA MOBILE (OPCIONAL / MELHORA UX) */}
+      {user && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-50 shadow-lg">
+          <button 
+            onClick={() => setActiveTab("store")}
+            className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
+          >
+            <ShoppingBag className="w-5 h-5 mb-0.5" />
+            Loja
+          </button>
+          <button 
+            onClick={() => setActiveTab("account")}
+            className={`flex flex-col items-center text-xs font-bold ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
+          >
+            <User className="w-5 h-5 mb-0.5" />
+            Rastreio
+          </button>
+        </div>
+      )}
 
-      <AuthModal
-        isOpen={isAuthOpen}
-        onClose={() => setIsAuthOpen(false)}
-      />
+      {/* CARTRADWER & MODAIS */}
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
 }
+
