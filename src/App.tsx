@@ -1,81 +1,67 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo } from "react";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import TrustBadges from "./components/TrustBadges";
+import CostCalculator from "./components/CostCalculator";
 import ProductCard from "./components/ProductCard";
+import SubscriptionClub from "./components/SubscriptionClub";
+import Testimonials from "./components/Testimonials";
+import BlogSection from "./components/BlogSection";
 import TrackingWidget from "./components/TrackingWidget";
+import CartDrawer from "./components/CartDrawer";
+import BudgetModal from "./components/BudgetModal";
+import AuthModal from "./components/AuthModal";
 
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { CheckCircle2 } from "lucide-react";
+import { ArrowUpDown, CheckCircle2 } from "lucide-react";
 
 export default function App() {
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [user] = useState<any>(null);
+
   const [selectedCategory, setSelectedCategory] = useState("Todos");
-  const [selectedSubcategory, setSelectedSubcategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [notification, setNotification] = useState<string | null>(null);
+  const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // =========================================
-  // RESET SCROLL (CORREÇÃO DO BUG VISUAL)
-  // =========================================
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  }, [selectedCategory, selectedSubcategory]);
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [prefilledBudgetData] = useState<any>(null);
+
+  const [notification, setNotification] = useState<string | null>(null);
 
   const showNotification = (msg: string) => {
     setNotification(msg);
-    setTimeout(() => setNotification(null), 3000);
+    setTimeout(() => setNotification(null), 3500);
   };
 
-  // =========================================
-  // CATEGORIAS
-  // =========================================
+  // =========================
+  // CATEGORIAS (ORIGINAL)
+  // =========================
   const categories = useMemo(() => {
     const list = new Set(PRODUCTS.map((p) => p.category));
     return ["Todos", ...Array.from(list)];
   }, []);
 
-  // =========================================
-  // SUBCATEGORIAS
-  // =========================================
-  const subcategories = useMemo(() => {
-    const list = new Set(
-      PRODUCTS.filter(
-        (p) =>
-          selectedCategory === "Todos" ||
-          p.category === selectedCategory
-      )
-        .map((p) => p.subcategory)
-        .filter(Boolean)
-    );
-
-    return ["Todos", ...Array.from(list) as string[]];
-  }, [selectedCategory]);
-
-  // =========================================
-  // FILTRO DE PRODUTOS
-  // =========================================
+  // =========================
+  // PRODUTOS FILTRADOS (ORIGINAL)
+  // =========================
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
       const matchCategory =
         selectedCategory === "Todos" ||
         p.category === selectedCategory;
 
-      const matchSubcategory =
-        selectedSubcategory === "Todos" ||
-        p.subcategory === selectedSubcategory;
-
       const matchSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase());
 
-      return matchCategory && matchSubcategory && matchSearch;
+      return matchCategory && matchSearch;
     }).sort((a, b) => {
       const totalA =
         a.priceBRL +
@@ -95,27 +81,31 @@ export default function App() {
 
       return b.rating - a.rating;
     });
-  }, [selectedCategory, selectedSubcategory, searchQuery, sortBy]);
+  }, [selectedCategory, searchQuery, sortBy]);
 
-  // =========================================
+  // =========================
   // CART
-  // =========================================
+  // =========================
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
-      const existing = prev.find((i) => i.product.id === product.id);
+      const existing = prev.find((item) => item.product.id === product.id);
 
       if (existing) {
-        return prev.map((i) =>
-          i.product.id === product.id
-            ? { ...i, quantity: i.quantity + 1 }
-            : i
+        return prev.map((item) =>
+          item.product.id === product.id
+            ? { ...item, quantity: item.quantity + 1 }
+            : item
         );
       }
 
-      return [...prev, { product, quantity: 1, selectedUpsells: [] }];
+      return [
+        ...prev,
+        { product, quantity: 1, selectedUpsells: [] },
+      ];
     });
 
-    showNotification("Produto adicionado ao carrinho");
+    setIsCartOpen(true);
+    showNotification(`${product.name} adicionado ao carrinho`);
   };
 
   return (
@@ -123,67 +113,94 @@ export default function App() {
 
       {/* NOTIFICAÇÃO */}
       {notification && (
-        <div className="fixed bottom-6 right-6 z-50 bg-black text-white px-4 py-3 rounded-xl flex items-center gap-2">
-          <CheckCircle2 size={18} />
+        <div className="fixed bottom-6 right-6 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl shadow-2xl text-sm font-semibold flex items-center gap-2">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
           {notification}
         </div>
       )}
 
+      {/* HEADER */}
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={categories}
+        cartCount={cartItems.reduce(
+          (acc, item) => acc + item.quantity,
+          0
+        )}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+      />
+
       {/* HERO */}
       <Hero />
 
-      {/* CATEGORIAS */}
-      <div className="max-w-7xl mx-auto px-4 mt-10">
-        <div className="flex gap-2 flex-wrap">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
-                setSelectedSubcategory("Todos");
-              }}
-              className={`px-4 py-2 rounded-xl border ${
-                selectedCategory === cat
-                  ? "bg-black text-white"
-                  : "bg-white"
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+      <main className="flex-1">
+        <TrustBadges />
 
-        {/* SUBCATEGORIAS */}
-        <div className="flex gap-2 flex-wrap mt-3">
-          {subcategories.map((sub) => (
-            <button
-              key={sub}
-              onClick={() => setSelectedSubcategory(sub)}
-              className={`px-3 py-1 rounded-lg text-sm border ${
-                selectedSubcategory === sub
-                  ? "bg-red-600 text-white"
-                  : "bg-white"
-              }`}
-            >
-              {sub}
-            </button>
-          ))}
-        </div>
-      </div>
+        {/* CATALOG */}
+        <section className="max-w-7xl mx-auto px-4 py-16">
 
-      {/* PRODUTOS */}
-      <div className="max-w-7xl mx-auto px-4 py-10 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={`${product.id}-${selectedCategory}-${selectedSubcategory}-${index}`}
-            product={product}
-            onAddToCart={handleAddToCart}
-          />
-        ))}
-      </div>
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="text-3xl font-black">
+              Produtos Exclusivos Importados
+            </h2>
 
-      {/* TRACKING */}
-      <TrackingWidget />
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border rounded-xl px-4 py-2"
+              >
+                <option value="popular">Popularidade</option>
+                <option value="priceAsc">Menor preço</option>
+                <option value="priceDesc">Maior preço</option>
+                <option value="name">Nome A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          {/* PRODUCTS */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {filteredProducts.map((product) => (
+              <ProductCard
+                key={product.id}
+                product={product}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+
+        </section>
+
+        <SubscriptionClub onSubscribe={() => {}} />
+        <CostCalculator onOpenBudgetModalWithData={() => {}} />
+        <Testimonials />
+        <TrackingWidget />
+        <BlogSection />
+      </main>
+
+      {/* CART */}
+      {isCartOpen && (
+        <CartDrawer
+          onClose={() => setIsCartOpen(false)}
+          cartItems={cartItems}
+        />
+      )}
+
+      {/* MODALS */}
+      <BudgetModal
+        isOpen={isBudgetModalOpen}
+        onClose={() => setIsBudgetModalOpen(false)}
+        onSubmit={() => {}}
+      />
+
+      <AuthModal
+        isOpen={isAuthOpen}
+        onClose={() => setIsAuthOpen(false)}
+      />
     </div>
   );
 }
