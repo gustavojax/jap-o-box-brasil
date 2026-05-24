@@ -153,14 +153,88 @@ export default function App() {
       />
 
       {/* HERO */}
+      {/* HERO */}
       <Hero />
 
-      {/* 🟥 BARRA DE DIAGNÓSTICO RÁPIDO (Remova depois de testar) */}
-      <div className="bg-amber-100 text-amber-900 text-center py-2 text-xs font-mono border-b border-amber-200">
-        Status do Usuário no App.tsx: {user ? `🟢 LOGADO (${user.email})` : "🔴 DESLOGADO (null)"}
-      </div>
+      {/* 🟥 RESOLUÇÃO: Nova estrutura do main para forçar o conteúdo a aparecer no mobile */}
+      <main className="flex-1 w-full relative z-10 clear-both block">
 
-      <main className="flex-1">
+        {/* TRUST BADGES */}
+        <div className="w-full block">
+          <TrustBadges />
+        </div>
+
+        {/* ========================= */}
+        {/* 🔥 ÁREA DO CLIENTE ISOLADA */}
+        {/* ========================= */}
+        {user && (
+          <section className="w-full max-w-7xl mx-auto px-4 py-8 block relative z-20">
+            <div className="bg-white rounded-2xl shadow-xl p-6 border-2 border-emerald-500 block text-left">
+
+              <h2 className="text-2xl font-black text-slate-900 block mb-1">
+                Minha Conta
+              </h2>
+
+              <p className="text-sm text-gray-600 mb-6 block">
+                Logado como: <span className="font-semibold text-slate-800">{user.email}</span>
+              </p>
+
+              <div className="border-t border-gray-200 pt-6 block">
+                <h3 className="font-bold mb-4 text-slate-800 block">
+                  Rastreamento de Pedidos
+                </h3>
+                
+                {/* Força um bloco visível para o widget de rastreio */}
+                <div className="w-full bg-slate-50 p-4 rounded-xl block min-h-[150px] border border-slate-200">
+                  <TrackingWidget />
+                </div>
+              </div>
+
+            </div>
+          </section>
+        )}
+
+        {/* PRODUTOS */}
+        <section className="max-w-7xl mx-auto px-4 py-10 block">
+
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-3xl font-black text-slate-900">
+              Produtos Importados
+            </h2>
+
+            <div className="flex items-center gap-2">
+              <ArrowUpDown className="w-4 h-4" />
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="border rounded-xl px-4 py-2 bg-white"
+              >
+                <option value="popular">Popularidade</option>
+                <option value="priceAsc">Menor preço</option>
+                <option value="priceDesc">Maior preço</option>
+                <option value="name">Nome A-Z</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredProducts.map(p => (
+              <ProductCard
+                key={p.id}
+                product={p}
+                onAddToCart={handleAddToCart}
+              />
+            ))}
+          </div>
+
+        </section>
+
+        <SubscriptionClub onSubscribe={() => {}} />
+        <CostCalculator onOpenBudgetModalWithData={() => {}} />
+        <Testimonials />
+        <BlogSection />
+
+      </main>
 
         <TrustBadges />
 
