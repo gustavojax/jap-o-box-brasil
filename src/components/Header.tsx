@@ -25,52 +25,54 @@ export default function Header({
   onLogout,
 }: Props) {
   return (
-    <header className="w-full bg-white border-b shadow-sm sticky top-0 z-50">
+    <header className="w-full bg-white shadow-sm sticky top-0 z-50">
 
-      {/* TOP BAR */}
-      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-4">
+      {/* TOP BAR PRINCIPAL */}
+      <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
 
-        {/* LOGO + NOME (MELHORADO) */}
-        <div className="flex items-center gap-3">
+        {/* LOGO MAIOR (SHOPEE STYLE) */}
+        <div className="flex items-center gap-4 min-w-[240px]">
 
           <img
             src="https://i.ibb.co/jZDQ1vd4/IMG-20260515-WA0037.jpg"
             alt="Japão Box Brasil"
-            className="w-12 h-12 object-cover rounded-xl shadow-sm"
+            className="w-16 h-16 rounded-xl object-cover shadow-md"
           />
 
-          <div className="flex flex-col leading-tight">
-            <span className="text-xl font-black text-slate-900">
+          <div className="flex flex-col">
+            <span className="text-2xl font-black text-slate-900 leading-tight">
               Japão Box Brasil
             </span>
             <span className="text-xs text-slate-500">
-              Importados do Japão direto pra você 🇯🇵
+              Importados do Japão 🇯🇵
             </span>
           </div>
 
         </div>
 
-        {/* SEARCH */}
-        <input
-          type="text"
-          placeholder="Buscar produtos do Japão..."
-          onChange={(e) => onSearchChange(e.target.value)}
-          className="hidden md:block border border-slate-200 rounded-xl px-4 py-2 w-96"
-        />
+        {/* SEARCH CENTRAL (SHOPEE FEEL) */}
+        <div className="flex-1 hidden md:flex justify-center">
+          <input
+            type="text"
+            placeholder="Buscar produtos, marcas e categorias..."
+            onChange={(e) => onSearchChange(e.target.value)}
+            className="w-full max-w-xl border border-slate-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          />
+        </div>
 
-        {/* BOTÕES DIREITA */}
+        {/* AÇÕES (LOGIN + CARRINHO) */}
         <div className="flex items-center gap-3">
 
           {/* LOGIN */}
           {user ? (
             <div className="flex items-center gap-2">
-              <span className="text-sm font-semibold">
-                Olá, {user.email}
+              <span className="text-sm font-semibold hidden sm:block">
+                {user.email}
               </span>
 
               <button
                 onClick={onLogout}
-                className="bg-red-500 text-white px-4 py-2 rounded-xl text-sm"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm"
               >
                 Sair
               </button>
@@ -78,9 +80,9 @@ export default function Header({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="bg-black text-white px-5 py-2 rounded-xl text-sm"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold"
             >
-              Entrar / Cadastro
+              Entrar
             </button>
           )}
 
@@ -103,7 +105,7 @@ export default function Header({
 
       </div>
 
-      {/* CATEGORIAS */}
+      {/* CATEGORIAS (SHOPEE STYLE BAR) */}
       <div className="border-t bg-slate-50">
         <div className="max-w-7xl mx-auto px-4 py-3 flex gap-3 overflow-x-auto">
 
@@ -111,10 +113,10 @@ export default function Header({
             <button
               key={cat}
               onClick={() => onSelectCategory(cat)}
-              className={`text-sm whitespace-nowrap px-4 py-1.5 rounded-full border ${
+              className={`text-sm whitespace-nowrap px-4 py-1.5 rounded-full border transition ${
                 selectedCategory === cat
-                  ? "bg-black text-white"
-                  : "bg-white"
+                  ? "bg-orange-500 text-white border-orange-500"
+                  : "bg-white hover:border-orange-400"
               }`}
             >
               {cat}
