@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
@@ -18,10 +18,32 @@ import type { Product, CartItem } from "./types";
 
 import { ArrowUpDown, CheckCircle2 } from "lucide-react";
 
-export default function App() {
-  const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [user] = useState<any>(null);
+// 🔥 FIREBASE AUTH
+import { auth } from "./firebase";
+import { onAuthStateChanged, signOut } from "firebase/auth";
 
+export default function App() {
+  // =========================================
+  // AUTH
+  // =========================================
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, (u) => {
+      setUser(u);
+    });
+
+    return () => unsub();
+  }, []);
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
+  // =========================================
+  // UI STATES
+  // =========================================
   const [selectedCategory, setSelectedCategory] = useState("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
@@ -30,7 +52,6 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
-  const [prefilledBudgetData] = useState<any>(null);
 
   const [notification, setNotification] = useState<string | null>(null);
 
@@ -39,17 +60,17 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // =========================
-  // CATEGORIAS (ORIGINAL)
-  // =========================
+  // =========================================
+  // CATEGORIAS
+  // =========================================
   const categories = useMemo(() => {
     const list = new Set(PRODUCTS.map((p) => p.category));
     return ["Todos", ...Array.from(list)];
   }, []);
 
-  // =========================
-  // PRODUTOS FILTRADOS (ORIGINAL)
-  // =========================
+  // =========================================
+  // FILTRO DE PRODUTOS
+  // =========================================
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter((p) => {
       const matchCategory =
@@ -83,9 +104,9 @@ export default function App() {
     });
   }, [selectedCategory, searchQuery, sortBy]);
 
-  // =========================
+  // =========================================
   // CART
-  // =========================
+  // =========================================
   const handleAddToCart = (product: Product) => {
     setCartItems((prev) => {
       const existing = prev.find((item) => item.product.id === product.id);
@@ -98,10 +119,7 @@ export default function App() {
         );
       }
 
-      return [
-        ...prev,
-        { product, quantity: 1, selectedUpsells: [] },
-      ];
+      return [...prev, { product, quantity: 1, selectedUpsells: [] }];
     });
 
     setIsCartOpen(true);
@@ -119,19 +137,50 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER */}
-      <Header
-        onSearchChange={setSearchQuery}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={categories}
-        cartCount={cartItems.reduce(
-          (acc, item) => acc + item.quantity,
-          0
-        )}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
-      />
+      {/* HEADER + LOGIN */}
+      <div className="flex items-center justify-between px-6 py-4 bg-white shadow-sm">
+
+        <Header
+          onSearchChange={setSearchQuery}
+          selectedCategory={selectedCategory}
+          onSelectCategory={setSelectedCategory}
+          categories={categories}
+          cartCount={cartItems.reduce(
+            (acc, item) => acc + item.quantity,
+            0
+          )}
+          onOpenCart={() => setIsCartOpen(true)}
+          onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+        />
+
+        {/* 🔥 BOTÃO LOGIN AQUI */}
+        <div className="flex gap-3 items-center">
+
+          {user ? (
+            <>
+              <span className="text-sm font-bold">
+                Olá, {user.email}
+              </span>
+
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-xl"
+              >
+                Sair
+              </button>
+            </>
+          ) : (
+            <button
+              onClick={() => setIsAuthOpen(true)}
+              className="bg-black text-white px-5 py-2 rounded-xl"
+            >
+              Entrar / Cadastro
+            </button>
+          )}
+
+        </div>
+
+      </div>
 
       {/* HERO */}
       <Hero />
@@ -201,6 +250,7 @@ export default function App() {
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
       />
+
     </div>
   );
 }
