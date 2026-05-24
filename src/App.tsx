@@ -29,12 +29,17 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
 
-  useEffect(() => {
+    useEffect(() => {
+    // 1. Checagem imediata (força o mobile a ler o usuário atual se já entrar logado)
+    if (auth.currentUser) {
+      console.log("USUÁRIO DETECTADO IMEDIATAMENTE:", auth.currentUser);
+      setUser({ ...auth.currentUser });
+    }
+
+    // 2. Ouvinte normal para mudanças futuras
     const unsub = onAuthStateChanged(auth, (u) => {
       console.log("MUDANÇA DE ESTADO FIREBASE:", u);
-      
       if (u) {
-        // Copia o objeto para garantir força de atualização no React
         setUser({ ...u });
         setIsAuthOpen(false); 
       } else {
@@ -44,6 +49,8 @@ export default function App() {
 
     return () => unsub();
   }, []);
+
+    r
 
   const handleLogout = async () => {
     await signOut(auth);
