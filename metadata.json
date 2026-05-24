@@ -1,0 +1,6 @@
+{
+  "name": "Japão Box Brasil",
+  "description": "E-commerce premium especializado na importação direta do Japão: animes, colecionáveis, K-Beauty, tecnologia, doces e assessoria de Personal Shopper.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
