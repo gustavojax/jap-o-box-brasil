@@ -16,7 +16,7 @@ import ClientDashboard from "./components/ClientDashboard";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Clock, Truck, CheckCircle, Heart } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, HelpCircle, Clock, Truck, CheckCircle, Heart, Grid, Layers } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -119,9 +119,10 @@ export default function App() {
   };
 
   // =========================
-  // UI STATES
+  // UI & NAVIGATION STATES
   // =========================
-  const [selectedCategory, setSelectedCategory] = useState("Todos");
+  const [selectedDepartment, setSelectedDepartment] = useState<string>("Todos");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
 
@@ -135,31 +136,94 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // =========================
-  // CATEGORIES & FILTER PRODUCTS
-  // =========================
-  const categories = useMemo(() => {
-    const list = new Set(PRODUCTS.map(p => p.category));
-    return ["Todos", ...Array.from(list)];
+  // ==========================================
+  // ARVORE DE CATEGORIAS AMAZON JP PREMIUM MAPPING
+  // ==========================================
+  const departmentToCategoriesMap: Record<string, string[]> = useMemo(() => {
+    return {
+      "Casa e Cozinha": [
+        "Consumíveis de cozinha e necessidades diárias",
+        "Utensílios de mesa (Tableware)",
+        "Utensílios de cozinha (Kitchenware)",
+        "Armazenamento (Storage)",
+        "Interior",
+        "Sala de estar (Living)"
+      ],
+      "Alimentos e Limpeza": [
+        "Alimentos (Food)",
+        "Limpeza (Cleaning)",
+        "Lavanderia (Laundry)"
+      ],
+      "Tecnologia, Ferramentas e Automotivo": [
+        "Eletricidade",
+        "Ferramentas, carros e bicicletas",
+        "Reforma e renovação (Renovation)"
+      ],
+      "Beleza, Higiene e Saúde": [
+        "Maquiagem e cuidados com o cabelo",
+        "Saúde, cuidados infantis e cuidados com idosos",
+        "Higiene, cuidados bucais e produtos para banho"
+      ],
+      "Moda e Acessórios": [
+        "Bolsas e acessórios de moda",
+        "Calçados, viagem e impermeáveis",
+        "Roupas (Clothing)"
+      ],
+      "Estilo de Vida, Cultura e Exclusivos": [
+        "Papelaria (Stationery)",
+        "Presentes (Gift)",
+        "Feito à mão / Artesanal (Handmade)",
+        "Brinquedos, festas e esportes",
+        "THREEPPY"
+      ]
+    };
   }, []);
 
+  // Macro Departamentos únicos memorizados
+  const departments = useMemo(() => {
+    return ["Todos", ...Object.keys(departmentToCategoriesMap)];
+  }, [departmentToCategoriesMap]);
+
+  // Subcategorias dinâmicas dependentes do Macro Departamento selecionado
+  const availableSubCategories = useMemo(() => {
+    if (selectedDepartment === "Todos") {
+      return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
+    }
+    return ["Todos", ...(departmentToCategoriesMap[selectedDepartment] || [])];
+  }, [selectedDepartment, departmentToCategoriesMap]);
+
+  // Reset do filtro subordinado caso mude o pai
+  const handleDepartmentChange = (dept: string) => {
+    setSelectedDepartment(dept);
+    setSelectedCategory("Todos");
+  };
+
+  // Legado para compatibilidade estrutural com a assinatura do Header se necessário
+  const allFlattenedCategoriesLegacy = useMemo(() => {
+    return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
+  }, [departmentToCategoriesMap]);
+
+  // =========================
+  // FILTRAGEM DE PRODUTOS
+  // =========================
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(p => {
-      const matchCategory = selectedCategory === "Todos" || p.category === selectedCategory;
+      const matchDept = selectedDepartment === "Todos" || (p as any).department === selectedDepartment;
+      const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
       const matchSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchCategory && matchSearch;
+      return matchDept && matchCat && matchSearch;
     }).sort((a, b) => {
-      const totalA = a.priceBRL + a.serviceFeeBRL + a.shippingEstBRL + a.estimatedTaxBRL;
-      const totalB = b.priceBRL + b.serviceFeeBRL + b.shippingEstBRL + b.estimatedTaxBRL;
+      const totalA = a.priceBRL + a.serviceFeeBRL;
+      const totalB = b.priceBRL + b.serviceFeeBRL;
       if (sortBy === "priceAsc") return totalA - totalB;
       if (sortBy === "priceDesc") return totalB - totalA;
       if (sortBy === "name") return a.name.localeCompare(b.name);
       return b.rating - a.rating;
     });
-  }, [selectedCategory, searchQuery, sortBy]);
+  }, [selectedDepartment, selectedCategory, searchQuery, sortBy]);
 
   const handleAddToCart = (product: Product) => {
     setCartItems(prev => {
@@ -212,7 +276,7 @@ export default function App() {
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
-        categories={categories}
+        categories={allFlattenedCategoriesLegacy}
         cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
@@ -225,7 +289,7 @@ export default function App() {
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
             onClick={() => setActiveTab("store")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
               activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -234,7 +298,7 @@ export default function App() {
           
           <button
             onClick={() => setActiveTab("about")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
               activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -249,7 +313,7 @@ export default function App() {
                 setIsAuthOpen(true);
               }
             }}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
               activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
@@ -268,19 +332,70 @@ export default function App() {
           <main className="flex-1">
             <TrustBadges />
             
+            {/* PAINEL DE NAVEGAÇÃO PREMIUM - ESTILO AMAZON JP */}
+            <section className="max-w-7xl mx-auto px-4 pt-8 pb-4">
+              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 space-y-4">
+                
+                {/* 1. Seleção de Macro Departamentos */}
+                <div className="flex flex-col gap-2">
+                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
+                    <Grid className="w-3.5 h-3.5 text-slate-400" /> Macro Departamentos (Amazon JP Style)
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {departments.map((dept) => (
+                      <button
+                        key={dept}
+                        onClick={() => handleDepartmentChange(dept)}
+                        className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer border ${
+                          selectedDepartment === dept
+                            ? "bg-slate-900 border-slate-900 text-white shadow-sm"
+                            : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                        }`}
+                      >
+                        {dept}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 2. Seleção de Subcategorias Dinâmicas */}
+                <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
+                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
+                    <Layers className="w-3.5 h-3.5 text-slate-400" /> Subcategorias Filtradas
+                  </span>
+                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-2">
+                    {availableSubCategories.map((cat) => (
+                      <button
+                        key={cat}
+                        onClick={() => setSelectedCategory(cat)}
+                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer border ${
+                          selectedCategory === cat
+                            ? "bg-rose-600 border-rose-600 text-white"
+                            : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                        }`}
+                      >
+                        {cat}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+              </div>
+            </section>
+            
             {/* PRODUTOS */}
-            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-10">
-              <div className="flex items-center justify-between mb-8 border-b pb-4">
-                <div>
-                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Produtos Importados</h2>
-                  <p className="text-sm text-slate-500 mt-0.5">Explore os melhores itens direto do mercado japonês</p>
+            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
+              <div className="flex items-center justify-between mb-6 border-b pb-4">
+                <div className="text-left">
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo: {selectedDepartment} / {selectedCategory}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-slate-400" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="border rounded-xl px-3 py-2 bg-white text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                    className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
                   >
                     <option value="popular">Popularidade</option>
                     <option value="priceAsc">Menor preço</option>
@@ -290,11 +405,17 @@ export default function App() {
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredProducts.map(p => (
-                  <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
-                ))}
-              </div>
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60 p-6">
+                  <p className="text-sm font-bold text-slate-400">Nenhum produto encontrado nesta categoria no momento.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map(p => (
+                    <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
+                  ))}
+                </div>
+              )}
             </section>
 
             <CostCalculator />
@@ -368,9 +489,9 @@ export default function App() {
           <div>
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
-              <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors">Ver Catálogo</button></li>
-              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors">Sobre Nós</button></li>
-              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors">Rastrear Pedido</button></li>
+              <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
+              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
             </ul>
           </div>
           <div>
@@ -402,14 +523,14 @@ export default function App() {
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-40 shadow-lg">
           <button 
             onClick={() => setActiveTab("store")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
+            className={`flex flex-col items-center text-xs font-bold cursor-pointer ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
           >
             <ShoppingBag className="w-5 h-5 mb-0.5" />
             Loja
           </button>
           <button 
             onClick={() => setActiveTab("account")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
+            className={`flex flex-col items-center text-xs font-bold cursor-pointer ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
           >
             <User className="w-5 h-5 mb-0.5" />
             Rastreio
