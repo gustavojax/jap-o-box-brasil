@@ -11,7 +11,6 @@ import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
 
-// 🔥 IMPORTANTE: Importação do novo Painel Estruturado estilo BoxControl
 import ClientDashboard from "./components/ClientDashboard";
 
 import { PRODUCTS } from "./data";
@@ -35,20 +34,23 @@ export default function App() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
+  // Monitora o estado de autenticação real do Firebase
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, (u) => {
       if (u) {
         setUser({ ...u });
-        setIsAuthOpen(false); 
+        setIsAuthOpen(false); // Fecha o modal de login automaticamente ao logar
       } else {
         setUser(null);
         setOrders([]);
+        // Se deslogar estando na conta, joga o usuário de volta para a loja
         if (activeTab === "account") setActiveTab("store");
       }
     });
     return () => unsubAuth();
   }, [activeTab]);
 
+  // Carrega os pedidos do banco de dados quando logado
   useEffect(() => {
     if (!user?.uid || !db) {
       setLoadingOrders(false);
@@ -208,7 +210,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER */}
+      {/* HEADER INTEGRADO COM MODAL DE LOGIN VIA PROPS */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -216,7 +218,7 @@ export default function App() {
         categories={categories}
         cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)} // Abre o Modal se clicar em Entrar no Header
         user={user}
         onLogout={handleLogout}
       />
@@ -242,16 +244,21 @@ export default function App() {
             Sobre Nós
           </button>
 
-          {user && (
-            <button
-              onClick={() => setActiveTab("account")}
-              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
-                activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              Minha Suíte & Painel 📦
-            </button>
-          )}
+          {/* Abre o painel se estiver logado, se não, força a abertura do modal de login */}
+          <button
+            onClick={() => {
+              if (user) {
+                setActiveTab("account");
+              } else {
+                setIsAuthOpen(true);
+              }
+            }}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+              activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Minha Suíte & Painel 📦
+          </button>
         </div>
       </div>
 
@@ -334,16 +341,22 @@ export default function App() {
           </div>
         </main>
       ) : (
-        /* 🔥 PAINEL DO CLIENTE REESTRUTURADO NO PADRÃO PREMIUM DO PRINT */
+        /* PAINEL DO CLIENTE ESTILO BOXCONTROL */
         <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-          <ClientDashboard 
-            user={user}
-            orders={orders}
-            loadingOrders={loadingOrders}
-            onCreateMockOrder={handleCreateMockOrder}
-            onLogout={handleLogout}
-            getStatusBadge={getStatusBadge}
-          />
+          {user ? (
+            <ClientDashboard 
+              user={user}
+              orders={orders}
+              loadingOrders={loadingOrders}
+              onCreateMockOrder={handleCreateMockOrder}
+              onLogout={handleLogout}
+              getStatusBadge={getStatusBadge}
+            />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
+            </div>
+          )}
         </main>
       )}
 
@@ -387,6 +400,50 @@ export default function App() {
           </p>
         </div>
       </footer>
+
+      {/* BOTTOM NAVIGATION PARA MOBILE */}
+      {user && (
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-40 shadow-lg">
+          <button 
+            onClick={() => setActiveTab("store")}
+            className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
+          >
+            <ShoppingBag className="w-5 h-5 mb-0.5" />
+            Loja
+          </button>
+          <button 
+            onClick={() => setActiveTab("account")}
+            className={`flex flex-col items-center text-xs font-bold ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
+          >
+            <User className="w-5 h-5 mb-0.5" />
+            Rastreio
+          </button>
+        </div>
+      )}
+
+      {/* BOTÃO FLUTUANTE DO WHATSAPP */}
+      <a
+        href="https://wa.me/817014074971"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`fixed right-4 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center ${
+          user ? "bottom-20 md:bottom-6" : "bottom-6"
+        }`}
+        aria-label="Contato via WhatsApp"
+      >
+        <svg
+          className="w-6 h-6 fill-current"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.129-.168.192-.336.216-.624.072-2.926-1.46-3.83-2.422-4.571-3.69-.192-.336-.024-.517.144-.684.152-.15.336-.39.504-.585.168-.192.224-.312.336-.52.112-.216.056-.402-.024-.546-.08-.144-.648-1.56-.888-2.136-.234-.564-.473-.488-.648-.497-.168-.008-.36-.01-.552-.01-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.399 0 1.416 1.032 2.784 1.176 2.976.144.192 2.032 3.102 4.921 4.348.687.296 1.224.473 1.643.606.69.219 1.32.188 1.817.114.553-.083 1.702-.696 1.944-1.368.24-.672.24-1.248.168-1.368-.072-.12-.264-.192-.552-.336z" />
+        </svg>
+      </a>
+
+      {/* MODAIS GLOBAIS DE INTERAÇÃO */}
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
 
     </div>
   );
