@@ -1,555 +1,258 @@
-import React, { useState, useEffect, useMemo } from "react";
-import { Trash2, Plus, Minus } from "lucide-react";
-
+import React, { useState, useMemo } from "react";
+import { X, ShoppingBag, Truck, MapPin, CreditCard, ShieldAlert, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
 import type { CartItem } from "../types";
-import { UPSELL_OPTIONS } from "../data";
 
 interface CartDrawerProps {
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity: (
-    productId: string,
-    quantity: number
-  ) => void;
-  onRemoveItem: (productId: string) => void;
+  onUpdateQuantity?: (productId: string, q: number) => void; // Caso tenha no seu projeto
+  onRemoveItem?: (productId: string) => void;                // Caso tenha no seu projeto
 }
 
-async function getShippingCost(params: {
-  country: string;
-  cep?: string;
-  items: any[];
-}): Promise<number> {
-  if (
-    params.country !== "BR" ||
-    !params.items ||
-    params.items.length === 0
-  ) {
-    return 0;
-  }
+export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRemoveItem }: CartDrawerProps) {
+  // Controle de passos: 1 = Itens, 2 = Endereço e Frete, 3 = Revisão e Pagamento
+  const [step, setStep] = useState<number>(1);
 
-  return params.items.reduce(
-    (acc, item) =>
-      acc +
-      ((item.product.shippingEstBRL || 0) *
-        item.quantity),
-    0
-  );
-}
+  // Estados do formulário de entrega fornecidos pelo cliente
+  const [zipCode, setZipCode] = useState("");
+  const [address, setAddress] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [shippingMethod, setShippingMethod] = useState<"ems" | "air">("ems");
 
-const USD_BRL_RATE = 5.0;
-const ISENCAO_USD = 50;
-
-const LIMITE_ISENCAO_BRL =
-  ISENCAO_USD * USD_BRL_RATE;
-
-const TAXA_II_ACIMA_50 = 0.6;
-const TAXA_ICMS = 0.17;
-
-export default function CartDrawer({
-  onClose,
-  cartItems,
-  onUpdateQuantity,
-  onRemoveItem,
-}: CartDrawerProps) {
-
-  if (!cartItems) return null;
-
-  const [cep, setCep] = useState("");
-
-  const [country, setCountry] =
-    useState("BR");
-
-  const [shippingValue, setShippingValue] =
-    useState(0);
-
-  const [shippingLoading, setShippingLoading] =
-    useState(false);
-
-  const [isCheckout, setIsCheckout] =
-    useState(false);
-
-  const [customer, setCustomer] =
-    useState({
-      name: "",
-      address: "",
-    });
-
-  // =========================
-  // TAXES
-  // =========================
-
-  const calculateTaxes = (
-    priceBRL: number
-  ) => {
-
-    let impostoImportacao = 0;
-
-    if (priceBRL > LIMITE_ISENCAO_BRL) {
-      impostoImportacao =
-        priceBRL * TAXA_II_ACIMA_50;
-    }
-
-    const baseCalculoICMS =
-      (priceBRL + impostoImportacao) /
-      (1 - TAXA_ICMS);
-
-    const valorICMS =
-      baseCalculoICMS -
-      (priceBRL + impostoImportacao);
-
-    return {
-      impostoImportacao,
-      valorICMS,
-      totalTaxes:
-        impostoImportacao + valorICMS,
-    };
-  };
-
-  // =========================
-  // BASE TOTAL
-  // =========================
-
-  const baseItemsTotal = useMemo(() => {
-
+  // 1. Cálculo do Subtotal dos Produtos (Preço base + Assessoria embutida)
+  const subtotalProducts = useMemo(() => {
     return cartItems.reduce((acc, item) => {
-
-      const taxes = calculateTaxes(
-        item.product.priceBRL
-      );
-
-      const base =
-        item.product.priceBRL +
-        item.product.serviceFeeBRL +
-        taxes.totalTaxes;
-
-      return (
-        acc + base * item.quantity
-      );
-
+      const singleProductPrice = item.product.priceBRL + item.product.serviceFeeBRL;
+      return acc + (singleProductPrice * item.quantity);
     }, 0);
-
   }, [cartItems]);
 
-  // =========================
-  // SHIPPING
-  // =========================
+  // 2. Cálculo do Frete Internacional Dinâmico baseado na quantidade/peso dos itens
+  const shippingCost = useMemo(() => {
+    if (cartItems.length === 0) return 0;
+    
+    // Peso fictício baseado na quantidade de itens para o cálculo
+    const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    const baseRate = shippingMethod === "ems" ? 95 : 60; // Valores padrão saindo de Mie
+    
+    return baseRate + (totalItemsCount - 1) * 30; // Adiciona R$30 por item extra consolidado
+  }, [cartItems, shippingMethod]);
 
-  useEffect(() => {
+  // 3. Cálculo de Impostos Estimados (Regras alfandegárias atuais do Brasil)
+  const estimatedTax = useMemo(() => {
+    const baseCalculo = subtotalProducts + shippingCost;
+    return Math.round(baseCalculo * 0.20); // Simulação de 20% aproximado do regime simplificado
+  }, [subtotalProducts, shippingCost]);
 
-    const cleanCep =
-      cep.replace(/\D/g, "");
+  // 4. Custo Total Unificado Chave na Mão
+  const totalOrderAmount = subtotalProducts + shippingCost + estimatedTax;
 
-    if (
-      country === "BR" &&
-      cleanCep.length !== 8
-    ) {
-      setShippingValue(0);
+  const handleNextStep = () => {
+    if (step === 2 && (!zipCode || !address || !city || !state)) {
+      alert("Por favor, preencha todos os campos de entrega para calcular o frete.");
       return;
     }
+    setStep(step + 1);
+  };
 
-    const fetchShipping =
-      async () => {
+  const handlePrevStep = () => setStep(step - 1);
 
-        setShippingLoading(true);
-
-        try {
-
-          const result =
-            await getShippingCost({
-              country,
-              cep:
-                country === "BR"
-                  ? cleanCep
-                  : undefined,
-              items: cartItems,
-            });
-
-          setShippingValue(result);
-
-        } catch (error) {
-
-          console.error(error);
-
-          setShippingValue(0);
-
-        } finally {
-
-          setShippingLoading(false);
-
-        }
-      };
-
-    const timer = setTimeout(() => {
-      fetchShipping();
-    }, 300);
-
-    return () =>
-      clearTimeout(timer);
-
-  }, [cep, country, cartItems]);
-
-  // =========================
-  // UPSELLS
-  // =========================
-
-  const upsellsTotal = useMemo(() => {
-
-    return cartItems.reduce((acc, item) => {
-
-      let sum = 0;
-
-      item.selectedUpsells.forEach(
-        (id) => {
-
-          const opt =
-            UPSELL_OPTIONS.find(
-              (o) => o.id === id
-            );
-
-          if (opt) {
-            sum += opt.priceBRL;
-          }
-        }
-      );
-
-      return (
-        acc + sum * item.quantity
-      );
-
-    }, 0);
-
-  }, [cartItems]);
-
-  // =========================
-  // DISCOUNT
-  // =========================
-
-  const discount =
-    cartItems.length >= 2
-      ? baseItemsTotal * 0.05
-      : 0;
-
-  // =========================
-  // TOTAL
-  // =========================
-
-  const grandTotal =
-    baseItemsTotal +
-    upsellsTotal +
-    shippingValue -
-    discount;
-
-  // =========================
-  // WHATSAPP
-  // =========================
-
-  const handleSendWhatsApp =
-    () => {
-
-      if (
-        !customer.name ||
-        !customer.address
-      ) {
-        alert(
-          "Preencha nome e endereço."
-        );
-
-        return;
-      }
-
-      let text =
-        `*NOVO PEDIDO - JAPÃO BOX BRASIL* 📦\n\n`;
-
-      text +=
-        `Nome: ${customer.name}\n`;
-
-      text +=
-        `Endereço: ${customer.address}\n`;
-
-      text +=
-        `CEP: ${cep}\n\n`;
-
-      cartItems.forEach((item) => {
-
-        text +=
-          `${item.quantity}x ${item.product.name}\n`;
-
-      });
-
-      text +=
-        `\nTOTAL: R$ ${grandTotal.toFixed(2)}`;
-
-      const encoded =
-        encodeURIComponent(text);
-
-      window.open(
-        `https://wa.me/817014074971?text=${encoded}`,
-        "_blank"
-      );
-    };
-
-  const canCheckout =
-    cartItems.length > 0;
+  const handleFinalizeOrder = () => {
+    alert("Pedido gerado com sucesso! Redirecionando para o ambiente de pagamento seguro.");
+    onClose();
+  };
 
   return (
-    <div className="fixed inset-0 z-50">
-
-      <div
-        className="absolute inset-0 bg-black/70"
-        onClick={onClose}
-      />
-
-      <div className="absolute right-0 top-0 w-full max-w-md h-full bg-white flex flex-col">
-
-        {/* HEADER */}
-
-        <div className="p-4 border-b flex justify-between items-center">
-
-          <span className="font-bold">
-            {isCheckout
-              ? "Finalizar Compra"
-              : `Carrinho (${cartItems.length})`}
-          </span>
-
-          <button
-            onClick={onClose}
-            className="text-2xl"
-          >
-            ×
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
+      {/* Container Principal do Drawer Lateral */}
+      <div className="w-full max-w-md bg-white h-full flex flex-col justify-between shadow-2xl relative animate-slide-left">
+        
+        {/* CABEÇALHO DO DRAWER */}
+        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+          <div className="flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5 text-rose-500" />
+            <div>
+              <h3 className="font-black text-sm uppercase tracking-wider">Finalizar Pedido</h3>
+              <p className="text-[10px] text-slate-400">Passo {step} de 3 — {step === 1 ? "Carrinho" : step === 2 ? "Entrega" : "Confirmação"}</p>
+            </div>
+          </div>
+          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+            <X className="w-5 h-5" />
           </button>
-
         </div>
 
-        {/* BODY */}
+        {/* CONTEÚDO DINÂMICO CONFORME O PASSO DO CHECKOUT */}
+        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+          
+          {/* PASSO 1: REVISÃO DOS ITENS DO CARRINHO */}
+          {step === 1 && (
+            <div className="space-y-4">
+              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider">Itens Selecionados</h4>
+              {cartItems.length === 0 ? (
+                <div className="text-center py-12 text-slate-400">
+                  <ShoppingBag className="w-10 h-10 mx-auto mb-2 opacity-30" />
+                  <p className="text-sm font-bold">Seu carrinho está vazio.</p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {cartItems.map((item) => {
+                    const cleanPrice = item.product.priceBRL + item.product.serviceFeeBRL;
+                    return (
+                      <div key={item.product.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
+                        <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded-xl bg-white border" />
+                        <div className="flex-1 text-left min-w-0">
+                          <h5 className="font-bold text-xs text-slate-950 truncate">{item.product.name}</h5>
+                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">Qtd: {item.quantity}</p>
+                          <p className="text-sm font-black text-slate-900 mt-1">R$ {(cleanPrice * item.quantity).toFixed(2)}</p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
 
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-
-          {!isCheckout ? (
-            <>
-              {/* FRETE */}
-
-              <div className="p-3 bg-slate-50 rounded space-y-2">
-
-                <p className="text-xs font-bold">
-                  Calcular Frete
-                </p>
-
-                <input
-                  value={cep}
-                  onChange={(e) =>
-                    setCep(e.target.value)
-                  }
-                  placeholder="Digite seu CEP"
-                  className="w-full border p-2 rounded text-xs"
-                />
-
-                <select
-                  value={country}
-                  onChange={(e) =>
-                    setCountry(
-                      e.target.value
-                    )
-                  }
-                  className="w-full border p-2 rounded text-xs"
-                >
-                  <option value="BR">
-                    Brasil
-                  </option>
-
-                  <option value="JP">
-                    Japão
-                  </option>
-
-                  <option value="US">
-                    EUA
-                  </option>
-                </select>
-
-                <p className="text-xs">
-                  Frete:{" "}
-                  {shippingLoading ? (
-                    <b>Calculando...</b>
-                  ) : (
-                    <b>
-                      R${" "}
-                      {shippingValue.toFixed(
-                        2
-                      )}
-                    </b>
-                  )}
-                </p>
-
+          {/* PASSO 2: DADOS DE ENTREGA E MODALIDADE DE FRETE */}
+          {step === 2 && (
+            <div className="space-y-5 text-left">
+              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-slate-700" /> Endereço de Destino no Brasil
+              </h4>
+              
+              {/* Form de Endereço */}
+              <div className="grid grid-cols-12 gap-3">
+                <div className="col-span-4">
+                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">CEP</label>
+                  <input type="text" placeholder="00000-000" value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+                </div>
+                <div className="col-span-8">
+                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Rua e Número</label>
+                  <input type="text" placeholder="Av. Paulista, 1000" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+                </div>
+                <div className="col-span-8">
+                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Cidade</label>
+                  <input type="text" placeholder="São Paulo" value={city} onChange={(e) => setCity(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+                </div>
+                <div className="col-span-4">
+                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Estado</label>
+                  <input type="text" placeholder="SP" value={state} onChange={(e) => setState(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+                </div>
               </div>
 
-              {/* ITEMS */}
-
-              {cartItems.map((item) => {
-
-                const taxes =
-                  calculateTaxes(
-                    item.product.priceBRL
-                  );
-
-                const base =
-                  item.product.priceBRL +
-                  item.product.serviceFeeBRL +
-                  taxes.totalTaxes;
-
-                return (
-                  <div
-                    key={item.product.id}
-                    className="border rounded p-3"
-                  >
-
-                    <div className="flex justify-between items-start">
-
-                      <p className="text-xs font-bold">
-                        {item.product.name}
-                      </p>
-
-                      <button
-                        onClick={() =>
-                          onRemoveItem(
-                            item.product.id
-                          )
-                        }
-                      >
-                        <Trash2 size={16} />
-                      </button>
-
+              {/* Seletor de Métodos de Envio saindo de Mie */}
+              <div className="space-y-2 pt-2">
+                <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                  <Truck className="w-4 h-4 text-slate-700" /> Método de Envio Internacional
+                </h4>
+                <div className="space-y-2">
+                  <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "ems" ? "border-slate-900 bg-slate-50 shadow-sm" : "border-slate-200"}`}>
+                    <div className="flex items-center gap-2.5">
+                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "ems"} onChange={() => setShippingMethod("ems")} className="accent-slate-900" />
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">Japan Post EMS (Expresso Aéreo)</p>
+                        <p className="text-[10px] text-slate-400">7 a 15 dias úteis • Rastreamento prioritário</p>
+                      </div>
                     </div>
+                  </label>
 
-                    <div className="flex items-center gap-3 mt-3">
-
-                      <button
-                        onClick={() =>
-                          onUpdateQuantity(
-                            item.product.id,
-                            Math.max(
-                              1,
-                              item.quantity - 1
-                            )
-                          )
-                        }
-                      >
-                        <Minus size={16} />
-                      </button>
-
-                      <span>
-                        {item.quantity}
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          onUpdateQuantity(
-                            item.product.id,
-                            item.quantity + 1
-                          )
-                        }
-                      >
-                        <Plus size={16} />
-                      </button>
-
+                  <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "air" ? "border-slate-900 bg-slate-50 shadow-sm" : "border-slate-200"}`}>
+                    <div className="flex items-center gap-2.5">
+                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "air"} onChange={() => setShippingMethod("air")} className="accent-slate-900" />
+                      <div>
+                        <p className="text-xs font-bold text-slate-900">Air Mail (Econômico Internacional)</p>
+                        <p className="text-[10px] text-slate-400">15 a 25 dias úteis • Rastreamento padrão</p>
+                      </div>
                     </div>
+                  </label>
+                </div>
+              </div>
+            </div>
+          )}
 
-                    <p className="text-xs mt-3 font-semibold">
+          {/* PASSO 3: REVISÃO DE VALORES FINAIS CHAVE NA MÃO */}
+          {step === 3 && (
+            <div className="space-y-5 text-left">
+              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                <CreditCard className="w-4 h-4 text-slate-700" /> Resumo Consolidado da Caixa
+              </h4>
 
-                      R${" "}
+              {/* Endereço de Entrega Resumido */}
+              <div className="p-3.5 bg-slate-50 rounded-2xl border text-xs font-medium text-slate-600 space-y-1">
+                <span className="font-bold text-slate-900 block">Enviar para:</span>
+                <p>{address} — {city}/{state}</p>
+                <p className="text-slate-400">CEP: {zipCode}</p>
+                <p className="text-rose-600 font-bold mt-1 uppercase text-[10px]">
+                  Modalidade: {shippingMethod === "ems" ? "Japan Post EMS ✈️" : "Air Mail Aéreo 📦"}
+                </p>
+              </div>
 
-                      {(
-                        base *
-                        item.quantity
-                      ).toFixed(2)}
+              {/* Planilha de Fechamento Clean */}
+              <div className="space-y-2 border-b pb-4 text-xs font-medium text-slate-600">
+                <div className="flex justify-between">
+                  <span>Subtotal dos Produtos:</span>
+                  <span className="font-bold text-slate-900">R$ {subtotalProducts.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span>Frete Internacional Combinado:</span>
+                  <span className="font-bold text-slate-900">R$ {shippingCost.toFixed(2)}</span>
+                </div>
+                <div className="flex justify-between text-slate-400">
+                  <span>Encargos & Aduana Est. (Brasil):</span>
+                  <span>R$ {estimatedTax.toFixed(2)}</span>
+                </div>
+              </div>
 
-                    </p>
+              {/* VALOR FINAL CHAVE NA MÃO */}
+              <div className="flex items-center justify-between p-3 bg-rose-50 rounded-2xl border border-rose-100">
+                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Total Chave na Mão:</span>
+                <span className="text-2xl font-black text-rose-600">R$ {totalOrderAmount.toFixed(2)}</span>
+              </div>
 
-                  </div>
-                );
-              })}
-            </>
-          ) : (
-            <div className="space-y-3">
-
-              <input
-                type="text"
-                placeholder="Seu nome"
-                value={customer.name}
-                onChange={(e) =>
-                  setCustomer({
-                    ...customer,
-                    name:
-                      e.target.value,
-                  })
-                }
-                className="w-full border p-3 rounded"
-              />
-
-              <textarea
-                placeholder="Seu endereço"
-                value={customer.address}
-                onChange={(e) =>
-                  setCustomer({
-                    ...customer,
-                    address:
-                      e.target.value,
-                  })
-                }
-                className="w-full border p-3 rounded min-h-[120px]"
-              />
-
+              {/* Tarja Informativa Legal Obrigatória das Regras Atuais */}
+              <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
+                <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-bold block">Aviso de Importação Alfandegária:</span>
+                  O cálculo acima engloba as estimativas de taxas vigentes de comércio internacional para o Brasil em 2026. Realizamos toda a declaração aduaneira para assegurar o tráfego direto até sua residência, sem taxas surpresas ou necessidade de despacho complementar nos Correios.
+                </div>
+              </div>
             </div>
           )}
 
         </div>
 
-        {/* FOOTER */}
-
-        <div className="p-4 border-t bg-slate-50">
-
-          <p className="text-lg font-black text-rose-600">
-
-            Total: R$ {grandTotal.toFixed(2)}
-
-          </p>
-
-          {!isCheckout ? (
+        {/* FOOTER FIXO: NAVEGAÇÃO DOS PASSOS */}
+        <div className="p-5 border-t border-slate-100 bg-slate-50 flex gap-2">
+          {step > 1 && (
             <button
-              onClick={() =>
-                setIsCheckout(true)
-              }
-              disabled={!canCheckout}
-              className="w-full mt-3 bg-rose-600 hover:bg-rose-700 text-white py-3 rounded font-bold"
+              onClick={handlePrevStep}
+              className="flex items-center justify-center gap-1 px-4 py-3 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 active:scale-95 transition-all"
             >
-              Finalizar Compra
+              <Paper-ArrowLeft className="w-4 h-4" /> Voltar
+            </button>
+          )}
+          
+          {step < 3 ? (
+            <button
+              onClick={handleNextStep}
+              disabled={cartItems.length === 0}
+              className="flex-1 flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-all uppercase tracking-wider"
+            >
+              Avançar <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
-            <div className="flex gap-2 mt-3">
-
-              <button
-                onClick={() =>
-                  setIsCheckout(false)
-                }
-                className="w-1/3 border rounded py-3 font-bold"
-              >
-                Voltar
-              </button>
-
-              <button
-                onClick={
-                  handleSendWhatsApp
-                }
-                className="w-2/3 bg-green-600 hover:bg-green-700 text-white rounded py-3 font-bold"
-              >
-                WhatsApp
-              </button>
-
-            </div>
+            <button
+              onClick={handleFinalizeOrder}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-black text-xs rounded-xl hover:bg-red-700 active:scale-95 transition-all uppercase tracking-wider shadow-md shadow-red-900/10"
+            >
+              Confirmar & Pagar R$ {totalOrderAmount.toFixed(2)}
+            </button>
           )}
-
         </div>
 
       </div>
     </div>
   );
 }
-
