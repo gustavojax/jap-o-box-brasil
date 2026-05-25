@@ -258,7 +258,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* CONDICIONAL DE TELAS - TOTALMENTE REVISADO */}
+      {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
         <>
           <Hero 
@@ -297,7 +297,7 @@ export default function App() {
               </div>
             </section>
 
-            <CostCalculator onOpenBudgetModalWithData={() => {}} />
+            <CostCalculator />
             <Testimonials />
             <BlogSection />
           </main>
@@ -438,7 +438,15 @@ export default function App() {
 
       {/* MODAIS GLOBAIS DE INTERAÇÃO */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
+      
+      {isCartOpen && (
+        <CartDrawer 
+          onClose={() => setIsCartOpen(false)} 
+          cartItems={cartItems} 
+          setCartItems={setCartItems} 
+        />
+      )}
+      
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
 
     </div>
