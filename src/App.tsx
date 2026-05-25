@@ -15,13 +15,12 @@ import AuthModal from "./components/AuthModal";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Package, Clock, Truck, CheckCircle } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Package, Clock, Truck, CheckCircle, FlaskConical } from "lucide-react";
 
-// 🔥 IMPORTANTE: Importando o db do seu arquivo firebase
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
-// 🔥 IMPORTANTE: Métodos do Firestore para buscar os pedidos em tempo real
-import { collection, query, where, onSnapshot, orderBy } from "firebase/firestore";
+// 🔥 IMPORTANTE: Adicionado 'addDoc' e 'serverTimestamp' para criar o pedido via código
+import { collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function App() {
 
@@ -32,7 +31,6 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "account">("store");
   
-  // 🔥 ESTADO DE PEDIDOS REAIS DO FIRESTORE
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
 
@@ -50,26 +48,30 @@ export default function App() {
     return () => unsubAuth();
   }, []);
 
-  // 🔥 EFFECT DEFINITIVO: Escuta os pedidos do cliente logado em tempo real no Firestore
   useEffect(() => {
     if (!user?.uid || !db) return;
 
     setLoadingOrders(true);
 
-    // Cria a query: Procura na coleção 'orders' onde o 'userId' é igual ao ID do usuário atual
     const ordersRef = collection(db, "orders");
     const q = query(
       ordersRef, 
-      where("userId", "==", user.uid),
-      orderBy("createdAt", "desc") // Remove se seu banco ainda não tiver esse índice criado
+      where("userId", "==", user.uid)
     );
 
-    // Cria o snapshot em tempo real
     const unsubOrders = onSnapshot(q, (snapshot) => {
       const ordersList: any[] = [];
       snapshot.forEach((doc) => {
         ordersList.push({ id: doc.id, ...doc.data() });
       });
+      
+      // Ordenação manual no Front-end para evitar o erro de falta de Índice do Firebase!
+      ordersList.sort((a, b) => {
+        const timeA = a.createdAt?.seconds || 0;
+        const timeB = b.createdAt?.seconds || 0;
+        return timeB - timeA;
+      });
+
       setOrders(ordersList);
       setLoadingOrders(false);
     }, (error) => {
@@ -79,6 +81,36 @@ export default function App() {
 
     return () => unsubOrders();
   }, [user?.uid]);
+
+  // 🔥 FUNÇÃO DE SIMULAÇÃO RÁPIDA: Cria um pedido direto no Firestore ao clicar no botão
+  const handleCreateMockOrder = async () => {
+    if (!user?.uid) return;
+    
+    try {
+      const statuses = ["pending", "shipped", "delivered"];
+      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+      const randomItems = [
+        "Kit Hair Care Shiseido Fino Premium",
+        "Protetor Solar Bioré Aqua Rich FPS 50",
+        "Tênis Asics Gel-Quantum Original JP",
+        "Loção Hidratante Hada Labo Gokujyun"
+      ];
+      const randomItem = randomItems[Math.floor(Math.random() * randomItems.length)];
+
+      await addDoc(collection(db, "orders"), {
+        userId: user.uid,
+        itemsSummary: randomItem,
+        status: randomStatus,
+        trackingCode: `NX${Math.floor(100000000 + Math.random() * 900000000)}JP`,
+        createdAt: serverTimestamp()
+      });
+
+      showNotification("Pedido simulado gerado com sucesso!");
+    } catch (e) {
+      console.error("Erro ao simular pedido:", e);
+      alert("Erro ao simular pedido. Verifique o console.");
+    }
+  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -141,7 +173,6 @@ export default function App() {
     showNotification(`${product.name} adicionado ao carrinho`);
   };
 
-  // Função auxiliar para renderizar a cor do status do pedido de forma profissional
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
       case "pending":
@@ -262,7 +293,7 @@ export default function App() {
           </main>
         </>
       ) : (
-        /* 🔥 PAINEL DO CLIENTE COM HISTÓRICO DE PEDIDOS REAL DO FIRESTORE */
+        /* PAINEL DO CLIENTE */
         <main className="flex-1 bg-slate-50 py-10 px-4 min-h-[80vh]">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-slate-100">
             
@@ -273,12 +304,21 @@ export default function App() {
                   Acessando como: <span className="font-semibold text-slate-700">{user?.email || "Cliente"}</span>
                 </p>
               </div>
-              <button 
-                onClick={handleLogout}
-                className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors"
-              >
-                Sair da Conta
-              </button>
+              <div className="flex items-center gap-2">
+                {/* ⚡ BOTÃO DE SIMULAÇÃO DIRETA: Clique para injetar um pedido aleatório */}
+                <button
+                  onClick={handleCreateMockOrder}
+                  className="bg-amber-100 border border-amber-300 text-amber-800 hover:bg-amber-200 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1 transition-all"
+                >
+                  <FlaskConical className="w-4 h-4" /> Simular Pedido
+                </button>
+                <button 
+                  onClick={handleLogout}
+                  className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors"
+                >
+                  Sair da Conta
+                </button>
+              </div>
             </div>
 
             {/* SEÇÃO PRINCIPAL DE PEDIDOS */}
@@ -296,7 +336,7 @@ export default function App() {
                 <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 px-4">
                   <Package className="w-8 h-8 text-slate-400 mx-auto mb-3" />
                   <p className="text-base font-bold text-slate-800">Você ainda não possui pedidos</p>
-                  <p className="text-xs text-slate-500 mt-1 mb-4">Seus pacotes comprados ou caixas enviadas de Mie aparecerão aqui.</p>
+                  <p className="text-xs text-slate-500 mt-1 mb-4">Clique no botão "Simular Pedido" ali em cima para testar na hora!</p>
                   <button 
                     onClick={() => setActiveTab("store")}
                     className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm hover:bg-slate-800 transition-all"
@@ -315,14 +355,13 @@ export default function App() {
                           {getStatusBadge(order.status)}
                         </div>
                         <h4 className="font-bold text-sm text-slate-900 pt-1">
-                          {order.itemsSummary || `${order.cartItems?.length || 1} item(s) solicitado(s)`}
+                          {order.itemsSummary || "Item solicitado"}
                         </h4>
                         <p className="text-xs text-slate-400">
                           Data: {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString("pt-BR") : "Recente"}
                         </p>
                       </div>
 
-                      {/* Exibição condicional do código de rastreio contido no documento do Firestore */}
                       {order.trackingCode && (
                         <div className="bg-white px-4 py-2.5 rounded-xl border border-slate-200/60 flex items-center justify-between md:justify-end gap-4">
                           <div>
@@ -434,15 +473,4 @@ export default function App() {
           viewBox="0 0 24 24"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.129-.168.192-.336.216-.624.072-2.926-1.46-3.83-2.422-4.571-3.69-.192-.336-.024-.517.144-.684.152-.15.336-.39.504-.585.168-.192.224-.312.336-.52.112-.216.056-.402-.024-.546-.08-.144-.648-1.56-.888-2.136-.234-.564-.473-.488-.648-.497-.168-.008-.36-.01-.552-.01-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.399 0 1.416 1.032 2.784 1.176 2.976.144.192 2.032 3.102 4.921 4.348.687.296 1.224.473 1.643.606.69.219 1.32.188 1.817.114.553-.083 1.702-.696 1.944-1.368.24-.672.24-1.248.168-1.368-.072-.12-.264-.192-.552-.336z" />
-        </svg>
-      </a>
-
-      {/* CARTRADWER & MODAIS */}
-      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-
-    </div>
-  );
-}
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.
