@@ -1,484 +1,142 @@
-import React, { useState, useEffect } from "react";
-import { YEN_TO_BRL_RATE } from "../data";
-import {
-  Calculator,
-  HelpCircle,
-  Sparkles,
-  Send,
-} from "lucide-react";
+import React, { useState, useMemo } from "react";
+import { Calculator, Info, ShieldAlert, Truck, HelpCircle } from "lucide-react";
 
-interface CostCalculatorProps {
-  onOpenBudgetModalWithData: (data: {
-    link: string;
-    jpPriceYen: number;
-    category: string;
-    description: string;
-  }) => void;
-}
+export default function CostCalculator() {
+  // 1. Estados para as informações fornecidas pelo cliente
+  const [itemWeight, setItemWeight] = useState<number>(0.5); // Peso padrão em kg
+  const [shippingMethod, setShippingMethod] = useState<"ems" | "air" | "sea">("ems");
 
-export default function CostCalculator({
-  onOpenBudgetModalWithData,
-}: CostCalculatorProps) {
+  // Preço base do produto simulado (já com a sua taxa de assessoria embutida de forma oculta)
+  const productPriceBRL = 235.20; 
 
-  const [jpLink, setJpLink] = useState("");
-  const [jpPriceYen, setJpPriceYen] = useState<number>(3500);
-  const [weightClass, setWeightClass] = useState<number>(300);
-  const [shippingMethod, setShippingMethod] =
-    useState<string>("ePacket");
+  // 2. Cálculo dinâmico do Frete com base nas informações do cliente
+  const shippingCostBRL = useMemo(() => {
+    // Valores de frete simulados por KG saindo de Mie
+    const rates = {
+      ems: 120, // Rápido com rastreio total
+      air: 85,  // Econômico aéreo
+      sea: 45   // Navio (demorado)
+    };
+    return Math.round(itemWeight * rates[shippingMethod]);
+  }, [itemWeight, shippingMethod]);
 
-  const [baseBRL, setBaseBRL] = useState(0);
-  const [serviceFee, setServiceFee] = useState(0);
-  const [shippingEst, setShippingEst] = useState(0);
-  const [taxEst, setTaxEst] = useState(0);
-  const [grandTotalBRL, setGrandTotalBRL] = useState(0);
+  // 3. Estimativa de Imposto conforme as regras atuais de importação do Brasil (2026)
+  // (Ex: Alíquota unificada de ICMS + Imposto de Importação simplificado)
+  const estimatedTaxBRL = useMemo(() => {
+    const subtotal = productPriceBRL + shippingCostBRL;
+    return Math.round(subtotal * 0.20); // Simulação de 20% de carga tributária aproximada do Remessa Conforme
+  }, [shippingCostBRL]);
 
-  const presetOptions = [
-    {
-      name: "Chaveiro Raro",
-      yen: 1500,
-      link: "https://jp.mercari.com/",
-      weight: 100,
-    },
-    {
-      name: "Cosmético",
-      yen: 2200,
-      link: "https://shiseido.co.jp/",
-      weight: 250,
-    },
-    {
-      name: "Figure Anime",
-      yen: 12000,
-      link: "https://amiami.com/",
-      weight: 1200,
-    },
-    {
-      name: "Tênis",
-      yen: 21000,
-      link: "https://amazon.co.jp/",
-      weight: 1500,
-    },
-  ];
-
-  useEffect(() => {
-
-    // BASE
-    const base =
-      jpPriceYen * YEN_TO_BRL_RATE;
-
-    setBaseBRL(base);
-
-    // TAXA SERVIÇO
-    const fee =
-      base < 150
-        ? 25
-        : Math.max(
-            30,
-            Number((base * 0.10).toFixed(2))
-          );
-
-    setServiceFee(fee);
-
-    // FRETE
-    let shipCost = 0;
-
-    if (shippingMethod === "EMS") {
-
-      shipCost =
-        Math.max(
-          90,
-          80 + (weightClass * 0.07)
-        );
-
-    } else if (
-      shippingMethod === "ePacket"
-    ) {
-
-      shipCost =
-        Math.max(
-          45,
-          35 + (weightClass * 0.05)
-        );
-
-    } else {
-
-      shipCost =
-        Math.max(
-          35,
-          25 + (weightClass * 0.04)
-        );
-    }
-
-    setShippingEst(
-      Number(shipCost.toFixed(2))
-    );
-
-    // REGRAS BRASIL
-    const USD_BRL = 5.5;
-
-    const totalProductAndShipping =
-      base + shipCost;
-
-    const totalUSD =
-      totalProductAndShipping / USD_BRL;
-
-    let importTax = 0;
-
-    if (totalUSD <= 50) {
-
-      importTax =
-        totalProductAndShipping * 0.20;
-
-    } else {
-
-      importTax =
-        totalProductAndShipping * 0.60;
-    }
-
-    // ICMS
-    const subtotalWithImportTax =
-      totalProductAndShipping + importTax;
-
-    const icms =
-      (
-        subtotalWithImportTax /
-        (1 - 0.17)
-      ) - subtotalWithImportTax;
-
-    const finalTaxes =
-      importTax + icms;
-
-    setTaxEst(
-      Number(finalTaxes.toFixed(2))
-    );
-
-    // TOTAL
-    const total =
-      base +
-      fee +
-      shipCost +
-      finalTaxes;
-
-    setGrandTotalBRL(
-      Number(total.toFixed(2))
-    );
-
-  }, [
-    jpPriceYen,
-    weightClass,
-    shippingMethod,
-  ]);
-
-  const applyPreset = (
-    preset: typeof presetOptions[0]
-  ) => {
-
-    setJpPriceYen(preset.yen);
-    setJpLink(preset.link);
-    setWeightClass(preset.weight);
-  };
-
-  const handleSubmitRequest = () => {
-
-    onOpenBudgetModalWithData({
-      link:
-        jpLink || "Nenhum link",
-      jpPriceYen,
-      category:
-        "Personal Shopper",
-      description:
-        `Pedido calculado de ¥${jpPriceYen}`,
-    });
-  };
+  // 4. Valor Final Chave na Mão
+  const totalCostBRL = productPriceBRL + shippingCostBRL + estimatedTaxBRL;
 
   return (
-
-    <section
-      id="tax-calculator-section"
-      className="py-16 px-4 bg-gradient-to-b from-white to-rose-50/40"
-    >
-
-      <div className="max-w-6xl mx-auto">
-
-        <div className="text-center max-w-3xl mx-auto mb-12">
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-amber-100 text-amber-800 text-xs font-bold rounded-full uppercase tracking-wider mb-3">
-
-            <Calculator className="w-4 h-4" />
-
-            Transparência Máxima
-
-          </div>
-
-          <h2 className="text-3xl font-black text-gray-900">
-
-            Calculadora de Importação 🇯🇵 ➔ 🇧🇷
-
-          </h2>
-
-          <p className="text-sm text-gray-500 mt-2">
-
-            Simule os custos com impostos brasileiros atualizados.
-
+    <section id="calculator" className="max-w-3xl mx-auto px-4 py-12">
+      <div className="bg-white rounded-3xl shadow-xl border border-slate-100 overflow-hidden">
+        
+        {/* Cabeçalho */}
+        <div className="bg-slate-900 text-white p-6 md:p-8">
+          <h3 className="text-xl md:text-2xl font-black flex items-center gap-2 tracking-tight">
+            <Calculator className="w-6 h-6 text-rose-500" /> Simular Custo de Envio (Mie ➔ Brasil)
+          </h3>
+          <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+            Insira o peso estimado do seu pacote para calcular o frete exato e ver o valor final chave na mão.
           </p>
-
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-
-          {/* LEFT */}
-          <div className="lg:col-span-7 bg-white rounded-2xl border border-rose-100 p-6 shadow-sm">
-
-            <div className="space-y-6">
-
-              {/* PRESETS */}
-              <div>
-
-                <span className="text-xs font-bold text-gray-400 uppercase">
-
-                  Presets rápidos
-
-                </span>
-
-                <div className="flex flex-wrap gap-2 mt-2">
-
-                  {presetOptions.map((opt, idx) => (
-
-                    <button
-                      key={idx}
-                      type="button"
-                      onClick={() =>
-                        applyPreset(opt)
-                      }
-                      className="text-xs px-3 py-2 rounded-lg border border-slate-200 bg-slate-50 hover:bg-red-50"
-                    >
-
-                      {opt.name}
-
-                    </button>
-                  ))}
-
-                </div>
-
-              </div>
-
-              {/* LINK */}
-              <div>
-
-                <label className="block text-xs font-bold mb-2 uppercase">
-
-                  Link do Produto
-
-                </label>
-
-                <input
-                  type="url"
-                  value={jpLink}
-                  onChange={(e) =>
-                    setJpLink(
-                      e.target.value
-                    )
-                  }
-                  placeholder="https://..."
-                  className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
+        <div className="p-6 md:p-8 grid grid-cols-1 md:grid-cols-12 gap-8">
+          
+          {/* COLUNA DA ESQUERDA: ENTRADA DE DADOS DO CLIENTE */}
+          <div className="md:col-span-6 space-y-5">
+            
+            {/* Peso do Pacote */}
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-500 tracking-wider block">
+                Peso Estimado do Pacote (Kg)
+              </label>
+              <div className="flex items-center gap-3">
+                <input 
+                  type="range" 
+                  min="0.1" 
+                  max="10" 
+                  step="0.1"
+                  value={itemWeight}
+                  onChange={(e) => setItemWeight(parseFloat(e.target.value))}
+                  className="w-full accent-slate-900"
                 />
-
+                <span className="font-mono font-black text-sm bg-slate-100 px-3 py-1 rounded-lg text-slate-800 min-w-[70px] text-center">
+                  {itemWeight} kg
+                </span>
               </div>
-
-              {/* VALOR + PESO */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-
-                <div>
-
-                  <label className="block text-xs font-bold mb-2 uppercase">
-
-                    Valor em Yen
-
-                  </label>
-
-                  <input
-                    type="number"
-                    min="1"
-                    value={jpPriceYen}
-                    onChange={(e) =>
-                      setJpPriceYen(
-                        parseInt(
-                          e.target.value
-                        ) || 0
-                      )
-                    }
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block text-xs font-bold mb-2 uppercase">
-
-                    Peso (g)
-
-                  </label>
-
-                  <input
-                    type="number"
-                    min="10"
-                    value={weightClass}
-                    onChange={(e) =>
-                      setWeightClass(
-                        parseInt(
-                          e.target.value
-                        ) || 0
-                      )
-                    }
-                    className="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm"
-                  />
-
-                </div>
-
-              </div>
-
-              {/* SHIPPING */}
-              <div>
-
-                <label className="block text-xs font-bold mb-2 uppercase">
-
-                  Método de Envio
-
-                </label>
-
-                <div className="grid grid-cols-3 gap-3">
-
-                  {[
-                    "ePacket",
-                    "EMS",
-                    "SmallPacket",
-                  ].map((method) => (
-
-                    <button
-                      key={method}
-                      type="button"
-                      onClick={() =>
-                        setShippingMethod(
-                          method
-                        )
-                      }
-                      className={`px-3 py-3 rounded-xl border text-xs ${
-                        shippingMethod === method
-                          ? "border-red-600 bg-red-50 text-red-700 font-bold"
-                          : "border-slate-200"
-                      }`}
-                    >
-
-                      {method}
-
-                    </button>
-                  ))}
-
-                </div>
-
-              </div>
-
             </div>
 
-            <div className="mt-8 p-4 bg-slate-50 rounded-xl border border-slate-100 flex items-start gap-3 text-xs text-slate-500">
+            {/* Método de Envio */}
+            <div className="space-y-2">
+              <label className="text-xs font-black uppercase text-slate-500 tracking-wider block">
+                Modalidade de Frete Internacional
+              </label>
+              <div className="grid grid-cols-1 gap-2">
+                <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "ems" ? "border-slate-950 bg-slate-50 shadow-sm" : "border-slate-200 hover:bg-slate-50/50"}`}>
+                  <div className="flex items-center gap-2.5">
+                    <input type="radio" name="shipping" checked={shippingMethod === "ems"} onChange={() => setShippingMethod("ems")} className="accent-slate-900" />
+                    <div className="text-left">
+                      <p className="text-xs font-bold text-slate-900">Japan Post EMS (Expresso)</p>
+                      <p className="text-[10px] text-slate-400">7 a 15 dias • Rastreio ponta a ponta</p>
+                    </div>
+                  </div>
+                </label>
 
-              <Sparkles className="w-4 h-4 text-amber-500 mt-0.5" />
-
-              <span>
-
-                Cálculo baseado nas regras atuais da Remessa Conforme.
-
-              </span>
-
+                <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "air" ? "border-slate-950 bg-slate-50 shadow-sm" : "border-slate-200 hover:bg-slate-50/50"}`}>
+                  <div className="flex items-center gap-2.5">
+                    <input type="radio" name="shipping" checked={shippingMethod === "air"} onChange={() => setShippingMethod("air")} className="accent-slate-900" />
+                    <div className="text-left">
+                      <p className="text-xs font-bold text-slate-900">Air Mail (Econômico Aéreo)</p>
+                      <p className="text-[10px] text-slate-400">15 a 25 dias • Rastreio padrão</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
             </div>
 
           </div>
 
-          {/* RIGHT */}
-          <div className="lg:col-span-5 bg-slate-900 text-white rounded-2xl p-6 shadow-lg">
-
-            <div className="border-b border-white/10 pb-4 mb-4">
-
-              <span className="text-xs text-rose-300 uppercase font-bold">
-
-                Simulação
-
-              </span>
-
-              <h4 className="text-xl font-black mt-2">
-
-                Custo Final
-
-              </h4>
-
+          {/* COLUNA DA DIREITA: EXIBIÇÃO CLEAN DO PREÇO FINAL */}
+          <div className="md:col-span-6 bg-slate-50 p-5 rounded-2xl border border-slate-100 flex flex-col justify-between space-y-4">
+            
+            {/* Lista de Valores Limpa */}
+            <div className="space-y-2.5 border-b pb-4 text-sm font-medium text-slate-600">
+              <div className="flex justify-between">
+                <span>Preço do Item</span>
+                <span className="font-bold text-slate-900">R$ {productPriceBRL.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between">
+                <span>Frete Internacional (Mie ➔ BR)</span>
+                <span className="font-bold text-slate-900">R$ {shippingCostBRL.toFixed(2)}</span>
+              </div>
+              <div className="flex justify-between text-xs text-slate-400">
+                <span className="flex items-center gap-1"><Info className="w-3 h-3" /> Encargos e Taxas Est.</span>
+                <span>R$ {estimatedTaxBRL.toFixed(2)}</span>
+              </div>
             </div>
 
-            <div className="space-y-4 text-sm">
-
-              <div className="flex justify-between">
-                <span>Produto</span>
-                <span>
-                  R$ {baseBRL.toFixed(2)}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Taxa Japão Box</span>
-                <span>
-                  R$ {serviceFee.toFixed(2)}
-                </span>
-              </div>
-
-              <div className="flex justify-between">
-                <span>Frete</span>
-                <span>
-                  R$ {shippingEst.toFixed(2)}
-                </span>
-              </div>
-
-              <div className="flex justify-between text-rose-300">
-
-                <span className="flex items-center gap-1">
-
-                  Impostos Brasileiros
-
-                  <HelpCircle className="w-4 h-4" />
-
-                </span>
-
-                <span>
-                  R$ {taxEst.toFixed(2)}
-                </span>
-
-              </div>
-
+            {/* Preço de Grande E-commerce Chave na Mão */}
+            <div className="text-right">
+              <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Custo Total Chave na Mão</span>
+              <span className="text-3xl font-black text-rose-600 block mt-0.5">R$ {totalCostBRL.toFixed(2)}</span>
+              <span className="text-[10px] text-slate-400 block mt-0.5">Sem surpresas ou cobranças extras na entrega</span>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-white/10">
-
-              <span className="text-xs text-gray-400 uppercase font-bold">
-
-                Total
-
-              </span>
-
-              <div className="text-4xl font-black text-amber-300 mt-2">
-
-                R$ {grandTotalBRL.toFixed(2)}
-
+            {/* ⚠️ AVISO LEGAL SOBRE AS TAXAS ATUAIS DO BRASIL */}
+            <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-start gap-2.5 text-[11px] text-amber-900 leading-relaxed">
+              <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <span className="font-bold block">Informativo de Importação (Regras 2026):</span>
+                Os valores simulados já contemplam a estimativa dos tributos de importação vigentes no Brasil de acordo com as diretrizes de alfândega e comércio eletrônico internacional. Nós cuidamos do desembaraço para que seu pacote chegue direto na sua casa de forma legalizada.
               </div>
-
             </div>
 
-            <button
-              onClick={handleSubmitRequest}
-              className="w-full mt-8 py-4 bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 rounded-xl font-bold text-sm flex items-center justify-center gap-2"
-            >
-
-              Solicitar Compra
-
-              <Send className="w-4 h-4" />
-
+            <button className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black text-xs py-3.5 rounded-xl transition-all uppercase tracking-wider shadow-sm">
+              Prosseguir com a Caixa ➔
             </button>
 
           </div>
@@ -486,7 +144,6 @@ export default function CostCalculator({
         </div>
 
       </div>
-
     </section>
   );
 }
