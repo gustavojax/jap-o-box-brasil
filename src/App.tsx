@@ -7,15 +7,17 @@ import CostCalculator from "./components/CostCalculator";
 import ProductCard from "./components/ProductCard";
 import Testimonials from "./components/Testimonials";
 import BlogSection from "./components/BlogSection";
-import TrackingWidget from "./components/TrackingWidget";
 import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
 
+// 🔥 IMPORTANTE: Importação do novo Painel Estruturado estilo BoxControl
+import ClientDashboard from "./components/ClientDashboard";
+
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Package, Clock, Truck, CheckCircle, FlaskConical, Heart } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Clock, Truck, CheckCircle, Heart } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -28,8 +30,6 @@ export default function App() {
   // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  
-  // 🔄 ATUALIZADO: activeTab agora suporta "about" também
   const [activeTab, setActiveTab] = useState<"store" | "account" | "about">("store");
   
   const [orders, setOrders] = useState<any[]>([]);
@@ -86,10 +86,7 @@ export default function App() {
   }, [user?.uid]);
 
   const handleCreateMockOrder = async () => {
-    if (!user?.uid) {
-      alert("Faça login para simular um pedido.");
-      return;
-    }
+    if (!user?.uid) return;
     
     try {
       const statuses = ["pending", "shipped", "delivered"];
@@ -110,7 +107,7 @@ export default function App() {
         createdAt: serverTimestamp()
       });
 
-      showNotification("Pedido simulado criado!");
+      showNotification("Pedido de teste injetado na suíte!");
     } catch (e) {
       console.error("Erro ao simular pedido:", e);
     }
@@ -181,15 +178,15 @@ export default function App() {
     switch (status?.toLowerCase()) {
       case "pending":
       case "aguardando":
-        return <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-amber-50 text-amber-700 flex items-center gap-1"><Clock className="w-3.5 h-3.5" /> Processando</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-amber-100 text-amber-800 flex items-center gap-1"><Clock className="w-3 h-3" /> PROCESSANDO</span>;
       case "shipped":
       case "enviado":
-        return <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-blue-50 text-blue-700 flex items-center gap-1"><Truck className="w-3.5 h-3.5" /> Enviado do Japão</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-blue-100 text-blue-800 flex items-center gap-1"><Truck className="w-3 h-3" /> EM TRÂNSITO</span>;
       case "delivered":
       case "entregue":
-        return <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-emerald-50 text-emerald-700 flex items-center gap-1"><CheckCircle className="w-3.5 h-3.5" /> Entregue</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> RECEBIDO</span>;
       default:
-        return <span className="px-2.5 py-1 text-xs font-bold rounded-lg bg-slate-100 text-slate-600">Recebido</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-slate-100 text-slate-700">CONCLUÍDO</span>;
     }
   };
 
@@ -224,15 +221,13 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* 🔄 MENU DE ABAS EXPANDIDO COM A OPÇÃO "SOBRE NÓS" */}
+      {/* MENU DE ABAS SUPERIOR */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
             onClick={() => setActiveTab("store")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
-              activeTab === "store" 
-                ? "bg-slate-900 text-white shadow-sm" 
-                : "text-slate-600 hover:bg-slate-50"
+              activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
             Loja
@@ -241,9 +236,7 @@ export default function App() {
           <button
             onClick={() => setActiveTab("about")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
-              activeTab === "about" 
-                ? "bg-rose-600 text-white shadow-sm" 
-                : "text-slate-600 hover:bg-slate-50"
+              activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
             Sobre Nós
@@ -253,12 +246,10 @@ export default function App() {
             <button
               onClick={() => setActiveTab("account")}
               className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
-                activeTab === "account" 
-                  ? "bg-emerald-600 text-white shadow-sm" 
-                  : "text-slate-600 hover:bg-slate-50"
+                activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
               }`}
             >
-              Minha Conta & Pedidos
+              Minha Suíte & Painel 📦
             </button>
           )}
         </div>
@@ -309,164 +300,54 @@ export default function App() {
           </main>
         </>
       ) : activeTab === "about" ? (
-        /* 🌟 NOVA TELA: PÁGINA "SOBRE NÓS" COMPLETA E INSTITUCIONAL */
+        /* PÁGINA SOBRE NÓS */
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
-            
-            {/* Bloco da Esquerda: Imagem da Fundadora Paula Boberg */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
                 src="https://i.ibb.co/RpRMDSMd/file-0000000060ec720e8b0c4f2d1dcdbb5f.png" 
-                alt="Paula Boberg - Fundadora da Japão Box Brasil" 
+                alt="Paula Boberg" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-white/10" />
-              
-              <div className="absolute bottom-6 left-6 right-6 text-white md:hidden">
-                <p className="text-xl font-black tracking-tight">Paula Boberg</p>
-                <p className="text-xs text-rose-300 font-bold uppercase tracking-widest mt-0.5">Fundadora</p>
-              </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
             </div>
 
-            {/* Bloco da Direita: Conteúdo Institucional */}
             <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
               <div>
                 <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
-
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
-                <p>
-                  Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos japoneses e coreanos, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷
-                </p>
-                <p>
-                  Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.
-                </p>
-                <p>
-                  A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.
-                </p>
-                <p className="font-semibold text-slate-800">
-                  Obrigada por fazer parte do começo dessa história com a gente!
-                </p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos japoneses e coreanos, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Selecionamos cada product com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+                <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
-
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div>
                   <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
-                  <p className="text-lg font-black text-slate-900 font-serif tracking-wide mt-0.5">Paula Boberg</p>
-                  <p className="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-md font-bold uppercase w-fit mt-1">Fundadora Japão Box Brasil</p>
+                  <p className="text-lg font-black text-slate-900 tracking-wide mt-0.5">Paula Boberg</p>
                 </div>
                 <Heart className="w-8 h-8 text-rose-500 fill-rose-100 stroke-1" />
               </div>
             </div>
-
           </div>
         </main>
       ) : (
-        /* PAINEL DO CLIENTE */
-        <main className="flex-1 bg-slate-50 py-10 px-4 min-h-[80vh]">
-          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl p-6 md:p-8 border border-slate-100">
-            
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b pb-6 mb-8 gap-4">
-              <div>
-                <h1 className="text-3xl font-black text-slate-900">Painel do Cliente</h1>
-                <p className="text-sm text-slate-500 mt-1">
-                  Acessando como: <span className="font-semibold text-slate-700">{user?.email || "Cliente"}</span>
-                </p>
-              </div>
-              <button 
-                onClick={handleLogout}
-                className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors self-start sm:self-auto"
-              >
-                Sair da Conta
-              </button>
-            </div>
-
-            {/* BOTÃO DE TESTE INDESTRUTÍVEL */}
-            <div className="mb-8 p-4 bg-amber-50 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <h4 className="font-bold text-amber-900 text-sm flex items-center gap-1.5">
-                  <FlaskConical className="w-4 h-4 text-amber-600" /> Modo Desenvolvedor Ativo
-                </h4>
-                <p className="text-xs text-amber-700 mt-0.5">Clique no botão ao lado para simular uma compra real e salvar direto no Firestore.</p>
-              </div>
-              <button
-                onClick={handleCreateMockOrder}
-                className="w-full sm:w-auto bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs px-5 py-3 rounded-xl shadow-md active:scale-95 transition-all text-center"
-              >
-                ⚡ SIMULAR PEDIDO DE TESTE
-              </button>
-            </div>
-
-            {/* SEÇÃO PRINCIPAL DE PEDIDOS */}
-            <div className="mb-10">
-              <h2 className="font-black text-xl text-slate-900 mb-4 flex items-center gap-2">
-                <Package className="w-5 h-5 text-slate-700" /> Meus Pedidos Recentes
-              </h2>
-
-              {loadingOrders ? (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
-                  <div className="w-6 h-6 border-2 border-slate-900 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
-                  <p className="text-sm text-slate-500 font-medium">Buscando encomendas no Firestore...</p>
-                </div>
-              ) : orders.length === 0 ? (
-                <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 px-4">
-                  <Package className="w-8 h-8 text-slate-400 mx-auto mb-3" />
-                  <p className="text-base font-bold text-slate-800">Você ainda não possui pedidos</p>
-                  <p className="text-xs text-slate-500 mt-1 mb-4">Use a caixinha amarela ali em cima para gerar seu primeiro registro.</p>
-                  <button 
-                    onClick={() => setActiveTab("store")}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm hover:bg-slate-800 transition-all"
-                  >
-                    Ir às Compras
-                  </button>
-                </div>
-              ) : (
-                <div className="space-y-4">
-                  {orders.map((order) => (
-                    <div key={order.id} className="border border-slate-100 bg-slate-50/50 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
-                      <div className="space-y-1">
-                        <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-xs font-mono font-bold text-slate-500">ID: #{order.id.slice(0, 8).toUpperCase()}</span>
-                          {getStatusBadge(order.status)}
-                        </div>
-                        <h4 className="font-bold text-sm text-slate-900 pt-1">
-                          {order.itemsSummary || "Item solicitado"}
-                        </h4>
-                        <p className="text-xs text-slate-400">
-                          Data: {order.createdAt?.seconds ? new Date(order.createdAt.seconds * 1000).toLocaleDateString("pt-BR") : "Recente"}
-                        </p>
-                      </div>
-
-                      {order.trackingCode && (
-                        <div className="bg-white px-4 py-2.5 rounded-xl border border-slate-200/60 flex items-center justify-between md:justify-end gap-4">
-                          <div>
-                            <span className="text-[10px] font-bold text-slate-400 block uppercase tracking-wider">Código de Rastreio</span>
-                            <span className="text-xs font-mono font-black text-slate-800 block">{order.trackingCode}</span>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            {/* WIDGET DE BUSCA MANUAL DO RASTREIO */}
-            <div className="bg-slate-50 p-4 md:p-6 rounded-2xl border border-slate-100">
-              <h3 className="font-bold text-lg text-slate-800 mb-4 flex items-center gap-2">
-                🔍 Busca Manual por Código
-              </h3>
-              <div className="w-full bg-white rounded-xl p-2 min-h-[250px]">
-                <TrackingWidget />
-              </div>
-            </div>
-
-          </div>
+        /* 🔥 PAINEL DO CLIENTE REESTRUTURADO NO PADRÃO PREMIUM DO PRINT */
+        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+          <ClientDashboard 
+            user={user}
+            orders={orders}
+            loadingOrders={loadingOrders}
+            onCreateMockOrder={handleCreateMockOrder}
+            onLogout={handleLogout}
+            getStatusBadge={getStatusBadge}
+          />
         </main>
       )}
 
-      {/* RODAPÉ INSTITUCIONAL ROBUSTO */}
+      {/* RODAPÉ INSTITUCIONAL */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
@@ -481,7 +362,6 @@ export default function App() {
               <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors">Ver Catálogo</button></li>
               <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors">Sobre Nós</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors">Rastrear Pedido</button></li>
-              <li><a href="#calculator" className="hover:text-slate-900 transition-colors">Calculadora de Custos</a></li>
             </ul>
           </div>
           <div>
@@ -490,7 +370,6 @@ export default function App() {
               <li className="flex items-center gap-1.5"><HelpCircle className="w-4 h-4 text-slate-400" /> <span className="hover:text-slate-900 cursor-pointer">Central de Ajuda (FAQ)</span></li>
               <li><span className="hover:text-slate-900 cursor-pointer">Políticas de Envio e Prazos</span></li>
               <li><span className="hover:text-slate-900 cursor-pointer">Termos de Serviço e Reembolso</span></li>
-              <li><span className="hover:text-slate-900 cursor-pointer">Fale Conosco</span></li>
             </ul>
           </div>
           <div>
@@ -498,66 +377,16 @@ export default function App() {
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">PIX</span>
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">CREDIT CARD</span>
-              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">BOLETO</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-              <span>Ambiente seguro com criptografia de ponta a ponta.</span>
             </div>
           </div>
         </div>
-        
         <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400 space-y-2">
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados. Importações do Japão intermediadas de forma legal.</p>
+          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
           <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
             Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
           </p>
         </div>
       </footer>
-
-      {/* BOTTOM NAVIGATION PARA MOBILE */}
-      {user && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-40 shadow-lg">
-          <button 
-            onClick={() => setActiveTab("store")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
-          >
-            <ShoppingBag className="w-5 h-5 mb-0.5" />
-            Loja
-          </button>
-          <button 
-            onClick={() => setActiveTab("account")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
-          >
-            <User className="w-5 h-5 mb-0.5" />
-            Rastreio
-          </button>
-        </div>
-      )}
-
-      {/* BOTÃO FLUTUANTE DO WHATSAPP */}
-      <a
-        href="https://wa.me/817014074971"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`fixed right-4 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center ${
-          user ? "bottom-20 md:bottom-6" : "bottom-6"
-        }`}
-        aria-label="Contato via WhatsApp"
-      >
-        <svg
-          className="w-6 h-6 fill-current"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.129-.168.192-.336.216-.624.072-2.926-1.46-3.83-2.422-4.571-3.69-.192-.336-.024-.517.144-.684.152-.15.336-.39.504-.585.168-.192.224-.312.336-.52.112-.216.056-.402-.024-.546-.08-.144-.648-1.56-.888-2.136-.234-.564-.473-.488-.648-.497-.168-.008-.36-.01-.552-.01-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.399 0 1.416 1.032 2.784 1.176 2.976.144.192 2.032 3.102 4.921 4.348.687.296 1.224.473 1.643.606.69.219 1.32.188 1.817.114.553-.083 1.702-.696 1.944-1.368.24-.672.24-1.248.168-1.368-.072-.12-.264-.192-.552-.336z" />
-        </svg>
-      </a>
-
-      {/* MODAIS */}
-      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
