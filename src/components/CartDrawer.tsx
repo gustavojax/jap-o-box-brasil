@@ -1,17 +1,20 @@
 import React, { useState, useMemo } from "react";
 import { X, ShoppingBag, Truck, MapPin, CreditCard, ShieldAlert, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
+import { loadStripe } from "@stripe/stripe-js";
 import type { CartItem } from "../types";
+
+// 🔥 Inicialize o Stripe com sua Chave Pública (Substitua pela sua pk_live ou pk_test real)
+const stripePromise = loadStripe("pk_test_SEU_PUBLIC_KEY_AQUI");
 
 interface CartDrawerProps {
   onClose: () => void;
   cartItems: CartItem[];
-  onUpdateQuantity?: (productId: string, q: number) => void; // Caso tenha no seu projeto
-  onRemoveItem?: (productId: string) => void;                // Caso tenha no seu projeto
+  setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
-export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRemoveItem }: CartDrawerProps) {
-  // Controle de passos: 1 = Itens, 2 = Endereço e Frete, 3 = Revisão e Pagamento
+export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [step, setStep] = useState<number>(1);
+  const [loadingPayment, setLoadingPayment] = useState(false);
 
   // Estados do formulário de entrega fornecidos pelo cliente
   const [zipCode, setZipCode] = useState("");
@@ -20,7 +23,12 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
   const [state, setState] = useState("");
   const [shippingMethod, setShippingMethod] = useState<"ems" | "air">("ems");
 
-  // 1. Cálculo do Subtotal dos Produtos (Preço base + Assessoria embutida)
+  // Função para apagar itens caso o cliente desista da compra
+  const handleRemoveItem = (productId: string) => {
+    setCartItems(prev => prev.filter(item => item.product.id !== productId));
+  };
+
+  // 1. Subtotal dos Produtos (Preço base + Assessoria embutida)
   const subtotalProducts = useMemo(() => {
     return cartItems.reduce((acc, item) => {
       const singleProductPrice = item.product.priceBRL + item.product.serviceFeeBRL;
@@ -28,21 +36,18 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
     }, 0);
   }, [cartItems]);
 
-  // 2. Cálculo do Frete Internacional Dinâmico baseado na quantidade/peso dos itens
+  // 2. Cálculo do Frete Internacional Dinâmico baseado nos itens (Mie ➔ BR)
   const shippingCost = useMemo(() => {
     if (cartItems.length === 0) return 0;
-    
-    // Peso fictício baseado na quantidade de itens para o cálculo
     const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const baseRate = shippingMethod === "ems" ? 95 : 60; // Valores padrão saindo de Mie
-    
-    return baseRate + (totalItemsCount - 1) * 30; // Adiciona R$30 por item extra consolidado
+    const baseRate = shippingMethod === "ems" ? 95 : 60;
+    return baseRate + (totalItemsCount - 1) * 30; 
   }, [cartItems, shippingMethod]);
 
-  // 3. Cálculo de Impostos Estimados (Regras alfandegárias atuais do Brasil)
+  // 3. Cálculo de Impostos Estimados (Regras alfandegárias vigentes do Brasil)
   const estimatedTax = useMemo(() => {
     const baseCalculo = subtotalProducts + shippingCost;
-    return Math.round(baseCalculo * 0.20); // Simulação de 20% aproximado do regime simplificado
+    return Math.round(baseCalculo * 0.20); 
   }, [subtotalProducts, shippingCost]);
 
   // 4. Custo Total Unificado Chave na Mão
@@ -58,17 +63,50 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
 
   const handlePrevStep = () => setStep(step - 1);
 
-  const handleFinalizeOrder = () => {
-    alert("Pedido gerado com sucesso! Redirecionando para o ambiente de pagamento seguro.");
-    onClose();
+  // 🔥 INTEGRAÇÃO REAL COM O STRIPE CHECKOUT
+  const handleFinalizeOrder = async () => {
+    setLoadingPayment(true);
+    try {
+      const stripe = await stripePromise;
+      if (!stripe) throw new Error("Stripe falhou ao carregar.");
+
+      // Dispara a chamada para a sua Firebase Cloud Function que cria o Checkout Session
+      // Altere a URL abaixo para a URL gerada pelas suas funções do Firebase após o deploy
+      const response = await fetch("https://us-central1-SEU-PROJETO.cloudfunctions.net/createStripeCheckout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          items: cartItems.map(item => ({
+            name: item.product.name,
+            price: item.product.priceBRL + item.product.serviceFeeBRL,
+            quantity: item.quantity
+          })),
+          shippingCost: shippingCost,
+          estimatedTax: estimatedTax
+        })
+      });
+
+      const session = await response.json();
+
+      if (session?.id) {
+        // Redireciona o cliente para a página segura de pagamento do Stripe
+        await stripe.redirectToCheckout({ sessionId: session.id });
+      } else {
+        alert("Ocorreu um erro ao gerar a sessão de pagamento. Verifique os logs.");
+      }
+    } catch (e) {
+      console.error("Erro na integração com o Stripe Checkout:", e);
+      alert("Não foi possível conectar ao Stripe. Tente novamente.");
+    } finally {
+      setLoadingPayment(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end animate-fade-in">
-      {/* Container Principal do Drawer Lateral */}
-      <div className="w-full max-w-md bg-white h-full flex flex-col justify-between shadow-2xl relative animate-slide-left">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
+      <div className="w-full max-w-md bg-white h-full flex flex-col justify-between shadow-2xl relative">
         
-        {/* CABEÇALHO DO DRAWER */}
+        {/* CABEÇALHO */}
         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
           <div className="flex items-center gap-2">
             <ShoppingBag className="w-5 h-5 text-rose-500" />
@@ -82,10 +120,10 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
           </button>
         </div>
 
-        {/* CONTEÚDO DINÂMICO CONFORME O PASSO DO CHECKOUT */}
+        {/* CONTEÚDO DINÂMICO CONFORME O PASSO */}
         <div className="flex-1 overflow-y-auto p-5 space-y-6">
           
-          {/* PASSO 1: REVISÃO DOS ITENS DO CARRINHO */}
+          {/* PASSO 1: REVISÃO DOS ITENS E REMOÇÃO */}
           {step === 1 && (
             <div className="space-y-4">
               <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider">Itens Selecionados</h4>
@@ -106,6 +144,14 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
                           <p className="text-[10px] text-slate-400 font-mono mt-0.5">Qtd: {item.quantity}</p>
                           <p className="text-sm font-black text-slate-900 mt-1">R$ {(cleanPrice * item.quantity).toFixed(2)}</p>
                         </div>
+                        {/* 🗑️ BOTÃO DE LIXEIRA OPERACIONAL */}
+                        <button 
+                          onClick={() => handleRemoveItem(item.product.id)}
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                          aria-label="Remover item"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
                       </div>
                     );
                   })}
@@ -121,7 +167,6 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
                 <MapPin className="w-4 h-4 text-slate-700" /> Endereço de Destino no Brasil
               </h4>
               
-              {/* Form de Endereço */}
               <div className="grid grid-cols-12 gap-3">
                 <div className="col-span-4">
                   <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">CEP</label>
@@ -141,7 +186,6 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
                 </div>
               </div>
 
-              {/* Seletor de Métodos de Envio saindo de Mie */}
               <div className="space-y-2 pt-2">
                 <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
                   <Truck className="w-4 h-4 text-slate-700" /> Método de Envio Internacional
@@ -171,14 +215,13 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
             </div>
           )}
 
-          {/* PASSO 3: REVISÃO DE VALORES FINAIS CHAVE NA MÃO */}
+          {/* PASSO 3: CONFIRMAÇÃO E RESUMO DOS ENCARGOS */}
           {step === 3 && (
             <div className="space-y-5 text-left">
               <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
                 <CreditCard className="w-4 h-4 text-slate-700" /> Resumo Consolidado da Caixa
               </h4>
 
-              {/* Endereço de Entrega Resumido */}
               <div className="p-3.5 bg-slate-50 rounded-2xl border text-xs font-medium text-slate-600 space-y-1">
                 <span className="font-bold text-slate-900 block">Enviar para:</span>
                 <p>{address} — {city}/{state}</p>
@@ -188,7 +231,6 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
                 </p>
               </div>
 
-              {/* Planilha de Fechamento Clean */}
               <div className="space-y-2 border-b pb-4 text-xs font-medium text-slate-600">
                 <div className="flex justify-between">
                   <span>Subtotal dos Produtos:</span>
@@ -204,18 +246,16 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
                 </div>
               </div>
 
-              {/* VALOR FINAL CHAVE NA MÃO */}
               <div className="flex items-center justify-between p-3 bg-rose-50 rounded-2xl border border-rose-100">
                 <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Total Chave na Mão:</span>
                 <span className="text-2xl font-black text-rose-600">R$ {totalOrderAmount.toFixed(2)}</span>
               </div>
 
-              {/* Tarja Informativa Legal Obrigatória das Regras Atuais */}
               <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
                 <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
                 <div>
                   <span className="font-bold block">Aviso de Importação Alfandegária:</span>
-                  O cálculo acima engloba as estimativas de taxas vigentes de comércio internacional para o Brasil em 2026. Realizamos toda a declaração aduaneira para assegurar o tráfego direto até sua residência, sem taxas surpresas ou necessidade de despacho complementar nos Correios.
+                  O cálculo acima engloba as estimativas de taxas vigentes de comércio internacional para o Brasil. Realizamos toda a declaração aduaneira para assegurar o tráfego direto até sua residência, sem taxas surpresas ou necessidade de despacho complementar nos Correios.
                 </div>
               </div>
             </div>
@@ -223,14 +263,14 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
 
         </div>
 
-        {/* FOOTER FIXO: NAVEGAÇÃO DOS PASSOS */}
+        {/* CONTROLES DE FLUXO */}
         <div className="p-5 border-t border-slate-100 bg-slate-50 flex gap-2">
           {step > 1 && (
             <button
               onClick={handlePrevStep}
-              className="flex items-center justify-center gap-1 px-4 py-3 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 active:scale-95 transition-all"
+              className="flex items-center justify-center gap-1 px-4 py-3 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all"
             >
-              <Paper-ArrowLeft className="w-4 h-4" /> Voltar
+              <ArrowLeft className="w-4 h-4" /> Voltar
             </button>
           )}
           
@@ -238,16 +278,17 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
             <button
               onClick={handleNextStep}
               disabled={cartItems.length === 0}
-              className="flex-1 flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 transition-all uppercase tracking-wider"
+              className="flex-1 flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all uppercase tracking-wider"
             >
               Avançar <ArrowRight className="w-4 h-4" />
             </button>
           ) : (
             <button
               onClick={handleFinalizeOrder}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-black text-xs rounded-xl hover:bg-red-700 active:scale-95 transition-all uppercase tracking-wider shadow-md shadow-red-900/10"
+              disabled={loadingPayment}
+              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-black text-xs rounded-xl hover:bg-red-700 disabled:opacity-50 transition-all uppercase tracking-wider shadow-md text-center"
             >
-              Confirmar & Pagar R$ {totalOrderAmount.toFixed(2)}
+              {loadingPayment ? "Processando..." : `Pagar R$ ${totalOrderAmount.toFixed(2)} via Stripe`}
             </button>
           )}
         </div>
@@ -255,4 +296,5 @@ export default function CartDrawer({ onClose, cartItems, onUpdateQuantity, onRem
       </div>
     </div>
   );
-}
+      }
+                               
