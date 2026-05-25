@@ -23,7 +23,7 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
           
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-950/60 border border-red-800/40 rounded-full text-red-200 text-xs font-bold uppercase tracking-wider">
             <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-ping"></span>
-            🇯🇵 Encomendas Direto de Tóquio
+            **🇯🇵 Encomendas Direto de Mie**
           </div>
 
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-none text-white font-sans">
@@ -36,7 +36,7 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
           </h1>
 
           <p className="text-sm sm:text-base text-gray-300 max-w-2xl mx-auto lg:mx-0 font-sans font-medium leading-relaxed">
-            Nós compramos em lojas físicas de Tóquio ou direto de sites japoneses rústicos, preparamos a caixa no nosso armazém japonês e despachamos direto para seu endereço no Brasil. Você simula o preço exato com impostos estimados antes de pagar!
+            **Nós compramos em lojas físicas ou direto de sites japoneses rústicos, preparamos a caixa no nosso armazém japonês localizado em Mie e despachamos direto para seu endereço no Brasil. Você simula o preço exato com impostos estimados antes de pagar!**
           </p>
 
           {/* Social proof quick indicators */}
@@ -114,7 +114,7 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
             
             {/* Background elements resembling Japanese stamps */}
             <div className="absolute top-2 right-2 border-2 border-dashed border-red-500/20 text-red-500/20 font-black font-mono text-[9px] px-2 py-1 rotate-12 select-none uppercase">
-              TOKYO WAREHOUSE - INT
+              **MIE WAREHOUSE - INT**
             </div>
 
             <div className="flex justify-between items-start mb-6">
@@ -155,8 +155,8 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
                   3
                 </div>
                 <div>
-                  <p className="text-xs font-bold text-white">Compramos e Despachamos de Tóquio</p>
-                  <p className="text-[10px] text-gray-400">Nossa equipe em Tóquio valida o estado do produto, tira fotos de confirmação e envia com código rastreável rápido.</p>
+                  <p className="text-xs font-bold text-white">**Compramos e Despachamos de Mie**</p>
+                  <p className="text-[10px] text-gray-400">**Nossa equipe em Mie valida o estado do produto, tira fotos de confirmação e envia com código rastreável rápido.**</p>
                 </div>
               </div>
 
@@ -166,7 +166,7 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
                 </div>
                 <div>
                   <p className="text-xs font-bold text-white">Retire em sua Casa</p>
-                  <p className="text-[10px] text-gray-400">Acompanhe pelo app o trajeto Tóquio - Curitiba - Sua Cidade de forma transparente de ponta a ponta.</p>
+                  <p className="text-[10px] text-gray-400">**Acompanhe pelo app o trajeto Mie - Curitiba - Sua Cidade de forma transparente de ponta a ponta.**</p>
                 </div>
               </div>
 
@@ -195,7 +195,7 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
               <span className="text-[9px] font-mono font-bold text-gray-400 tracking-wider">JAPAN POST EMS</span>
             </div>
             <div className="text-left space-y-1">
-              <span className="text-[11px] font-black text-gray-800 block">TOKYO ➔ SÃO PAULO</span>
+              <span className="text-[11px] font-black text-gray-800 block">**MIE ➔ SÃO PAULO**</span>
               <span className="text-[10px] font-mono text-emerald-600 font-semibold block">✓ RASTREIO ATIVO</span>
               <div className="w-full bg-gray-100 h-1 rounded overflow-hidden">
                 <div className="bg-red-500 h-full w-2/3"></div>
@@ -224,4 +224,5 @@ export default function Hero({ onScrollToCatalog, onOpenBudgetModal, onScrollToC
 
     </div>
   );
-}
+            }
+              
