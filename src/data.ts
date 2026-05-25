@@ -1,5 +1,8 @@
 import { Product, BlogPost } from "./types";
 
+// 🪙 TAXAS DE CONVERSÃO DE MOEDA (Exigido por BudgetModal.tsx e calculadoras)
+export const YEN_TO_BRL_RATE = 0.035; // Valor médio de conversão do Iene (JP¥) para Real (R$)
+
 // 🛒 Catálogo de Produtos estruturado por Departamentos Estilo Amazon JP
 export const PRODUCTS: Product[] = [
   {
@@ -84,7 +87,7 @@ export const TESTIMONIALS = [
   }
 ];
 
-// 📝 CORREÇÃO DO ERRO ATUAL: Exportando a constante exigida pelo componente BlogSection.tsx
+// 📝 Constante exigida pelo componente BlogSection.tsx
 export const BLOG_POSTS: BlogPost[] = [
   {
     id: "post-1",
