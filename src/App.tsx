@@ -5,7 +5,6 @@ import Hero from "./components/Hero";
 import TrustBadges from "./components/TrustBadges";
 import CostCalculator from "./components/CostCalculator";
 import ProductCard from "./components/ProductCard";
-import SubscriptionClub from "./components/SubscriptionClub";
 import Testimonials from "./components/Testimonials";
 import BlogSection from "./components/BlogSection";
 import TrackingWidget from "./components/TrackingWidget";
@@ -107,7 +106,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
-      {/* 🔄 TARJA DE ANÚNCIOS SUPERIOR ATUALIZADA (DIRETO DE MIE) */}
+      {/* TARJA DE ANÚNCIOS SUPERIOR */}
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
         <span className="flex items-center gap-1">🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
@@ -166,12 +165,15 @@ export default function App() {
       {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
         <>
-          <Hero />
+          <Hero 
+            onScrollToCatalog={() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })}
+            onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+          />
           <main className="flex-1">
             <TrustBadges />
             
             {/* PRODUTOS */}
-            <section className="max-w-7xl mx-auto px-4 py-10">
+            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-10">
               <div className="flex items-center justify-between mb-8 border-b pb-4">
                 <div>
                   <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Produtos Importados</h2>
@@ -199,7 +201,6 @@ export default function App() {
               </div>
             </section>
 
-            <SubscriptionClub onSubscribe={() => {}} />
             <CostCalculator onOpenBudgetModalWithData={() => {}} />
             <Testimonials />
             <BlogSection />
@@ -242,7 +243,6 @@ export default function App() {
       {/* RODAPÉ INSTITUCIONAL ROBUSTO */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          {/* 🔄 COLUNA 1 ATUALIZADA (SAINDO DE MIE) */}
           <div>
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
@@ -254,7 +254,6 @@ export default function App() {
             <ul className="space-y-2 text-sm font-medium">
               <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors">Ver Catálogo</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors">Rastrear Pedido</button></li>
-              <li><a href="#club" className="hover:text-slate-900 transition-colors">Clube de Assinatura</a></li>
               <li><a href="#calculator" className="hover:text-slate-900 transition-colors">Calculadora de Custos</a></li>
             </ul>
           </div>
@@ -328,12 +327,11 @@ export default function App() {
         </svg>
       </a>
 
-      {/* CARTRADWER & MODAIS */}
+      {/* MODAIS */}
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} font-bold onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
 }
-  
