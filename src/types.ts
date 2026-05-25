@@ -19,7 +19,7 @@ export interface Product {
   rating: number;
   reviewsCount?: number;
   department: MainDepartment;
-  category: string; // Corresponde exatamente às subcategorias desejadas
+  category: string;
   stock: number;
 }
 
