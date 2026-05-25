@@ -1,6 +1,6 @@
-import { Product } from "./types";
+import { Product, BlogPost } from "./types";
 
-// 🛒 Banco de dados de produtos estruturado por Macro-Departamentos e Subcategorias Premium
+// 🛒 Catálogo de Produtos estruturado por Departamentos Estilo Amazon JP
 export const PRODUCTS: Product[] = [
   {
     id: "jp-shiseido-fino",
@@ -64,7 +64,7 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
-// ⭐ CORREÇÃO DO ERRO DO VITE: Exportando a constante exigida pelo componente Testimonials.tsx
+// ⭐ Depoimentos exigidos pelo componente Testimonials.tsx
 export const TESTIMONIALS = [
   {
     id: "1",
@@ -83,4 +83,25 @@ export const TESTIMONIALS = [
     avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80"
   }
 ];
-    
+
+// 📝 CORREÇÃO DO ERRO ATUAL: Exportando a constante exigida pelo componente BlogSection.tsx
+export const BLOG_POSTS: BlogPost[] = [
+  {
+    id: "post-1",
+    title: "Como funciona o Envio Consolidado de caixas do Japão para o Brasil?",
+    excerpt: "Entenda o passo a passo de como juntar suas compras feitas em lojas diferentes no nosso armazém em Mie e economizar até 60% no frete internacional.",
+    image: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&w=600&q=80",
+    date: "15 Mai, 2026",
+    readTime: "5 min de leitura",
+    category: "Guias de Importação"
+  },
+  {
+    id: "post-2",
+    title: "Os 5 Skincares Japoneses que são febre absoluta em 2026",
+    excerpt: "Descubra os detalhes tecnológicos por trás de marcas consagradas como Bioré, Hada Labo e Shiseido Fino e saiba por que a rotina de beleza japonesa é insuperável.",
+    image: "https://images.unsplash.com/photo-1608248597481-496100c80836?auto=format&fit=crop&w=600&q=80",
+    date: "10 Mai, 2026",
+    readTime: "4 min de leitura",
+    category: "Tendências & Cosméticos"
+  }
+];
