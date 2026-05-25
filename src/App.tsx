@@ -1,9 +1,8 @@
-import React, { useState, useMemo, useEffect } from "react";
+Fimport React, { useState, useMemo, useEffect } from "react";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import TrustBadges from "./components/TrustBadges";
-import CostCalculator from "./components/CostCalculator";
 import ProductCard from "./components/ProductCard";
 import Testimonials from "./components/Testimonials";
 import BlogSection from "./components/BlogSection";
@@ -418,7 +417,7 @@ export default function App() {
               )}
             </section>
 
-            <CostCalculator />
+        
             <Testimonials />
             <BlogSection />
           </main>
