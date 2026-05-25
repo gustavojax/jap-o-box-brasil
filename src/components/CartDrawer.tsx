@@ -71,7 +71,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       if (!stripe) throw new Error("Stripe falhou ao carregar.");
 
       // Dispara a chamada para a sua Firebase Cloud Function que cria o Checkout Session
-      // Altere a URL abaixo para a URL gerada pelas suas funções do Firebase após o deploy
       const response = await fetch("https://us-central1-SEU-PROJETO.cloudfunctions.net/createStripeCheckout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -115,7 +114,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               <p className="text-[10px] text-slate-400">Passo {step} de 3 — {step === 1 ? "Carrinho" : step === 2 ? "Entrega" : "Confirmação"}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -147,7 +146,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                         {/* 🗑️ BOTÃO DE LIXEIRA OPERACIONAL */}
                         <button 
                           onClick={() => handleRemoveItem(item.product.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all"
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
                           aria-label="Remover item"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -193,7 +192,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                 <div className="space-y-2">
                   <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "ems" ? "border-slate-900 bg-slate-50 shadow-sm" : "border-slate-200"}`}>
                     <div className="flex items-center gap-2.5">
-                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "ems"} onChange={() => setShippingMethod("ems")} className="accent-slate-900" />
+                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "ems"} onChange={() => setShippingMethod("ems"} className="accent-slate-900" />
                       <div>
                         <p className="text-xs font-bold text-slate-900">Japan Post EMS (Expresso Aéreo)</p>
                         <p className="text-[10px] text-slate-400">7 a 15 dias úteis • Rastreamento prioritário</p>
@@ -224,77 +223,4 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
               <div className="p-3.5 bg-slate-50 rounded-2xl border text-xs font-medium text-slate-600 space-y-1">
                 <span className="font-bold text-slate-900 block">Enviar para:</span>
-                <p>{address} — {city}/{state}</p>
-                <p className="text-slate-400">CEP: {zipCode}</p>
-                <p className="text-rose-600 font-bold mt-1 uppercase text-[10px]">
-                  Modalidade: {shippingMethod === "ems" ? "Japan Post EMS ✈️" : "Air Mail Aéreo 📦"}
-                </p>
-              </div>
-
-              <div className="space-y-2 border-b pb-4 text-xs font-medium text-slate-600">
-                <div className="flex justify-between">
-                  <span>Subtotal dos Produtos:</span>
-                  <span className="font-bold text-slate-900">R$ {subtotalProducts.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between">
-                  <span>Frete Internacional Combinado:</span>
-                  <span className="font-bold text-slate-900">R$ {shippingCost.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-slate-400">
-                  <span>Encargos & Aduana Est. (Brasil):</span>
-                  <span>R$ {estimatedTax.toFixed(2)}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between p-3 bg-rose-50 rounded-2xl border border-rose-100">
-                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Total Chave na Mão:</span>
-                <span className="text-2xl font-black text-rose-600">R$ {totalOrderAmount.toFixed(2)}</span>
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
-                <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold block">Aviso de Importação Alfandegária:</span>
-                  O cálculo acima engloba as estimativas de taxas vigentes de comércio internacional para o Brasil. Realizamos toda a declaração aduaneira para assegurar o tráfego direto até sua residência, sem taxas surpresas ou necessidade de despacho complementar nos Correios.
-                </div>
-              </div>
-            </div>
-          )}
-
-        </div>
-
-        {/* CONTROLES DE FLUXO */}
-        <div className="p-5 border-t border-slate-100 bg-slate-50 flex gap-2">
-          {step > 1 && (
-            <button
-              onClick={handlePrevStep}
-              className="flex items-center justify-center gap-1 px-4 py-3 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all"
-            >
-              <ArrowLeft className="w-4 h-4" /> Voltar
-            </button>
-          )}
-          
-          {step < 3 ? (
-            <button
-              onClick={handleNextStep}
-              disabled={cartItems.length === 0}
-              className="flex-1 flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all uppercase tracking-wider"
-            >
-              Avançar <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              onClick={handleFinalizeOrder}
-              disabled={loadingPayment}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-black text-xs rounded-xl hover:bg-red-700 disabled:opacity-50 transition-all uppercase tracking-wider shadow-md text-center"
-            >
-              {loadingPayment ? "Processando..." : `Pagar R$ ${totalOrderAmount.toFixed(2)} via Stripe`}
-            </button>
-          )}
-        </div>
-
-      </div>
-    </div>
-  );
-      }
-                               
+                <p>{address} — {city}/{state}</p
