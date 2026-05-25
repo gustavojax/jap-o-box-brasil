@@ -19,8 +19,7 @@ import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, 
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
-// 🔥 IMPORTANTE: Adicionado 'addDoc' e 'serverTimestamp' para criar o pedido via código
-import { collection, query, where, onSnapshot, orderBy, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 
 export default function App() {
 
@@ -65,7 +64,6 @@ export default function App() {
         ordersList.push({ id: doc.id, ...doc.data() });
       });
       
-      // Ordenação manual no Front-end para evitar o erro de falta de Índice do Firebase!
       ordersList.sort((a, b) => {
         const timeA = a.createdAt?.seconds || 0;
         const timeB = b.createdAt?.seconds || 0;
@@ -82,7 +80,6 @@ export default function App() {
     return () => unsubOrders();
   }, [user?.uid]);
 
-  // 🔥 FUNÇÃO DE SIMULAÇÃO RÁPIDA: Cria um pedido direto no Firestore ao clicar no botão
   const handleCreateMockOrder = async () => {
     if (!user?.uid) return;
     
@@ -108,7 +105,6 @@ export default function App() {
       showNotification("Pedido simulado gerado com sucesso!");
     } catch (e) {
       console.error("Erro ao simular pedido:", e);
-      alert("Erro ao simular pedido. Verifique o console.");
     }
   };
 
@@ -304,28 +300,30 @@ export default function App() {
                   Acessando como: <span className="font-semibold text-slate-700">{user?.email || "Cliente"}</span>
                 </p>
               </div>
-              <div className="flex items-center gap-2">
-                {/* ⚡ BOTÃO DE SIMULAÇÃO DIRETA: Clique para injetar um pedido aleatório */}
-                <button
-                  onClick={handleCreateMockOrder}
-                  className="bg-amber-100 border border-amber-300 text-amber-800 hover:bg-amber-200 px-3 py-2 rounded-xl font-bold text-xs flex items-center gap-1 transition-all"
-                >
-                  <FlaskConical className="w-4 h-4" /> Simular Pedido
-                </button>
-                <button 
-                  onClick={handleLogout}
-                  className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors"
-                >
-                  Sair da Conta
-                </button>
-              </div>
+              <button 
+                onClick={handleLogout}
+                className="bg-rose-50 text-rose-600 hover:bg-rose-100 px-4 py-2 rounded-xl font-bold text-xs transition-colors"
+              >
+                Sair da Conta
+              </button>
             </div>
 
             {/* SEÇÃO PRINCIPAL DE PEDIDOS */}
             <div className="mb-10">
-              <h2 className="font-black text-xl text-slate-900 mb-4 flex items-center gap-2">
-                <Package className="w-5 h-5 text-slate-700" /> Meus Pedidos Recentes
-              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="font-black text-xl text-slate-900 flex items-center gap-2">
+                  <Package className="w-5 h-5 text-slate-700" /> Meus Pedidos Recentes
+                </h2>
+                {/* 🔥 Se a lista já tiver algum pedido, o botão aparece pequeno aqui no canto */}
+                {orders.length > 0 && (
+                  <button
+                    onClick={handleCreateMockOrder}
+                    className="bg-amber-50 border border-amber-200 text-amber-800 hover:bg-amber-100 px-3 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1 transition-all"
+                  >
+                    <FlaskConical className="w-3.5 h-3.5" /> (+1) Simular Teste
+                  </button>
+                )}
+              </div>
 
               {loadingOrders ? (
                 <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200">
@@ -333,16 +331,26 @@ export default function App() {
                   <p className="text-sm text-slate-500 font-medium">Buscando encomendas no Firestore...</p>
                 </div>
               ) : orders.length === 0 ? (
+                /* 🔥 RESOLUÇÃO VISUAL: O botão de simulação agora está gigante e centralizado bem aqui na caixa vazia! */
                 <div className="text-center py-12 bg-slate-50 rounded-2xl border border-dashed border-slate-200 px-4">
                   <Package className="w-8 h-8 text-slate-400 mx-auto mb-3" />
                   <p className="text-base font-bold text-slate-800">Você ainda não possui pedidos</p>
-                  <p className="text-xs text-slate-500 mt-1 mb-4">Clique no botão "Simular Pedido" ali em cima para testar na hora!</p>
-                  <button 
-                    onClick={() => setActiveTab("store")}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 bg-slate-900 text-white font-bold text-xs rounded-xl shadow-sm hover:bg-slate-800 transition-all"
-                  >
-                    Ir às Compras
-                  </button>
+                  <p className="text-xs text-slate-500 mt-1 mb-6">Clique no botão abaixo para simular e testar a gravação no banco de dados na hora!</p>
+                  
+                  <div className="flex flex-col sm:flex-row items-center justify-center gap-2">
+                    <button 
+                      onClick={handleCreateMockOrder}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 bg-amber-500 hover:bg-amber-600 text-slate-950 font-black text-xs rounded-xl shadow-md transition-all active:scale-95"
+                    >
+                      <FlaskConical className="w-4 h-4" /> ⚡ Simular Pedido de Teste
+                    </button>
+                    <button 
+                      onClick={() => setActiveTab("store")}
+                      className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-sm transition-all"
+                    >
+                      Ir às Compras
+                    </button>
+                  </div>
                 </div>
               ) : (
                 /* LISTAGEM DOS CARDS DE PEDIDOS REAIS */
@@ -420,57 +428,4 @@ export default function App() {
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Segurança e Pagamento</h3>
             <div className="flex flex-wrap gap-2 mb-4">
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">PIX</span>
-              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">CREDIT CARD</span>
-              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">BOLETO</span>
-            </div>
-            <div className="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100">
-              <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
-              <span>Ambiente seguro com criptografia de ponta a ponta.</span>
-            </div>
-          </div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400 space-y-2">
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados. Importações do Japão intermediadas de forma legal.</p>
-          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-          </p>
-        </div>
-      </footer>
-
-      {/* BOTTOM NAVIGATION PARA MOBILE */}
-      {user && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-40 shadow-lg">
-          <button 
-            onClick={() => setActiveTab("store")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
-          >
-            <ShoppingBag className="w-5 h-5 mb-0.5" />
-            Loja
-          </button>
-          <button 
-            onClick={() => setActiveTab("account")}
-            className={`flex flex-col items-center text-xs font-bold ${activeTab === "account" ? "text-emerald-600" : "text-slate-400"}`}
-          >
-            <User className="w-5 h-5 mb-0.5" />
-            Rastreio
-          </button>
-        </div>
-      )}
-
-      {/* BOTÃO FLUTUANTE DO WHATSAPP */}
-      <a
-        href="https://wa.me/817014074971"
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`fixed right-4 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center ${
-          user ? "bottom-20 md:bottom-6" : "bottom-6"
-        }`}
-        aria-label="Contato via WhatsApp"
-      >
-        <svg
-          className="w-6 h-6 fill-current"
-          viewBox="0 0 24 24"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.
+              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">CREDI
