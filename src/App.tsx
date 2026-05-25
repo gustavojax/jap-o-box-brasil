@@ -15,7 +15,7 @@ import AuthModal from "./components/AuthModal";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Package, Clock, Truck, CheckCircle, FlaskConical } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle, Package, Clock, Truck, CheckCircle, FlaskConical, Heart } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -28,7 +28,9 @@ export default function App() {
   // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"store" | "account">("store");
+  
+  // 🔄 ATUALIZADO: activeTab agora suporta "about" também
+  const [activeTab, setActiveTab] = useState<"store" | "account" | "about">("store");
   
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
@@ -41,11 +43,11 @@ export default function App() {
       } else {
         setUser(null);
         setOrders([]);
-        setActiveTab("store");
+        if (activeTab === "account") setActiveTab("store");
       }
     });
     return () => unsubAuth();
-  }, []);
+  }, [activeTab]);
 
   useEffect(() => {
     if (!user?.uid || !db) {
@@ -83,7 +85,6 @@ export default function App() {
     return () => unsubOrders();
   }, [user?.uid]);
 
-  // Função para simular o clique e criar o pedido no Firebase
   const handleCreateMockOrder = async () => {
     if (!user?.uid) {
       alert("Faça login para simular um pedido.");
@@ -112,7 +113,6 @@ export default function App() {
       showNotification("Pedido simulado criado!");
     } catch (e) {
       console.error("Erro ao simular pedido:", e);
-      alert("Erro ao conectar com o banco. Veja o console.");
     }
   };
 
@@ -224,20 +224,32 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* MENU DE ABAS DISCRETO E ALINHADO À DIREITA */}
-      {user && (
-        <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
-          <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
-            <button
-              onClick={() => setActiveTab("store")}
-              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
-                activeTab === "store" 
-                  ? "bg-slate-900 text-white shadow-sm" 
-                  : "text-slate-600 hover:bg-slate-50"
-              }`}
-            >
-              Loja
-            </button>
+      {/* 🔄 MENU DE ABAS EXPANDIDO COM A OPÇÃO "SOBRE NÓS" */}
+      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
+          <button
+            onClick={() => setActiveTab("store")}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+              activeTab === "store" 
+                ? "bg-slate-900 text-white shadow-sm" 
+                : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Loja
+          </button>
+          
+          <button
+            onClick={() => setActiveTab("about")}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
+              activeTab === "about" 
+                ? "bg-rose-600 text-white shadow-sm" 
+                : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Sobre Nós
+          </button>
+
+          {user && (
             <button
               onClick={() => setActiveTab("account")}
               className={`px-4 py-2 rounded-lg font-bold text-xs transition-all ${
@@ -248,9 +260,9 @@ export default function App() {
             >
               Minha Conta & Pedidos
             </button>
-          </div>
+          )}
         </div>
-      )}
+      </div>
 
       {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
@@ -296,6 +308,60 @@ export default function App() {
             <BlogSection />
           </main>
         </>
+      ) : activeTab === "about" ? (
+        /* 🌟 NOVA TELA: PÁGINA "SOBRE NÓS" COMPLETA E INSTITUCIONAL */
+        <main className="flex-1 bg-slate-50 py-12 px-4">
+          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
+            
+            {/* Bloco da Esquerda: Imagem da Fundadora Paula Boberg */}
+            <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
+              <img 
+                src="https://i.ibb.co/RpRMDSMd/file-0000000060ec720e8b0c4f2d1dcdbb5f.png" 
+                alt="Paula Boberg - Fundadora da Japão Box Brasil" 
+                className="w-full h-full object-cover absolute inset-0 opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-white/10" />
+              
+              <div className="absolute bottom-6 left-6 right-6 text-white md:hidden">
+                <p className="text-xl font-black tracking-tight">Paula Boberg</p>
+                <p className="text-xs text-rose-300 font-bold uppercase tracking-widest mt-0.5">Fundadora</p>
+              </div>
+            </div>
+
+            {/* Bloco da Direita: Conteúdo Institucional */}
+            <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
+              <div>
+                <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
+              </div>
+
+              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
+                <p>
+                  Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos japoneses e coreanos, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷
+                </p>
+                <p>
+                  Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.
+                </p>
+                <p>
+                  A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.
+                </p>
+                <p className="font-semibold text-slate-800">
+                  Obrigada por fazer parte do começo dessa história com a gente!
+                </p>
+              </div>
+
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div>
+                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+                  <p className="text-lg font-black text-slate-900 font-serif tracking-wide mt-0.5">Paula Boberg</p>
+                  <p className="text-[10px] bg-rose-50 text-rose-600 px-2 py-0.5 rounded-md font-bold uppercase w-fit mt-1">Fundadora Japão Box Brasil</p>
+                </div>
+                <Heart className="w-8 h-8 text-rose-500 fill-rose-100 stroke-1" />
+              </div>
+            </div>
+
+          </div>
+        </main>
       ) : (
         /* PAINEL DO CLIENTE */
         <main className="flex-1 bg-slate-50 py-10 px-4 min-h-[80vh]">
@@ -316,7 +382,7 @@ export default function App() {
               </button>
             </div>
 
-            {/* ⚡ BOTÃO DE TESTE INDESTRUTÍVEL: Fora de qualquer condicional, vai aparecer no topo da página de qualquer jeito */}
+            {/* BOTÃO DE TESTE INDESTRUTÍVEL */}
             <div className="mb-8 p-4 bg-amber-50 rounded-2xl border border-amber-200 flex flex-col sm:flex-row items-center justify-between gap-4">
               <div>
                 <h4 className="font-bold text-amber-900 text-sm flex items-center gap-1.5">
@@ -356,7 +422,6 @@ export default function App() {
                   </button>
                 </div>
               ) : (
-                /* LISTAGEM DOS CARDS DE PEDIDOS REAIS */
                 <div className="space-y-4">
                   {orders.map((order) => (
                     <div key={order.id} className="border border-slate-100 bg-slate-50/50 rounded-2xl p-4 md:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 shadow-sm">
@@ -414,6 +479,7 @@ export default function App() {
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
               <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors">Ver Catálogo</button></li>
+              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors">Sobre Nós</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors">Rastrear Pedido</button></li>
               <li><a href="#calculator" className="hover:text-slate-900 transition-colors">Calculadora de Custos</a></li>
             </ul>
