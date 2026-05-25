@@ -16,7 +16,7 @@ import AuthModal from "./components/AuthModal";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, Truck, CreditCard, HelpCircle } from "lucide-react";
 
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -105,11 +105,18 @@ export default function App() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0">
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+
+      {/* 🌟 1. TARJA DE ANÚNCIOS SUPERIOR (PADRÃO GRANDES E-COMMERCES) */}
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span className="flex items-center gap-1">🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE TÓQUIO</span>
+        <span className="hidden md:inline text-slate-400">|</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+      </div>
 
       {/* NOTIFICAÇÃO */}
       {notification && (
-        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2">
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
           <CheckCircle2 className="w-5 h-5 text-green-400" />
           {notification}
         </div>
@@ -128,7 +135,7 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* 🔥 MENU DE ABAS DISCRETO E ALINHADO À DIREITA (ESTILO CLEAN) */}
+      {/* MENU DE ABAS DISCRETO E ALINHADO À DIREITA */}
       {user && (
         <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
           <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
@@ -165,14 +172,17 @@ export default function App() {
             
             {/* PRODUTOS */}
             <section className="max-w-7xl mx-auto px-4 py-10">
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl font-black text-slate-900">Produtos Importados</h2>
+              <div className="flex items-center justify-between mb-8 border-b pb-4">
+                <div>
+                  <h2 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">Produtos Importados</h2>
+                  <p className="text-sm text-slate-500 mt-0.5">Explore os melhores itens direto do mercado japonês</p>
+                </div>
                 <div className="flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4" />
+                  <ArrowUpDown className="w-4 h-4 text-slate-400" />
                   <select
                     value={sortBy}
                     onChange={(e) => setSortBy(e.target.value)}
-                    className="border rounded-xl px-4 py-2 bg-white"
+                    className="border rounded-xl px-3 py-2 bg-white text-sm font-medium shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
                   >
                     <option value="popular">Popularidade</option>
                     <option value="priceAsc">Menor preço</option>
@@ -229,6 +239,64 @@ export default function App() {
         </main>
       )}
 
+      {/* 🌟 3. RODAPÉ INSTITUCIONAL ROBUSTO (PADRÃO DE CONFIANÇA) */}
+      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          
+          {/* Coluna 1: Sobre a Marca */}
+          <div>
+            <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
+            <p className="text-sm leading-relaxed text-slate-500">
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de Tóquio para a sua casa no Brasil de forma 100% segura e transparente.
+            </p>
+          </div>
+
+          {/* Coluna 2: Navegação Rápida */}
+          <div>
+            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
+            <ul className="space-y-2 text-sm font-medium">
+              <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors">Ver Catálogo</button></li>
+              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors">Rastrear Pedido</button></li>
+              <li><a href="#club" className="hover:text-slate-900 transition-colors">Clube de Assinatura</a></li>
+              <li><a href="#calculator" className="hover:text-slate-900 transition-colors">Calculadora de Custos</a></li>
+            </ul>
+          </div>
+
+          {/* Coluna 3: Ajuda & Suporte */}
+          <div>
+            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Suporte</h3>
+            <ul className="space-y-2 text-sm font-medium">
+              <li className="flex items-center gap-1.5"><HelpCircle className="w-4 h-4 text-slate-400" /> <span className="hover:text-slate-900 cursor-pointer">Central de Ajuda (FAQ)</span></li>
+              <li><span className="hover:text-slate-900 cursor-pointer">Políticas de Envio e Prazos</span></li>
+              <li><span className="hover:text-slate-900 cursor-pointer">Termos de Serviço e Reembolso</span></li>
+              <li><span className="hover:text-slate-900 cursor-pointer">Fale Conosco</span></li>
+            </ul>
+          </div>
+
+          {/* Coluna 4: Segurança e Pagamento */}
+          <div>
+            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Segurança e Pagamento</h3>
+            <div className="flex flex-wrap gap-2 mb-4">
+              {/* Selos de Formas de Pagamento Simbolizados */}
+              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">PIX</span>
+              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">CREDIT CARD</span>
+              <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">BOLETO</span>
+            </div>
+            <div className="flex items-center gap-2 text-xs bg-emerald-50 text-emerald-800 p-3 rounded-xl border border-emerald-100">
+              <ShieldCheck className="w-5 h-5 text-emerald-600 flex-shrink-0" />
+              <span>Ambiente seguro com criptografia de ponta a ponta.</span>
+            </div>
+          </div>
+
+        </div>
+
+        {/* Linha Inferior de Direitos Autorais */}
+        <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
+          <p>© {new Date().getFullYear()} Japão Box Brasil. Todos os direitos reservados. Importações do Japão intermediadas de forma legal.</p>
+          <p className="mt-1">As simulações de impostos e taxas adicionais são apenas estimativas com base na regulamentação de comércio exterior vigente.</p>
+        </div>
+      </footer>
+
       {/* BOTTOM NAVIGATION PARA MOBILE */}
       {user && (
         <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-50 shadow-lg">
@@ -251,10 +319,10 @@ export default function App() {
 
       {/* CARTRADWER & MODAIS */}
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => $.setBudgetModalOpen(false)} onSubmit={() => {}} />
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
     }
-  
+         
