@@ -107,9 +107,9 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
-      {/* TARJA DE ANÚNCIOS SUPERIOR */}
+      {/* 🔄 TARJA DE ANÚNCIOS SUPERIOR ATUALIZADA (DIRETO DE MIE) */}
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span className="flex items-center gap-1">🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE TÓQUIO</span>
+        <span className="flex items-center gap-1">🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
@@ -242,10 +242,11 @@ export default function App() {
       {/* RODAPÉ INSTITUCIONAL ROBUSTO */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          {/* 🔄 COLUNA 1 ATUALIZADA (SAINDO DE MIE) */}
           <div>
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de Tóquio para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div>
@@ -280,11 +281,8 @@ export default function App() {
           </div>
         </div>
         
-        {/* CRÉDITOS E CONTRATO FIXO DO RODAPÉ */}
         <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400 space-y-2">
           <p>© {new Date().getFullYear()} Japão Box Brasil. Todos os direitos reservados. Importações do Japão intermediadas de forma legal.</p>
-          
-          {/* 🔥 ASSINATURA FIXA SOLICITADA */}
           <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
             Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
           </p>
@@ -332,9 +330,10 @@ export default function App() {
 
       {/* CARTRADWER & MODAIS */}
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <BudgetModal isOpen={isBudgetModalOpen} font-bold onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
 }
+  
