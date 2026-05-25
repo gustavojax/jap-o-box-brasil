@@ -1,219 +1,50 @@
-import {
-  Product,
-  SubscriptionBox,
-  Testimonial,
-  BlogPost,
-  UpsellOption,
-} from "./types";
-
-// =========================================
-// TAXA (mantida só como referência histórica)
-// =========================================
-
-export const YEN_TO_BRL_RATE = 0.036;
-
-// =========================================
-// UPSSELLS
-// =========================================
-
-export const UPSELL_OPTIONS: UpsellOption[] = [
-  {
-    id: "photos",
-    name: "Fotos Profissionais no Depósito (Japão)",
-    description: "Enviaremos fotos reais do produto no Japão antes do envio.",
-    priceBRL: 19.9,
-  },
-  {
-    id: "reinforced",
-    name: "Embalagem Premium Ultra-Reforçada",
-    description: "Proteção extra contra impactos internacionais.",
-    priceBRL: 29,
-  },
-  {
-    id: "gift",
-    name: "Embalagem Especial para Presente Japonesa",
-    description: "Embalagem japonesa premium estilo presente.",
-    priceBRL: 35,
-  },
-  {
-    id: "inspection",
-    name: "Teste & Inspeção Premium",
-    description: "Inspeção manual antes do envio.",
-    priceBRL: 25,
-  },
-];
-
-// =========================================
-// PRODUTOS (COM SUBCATEGORIA ADICIONADA)
-// =========================================
+import { Product } from "./types";
 
 export const PRODUCTS: Product[] = [
-  // ================= HAIR CARE =================
-
   {
-    id: "hair-1",
-    name: "Mise en Scène Perfect Serum",
-    jpName: "미쟝센 퍼펙트 세럼",
-    category: "Hair Care",
-    priceBRL: 115.2,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 85,
-    estimatedTaxBRL: 45,
-    image:
-      "https://i.ibb.co/fzWnDKHw/035703bd-cb2d-4a86-ad5c-6256bfb772d2-mise-en-scene-perfect-serum-original-serum-capilar-30ml.avif",
-    rating: 5,
-    reviewsCount: 182,
-    inStock: true,
-    featured: true,
-    description: "Serum capilar original importado do Japão.",
-    specifications: {
-      Marca: "Mise en Scène",
-      Conteúdo: "80ml",
-      Origem: "Japão",
-    },
-  },
-
-  {
-    id: "hair-2",
-    name: "Fino Hair Oil – Nutrição",
-    jpName: "Fino Premium Oil",
-    category: "Hair Care",
-    priceBRL: 122.4,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 85,
-    estimatedTaxBRL: 45,
-    image:
-      "https://i.ibb.co/dJcmTv3t/9e2ce447-46b6-478e-a2e7-4b5b06f0b555-20076358-a.avif",
-    rating: 5,
-    reviewsCount: 141,
-    inStock: true,
-    featured: true,
-    description: "Óleo capilar premium japonês.",
-    specifications: {
-      Marca: "Fino",
-      Tipo: "Hair Oil",
-      Origem: "Japão",
-    },
-  },
-
-  // ================= SKINCARE =================
-
-  {
-    id: "skin-1",
-    name: "Medicube Zero Pore Pad",
-    jpName: "Medicube",
-    category: "Skincare",
-    priceBRL: 219.6,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 90,
-    estimatedTaxBRL: 60,
-    image:
-      "https://i.ibb.co/zWTrLtsP/71-Mcspt-6-AL-AC-UF1000-1000-QL80-FMwebp.webp",
-    rating: 5,
-    reviewsCount: 205,
-    inStock: true,
-    featured: true,
-    description: "Pads para limpeza de poros.",
-    specifications: {
-      Marca: "Medicube",
-      Tipo: "Pore Care",
-      Origem: "Coreia/Japão",
-    },
-  },
-
-  // ================= ACESSÓRIOS =================
-
-  {
-    id: "tool-1",
-    name: "ReFa Heart Brush",
-    jpName: "ReFa",
-    category: "Acessórios",
-    priceBRL: 198,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 90,
-    estimatedTaxBRL: 60,
-    image:
-      "https://i.ibb.co/0jrfhx80/71ho-ORXt-ZIL-AC-UF1000-1000-QL80.jpg",
-    rating: 5,
-    reviewsCount: 133,
-    inStock: true,
-    featured: true,
-    description: "Escova premium japonesa.",
-    specifications: {
-      Marca: "ReFa",
-      Tipo: "Hair Brush",
-      Origem: "Japão",
-    },
-  },
-
-  // ================= NOVAS CATEGORIAS =================
-
-  {
-    id: "sport-1",
-    name: "Nike Air Zoom",
-    jpName: "ナイキ エアズーム",
-    category: "Tênis",
-    subcategory: "Nike",
-    priceBRL: 520,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 90,
-    estimatedTaxBRL: 60,
-    image: "",
+    id: "jp-shiseido-fino",
+    name: "Máscara de Tratamento Capilar Shiseido Fino Premium Touch",
+    jpName: "フィーノ プレミアムタッチ 浸透美容液ヘアマスク",
+    description: "Uma das máscaras de tratamento mais vendidas no Japão. Nutrição profunda para cabelos danificados.",
+    priceBRL: 75.00,
+    serviceFeeBRL: 25.00,
+    shippingEstBRL: 45.00,
+    image: "https://images.unsplash.com/photo-1608248597481-496100c80836?auto=format&fit=crop&w=500&q=80",
     rating: 4.9,
     reviewsCount: 312,
-    inStock: true,
-    featured: true,
-    description: "Tênis Nike importado do Japão.",
-    specifications: {
-      Marca: "Nike",
-      Tipo: "Running",
-    },
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
   },
-
   {
-    id: "sport-2",
-    name: "New Balance Runner",
-    jpName: "ニューバランス",
-    category: "Tênis",
-    subcategory: "New Balance",
-    priceBRL: 480,
-    serviceFeeBRL: 120,
-    shippingEstBRL: 90,
-    estimatedTaxBRL: 60,
-    image: "",
+    id: "jp-threeppy-totebag",
+    name: "Bolsa de Ombro THREEPPY Frills Design Exclusiva",
+    jpName: "THREEPPY フリル キャンバストートバッグ",
+    description: "Design elegante direto da linha premium THREEPPY do grupo Daiso Japan. Acabamento reforçado.",
+    priceBRL: 45.00,
+    serviceFeeBRL: 15.00,
+    shippingEstBRL: 35.00,
+    image: "https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&w=500&q=80",
     rating: 4.8,
-    reviewsCount: 210,
-    inStock: true,
-    featured: true,
-    description: "Tênis New Balance premium.",
-    specifications: {
-      Marca: "New Balance",
-      Tipo: "Running",
-    },
+    reviewsCount: 42,
+    department: "Estilo de Vida, Cultura e Exclusivos",
+    category: "THREEPPY",
+    stock: 8
   },
-
   {
-    id: "fishing-1",
-    name: "Kit Pesca Pro Japan",
-    jpName: "釣りセット",
-    category: "Pesca",
-    priceBRL: 350,
-    serviceFeeBRL: 100,
-    shippingEstBRL: 90,
-    estimatedTaxBRL: 50,
-    image: "",
-    rating: 4.7,
-    reviewsCount: 98,
-    inStock: true,
-    featured: true,
-    description: "Kit completo de pesca japonês.",
-    specifications: {
-      Tipo: "Pesca Profissional",
-      Origem: "Japão",
-    },
-  },
+    id: "jp-midori-md-notebook",
+    name: "Caderno Técnico Midori MD Notebook - Paper A5",
+    jpName: "ミドリ MDノート A5 方眼罫",
+    description: "Papel de alta qualidade que evita sangramento de tinta. O favorito dos entusiastas de papelaria no Japão.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 20.00,
+    shippingEstBRL: 30.00,
+    image: "https://images.unsplash.com/photo-1531346878377-a5be20888e57?auto=format&fit=crop&w=500&q=80",
+    rating: 5.0,
+    reviewsCount: 88,
+    department: "Estilo de Vida, Cultura e Exclusivos",
+    category: "Papelaria (Stationery)",
+    stock: 20
+  }
 ];
-
-export const SUBSCRIPTION_BOXES: SubscriptionBox[] = [];
-export const TESTIMONIALS: Testimonial[] = [];
-export const BLOG_POSTS: BlogPost[] = [];
+    
