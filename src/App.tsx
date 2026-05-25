@@ -16,7 +16,7 @@ import AuthModal from "./components/AuthModal";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, Truck, CreditCard, HelpCircle } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, ShieldCheck, HelpCircle } from "lucide-react";
 
 import { auth } from "./firebase";
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -107,7 +107,7 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
-      {/* 🌟 1. TARJA DE ANÚNCIOS SUPERIOR (PADRÃO GRANDES E-COMMERCES) */}
+      {/* TARJA DE ANÚNCIOS SUPERIOR */}
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
         <span className="flex items-center gap-1">🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE TÓQUIO</span>
         <span className="hidden md:inline text-slate-400">|</span>
@@ -239,19 +239,15 @@ export default function App() {
         </main>
       )}
 
-      {/* 🌟 3. RODAPÉ INSTITUCIONAL ROBUSTO (PADRÃO DE CONFIANÇA) */}
+      {/* RODAPÉ INSTITUCIONAL ROBUSTO */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          
-          {/* Coluna 1: Sobre a Marca */}
           <div>
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
               Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de Tóquio para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
-
-          {/* Coluna 2: Navegação Rápida */}
           <div>
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
@@ -261,8 +257,6 @@ export default function App() {
               <li><a href="#calculator" className="hover:text-slate-900 transition-colors">Calculadora de Custos</a></li>
             </ul>
           </div>
-
-          {/* Coluna 3: Ajuda & Suporte */}
           <div>
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Suporte</h3>
             <ul className="space-y-2 text-sm font-medium">
@@ -272,12 +266,9 @@ export default function App() {
               <li><span className="hover:text-slate-900 cursor-pointer">Fale Conosco</span></li>
             </ul>
           </div>
-
-          {/* Coluna 4: Segurança e Pagamento */}
           <div>
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Segurança e Pagamento</h3>
             <div className="flex flex-wrap gap-2 mb-4">
-              {/* Selos de Formas de Pagamento Simbolizados */}
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">PIX</span>
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">CREDIT CARD</span>
               <span className="bg-slate-100 text-slate-700 px-2 py-1 rounded text-xs font-bold font-mono">BOLETO</span>
@@ -287,19 +278,22 @@ export default function App() {
               <span>Ambiente seguro com criptografia de ponta a ponta.</span>
             </div>
           </div>
-
         </div>
-
-        {/* Linha Inferior de Direitos Autorais */}
-        <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400">
+        
+        {/* CRÉDITOS E CONTRATO FIXO DO RODAPÉ */}
+        <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400 space-y-2">
           <p>© {new Date().getFullYear()} Japão Box Brasil. Todos os direitos reservados. Importações do Japão intermediadas de forma legal.</p>
-          <p className="mt-1">As simulações de impostos e taxas adicionais são apenas estimativas com base na regulamentação de comércio exterior vigente.</p>
+          
+          {/* 🔥 ASSINATURA FIXA SOLICITADA */}
+          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+          </p>
         </div>
       </footer>
 
       {/* BOTTOM NAVIGATION PARA MOBILE */}
       {user && (
-        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-50 shadow-lg">
+        <div className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t flex justify-around py-2 z-40 shadow-lg">
           <button 
             onClick={() => setActiveTab("store")}
             className={`flex flex-col items-center text-xs font-bold ${activeTab === "store" ? "text-slate-950" : "text-slate-400"}`}
@@ -317,6 +311,25 @@ export default function App() {
         </div>
       )}
 
+      {/* BOTÃO FLUTUANTE DO WHATSAPP */}
+      <a
+        href="https://wa.me/817014074971"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`fixed right-4 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center ${
+          user ? "bottom-20 md:bottom-6" : "bottom-6"
+        }`}
+        aria-label="Contato via WhatsApp"
+      >
+        <svg
+          className="w-6 h-6 fill-current"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.129-.168.192-.336.216-.624.072-2.926-1.46-3.83-2.422-4.571-3.69-.192-.336-.024-.517.144-.684.152-.15.336-.39.504-.585.168-.192.224-.312.336-.52.112-.216.056-.402-.024-.546-.08-.144-.648-1.56-.888-2.136-.234-.564-.473-.488-.648-.497-.168-.008-.36-.01-.552-.01-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.399 0 1.416 1.032 2.784 1.176 2.976.144.192 2.032 3.102 4.921 4.348.687.296 1.224.473 1.643.606.69.219 1.32.188 1.817.114.553-.083 1.702-.696 1.944-1.368.24-.672.24-1.248.168-1.368-.072-.12-.264-.192-.552-.336z" />
+        </svg>
+      </a>
+
       {/* CARTRADWER & MODAIS */}
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
@@ -324,5 +337,4 @@ export default function App() {
 
     </div>
   );
-    }
-         
+}
