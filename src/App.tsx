@@ -220,7 +220,7 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* 🛠️ MENU DE ABAS SUPERIOR TOTALMENTE RECONSTRUÍDO SEM ERRO DE FECHAMENTO */}
+      {/* MENU DE ABAS SUPERIOR */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
@@ -258,7 +258,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* CONDICIONAL DE TELAS */}
+      {/* CONDICIONAL DE TELAS - TOTALMENTE REVISADO */}
       {activeTab === "store" ? (
         <>
           <Hero 
@@ -300,8 +300,9 @@ export default function App() {
             <CostCalculator onOpenBudgetModalWithData={() => {}} />
             <Testimonials />
             <BlogSection />
-          </>
-        ) : activeTab === "about" ? (
+          </main>
+        </>
+      ) : activeTab === "about" ? (
         /* PÁGINA SOBRE NÓS */
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
@@ -320,7 +321,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
-                <p>Iniciamos nossa empresa com um dream: levar até o Brasil os melhores produtos japoneses e coreanos, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
@@ -416,6 +417,25 @@ export default function App() {
         </div>
       )}
 
+      {/* BOTÃO FLUTUANTE DO WHATSAPP */}
+      <a
+        href="https://wa.me/817014074971"
+        target="_blank"
+        rel="noopener noreferrer"
+        className={`fixed right-4 z-50 bg-[#25D366] text-white p-3.5 rounded-full shadow-2xl hover:scale-110 transition-transform flex items-center justify-center ${
+          user ? "bottom-20 md:bottom-6" : "bottom-6"
+        }`}
+        aria-label="Contato via WhatsApp"
+      >
+        <svg
+          className="w-6 h-6 fill-current"
+          viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.513 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.713-1.457L0 24zm6.59-4.846c1.66.986 3.288 1.448 4.805 1.449 5.423 0 9.834-4.394 9.837-9.8 0-2.617-1.019-5.076-2.87-6.931C16.51 2.016 14.056.995 11.5.995 6.082.995 1.671 5.39 1.668 10.79c0 1.572.463 3.102 1.34 4.509l-.989 3.61 3.725-.976zm11.267-6.398c-.287-.144-1.702-.84-1.966-.935-.264-.096-.456-.144-.648.144-.192.288-.744.936-.912 1.129-.168.192-.336.216-.624.072-2.926-1.46-3.83-2.422-4.571-3.69-.192-.336-.024-.517.144-.684.152-.15.336-.39.504-.585.168-.192.224-.312.336-.52.112-.216.056-.402-.024-.546-.08-.144-.648-1.56-.888-2.136-.234-.564-.473-.488-.648-.497-.168-.008-.36-.01-.552-.01-.192 0-.504.072-.768.36-.264.288-1.008.984-1.008 2.399 0 1.416 1.032 2.784 1.176 2.976.144.192 2.032 3.102 4.921 4.348.687.296 1.224.473 1.643.606.69.219 1.32.188 1.817.114.553-.083 1.702-.696 1.944-1.368.24-.672.24-1.248.168-1.368-.072-.12-.264-.192-.552-.336z" />
+        </svg>
+      </a>
+
       {/* MODAIS GLOBAIS DE INTERAÇÃO */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} />}
@@ -423,5 +443,4 @@ export default function App() {
 
     </div>
   );
-         }
-          
+}
