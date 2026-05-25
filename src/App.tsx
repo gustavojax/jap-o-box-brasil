@@ -1,4 +1,4 @@
-Fimport React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import Header from "./components/Header";
 import Hero from "./components/Hero";
