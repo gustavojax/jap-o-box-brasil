@@ -15,7 +15,7 @@ import ClientDashboard from "./components/ClientDashboard";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, ShoppingBag, User, HelpCircle, Clock, Truck, CheckCircle, Heart, Grid, Layers } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, ShoppingBag, User, HelpCircle, Clock, Truck, CheckCircle, Heart } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -135,9 +135,7 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // ==========================================
-  // ARVORE DE CATEGORIAS AMAZON JP PREMIUM MAPPING
-  // ==========================================
+  // Mapeamento mantido apenas para alimentar a lógica de filtros e o legado do Header
   const departmentToCategoriesMap: Record<string, string[]> = useMemo(() => {
     return {
       "Casa e Cozinha": [
@@ -177,22 +175,6 @@ export default function App() {
       ]
     };
   }, []);
-
-  const departments = useMemo(() => {
-    return ["Todos", ...Object.keys(departmentToCategoriesMap)];
-  }, [departmentToCategoriesMap]);
-
-  const availableSubCategories = useMemo(() => {
-    if (selectedDepartment === "Todos") {
-      return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
-    }
-    return ["Todos", ...(departmentToCategoriesMap[selectedDepartment] || [])];
-  }, [selectedDepartment, departmentToCategoriesMap]);
-
-  const handleDepartmentChange = (dept: string) => {
-    setSelectedDepartment(dept);
-    setSelectedCategory("Todos");
-  };
 
   const allFlattenedCategoriesLegacy = useMemo(() => {
     return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
@@ -266,7 +248,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER INTEGRADO - NAVEGAÇÃO PREMIUM SEM ELEMENTOS ÓRFÃOS */}
+      {/* HEADER INTEGRADO */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -298,63 +280,14 @@ export default function App() {
           <main className="flex-1">
             <TrustBadges />
             
-            {/* PAINEL DE NAVEGAÇÃO INTERNO - ORGANIZAÇÃO ESTILO AMAZON JP */}
-            <section className="max-w-7xl mx-auto px-4 pt-8 pb-4">
-              <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4">
-                
-                {/* 1. Seleção de Macro Departamentos */}
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
-                    <Grid className="w-3.5 h-3.5 text-slate-400" /> Macro Departamentos (Amazon JP Style)
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {departments.map((dept) => (
-                      <button
-                        key={dept}
-                        onClick={() => handleDepartmentChange(dept)}
-                        className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer border ${
-                          selectedDepartment === dept
-                            ? "bg-slate-900 border-slate-900 text-white shadow-sm"
-                            : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
-                        }`}
-                      >
-                        {dept}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* 2. Seleção de Subcategorias Dinâmicas */}
-                <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
-                    <Layers className="w-3.5 h-3.5 text-slate-400" /> Subcategorias Filtradas
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-2">
-                    {availableSubCategories.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer border ${
-                          selectedCategory === cat
-                            ? "bg-rose-600 border-rose-600 text-white"
-                            : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            </section>
+            {/* ✂️ O BLOCO DE BOTÕES HORIZONTAIS FOI REMOVIDO DAQUI PARA FAZER O CLEAN-UP VISUAL */}
             
             {/* PRODUTOS */}
             <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
               <div className="flex items-center justify-between mb-6 border-b pb-4">
                 <div className="text-left">
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo: {selectedDepartment} / {selectedCategory}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo: {selectedCategory}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-slate-400" />
@@ -407,7 +340,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
