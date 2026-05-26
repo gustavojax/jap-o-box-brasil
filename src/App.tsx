@@ -209,7 +209,7 @@ export default function App() {
     }
   };
 
-  // 🛠️ FUNÇÃO REGENERADA: Força o retorno seguro para a página home/vitrine ao clicar no logo
+  // 🛠️ FIX DEFINITIVO DO LOGO: Retorno imediato e limpo para a vitrine
   const handleReturnToStore = () => {
     setSelectedCategory("Todos");
     setSearchQuery("");
@@ -233,7 +233,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER CONECTADO AO BOTÃO DO LOGO RETORNÁVEL */}
+      {/* HEADER CORRIGIDO COM EVENTO DO LOGO INJETADO */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -250,7 +250,7 @@ export default function App() {
         }}
         user={user}
         onLogout={handleLogout}
-        // Injetando o clique do logo se o componente aceitar, ou controlando nativamente
+        onLogoClick={handleReturnToStore} // Garante a execução da rota ao clicar no logo
       />
 
       {/* MENU DE ABAS SUPERIORES */}
@@ -291,17 +291,19 @@ export default function App() {
         </div>
       </div>
 
-      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
+      {/* RENDERIZAÇÃO CONDICIONAL */}
       {activeTab === "store" ? (
         <>
-          {/* 🛠️ ENGENHARIA DE GATILHOS NO HERO: Conectando os botões órfãos às funções do App */}
+          {/* 🛠️ BINDING DO HERO TOTALMENTE CORRIGIDO E SEGURO */}
           <Hero 
             onScrollToCatalog={() => {
               setSelectedCategory("Todos");
               document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
             }}
-            onOpenBudgetModal={() => {
-              // Se houver usuário abre o painel direto, se não, pede login antes
+            // ABRE O FORMULÁRIO DO PERSONAL SHOPPER NA HORA, SEM EXIGIR LOGIN TRAVADO
+            onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+            // ABRE O MODAL OU DIRECIONA PARA O CLUBE DE ASSINATURA
+            onOpenClubModal={() => {
               if (user) {
                 setActiveTab("account");
               } else {
@@ -355,7 +357,6 @@ export default function App() {
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
-            {/* CONTAINER DA LOGO DO REDIRECIONAMENTO NA ESQUERDA */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
                 src="https://iili.io/CJbmWhP.md.jpg" 
@@ -365,7 +366,6 @@ export default function App() {
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
             </div>
 
-            {/* CONTEÚDO DA HISTÓRIA */}
             <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
               <div>
                 <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
@@ -374,11 +374,10 @@ export default function App() {
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
                 <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
-                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências uniques, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
-              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO REAL DA PAULA */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
@@ -452,6 +451,7 @@ export default function App() {
         />
       )}
       
+      {/* MODAL DE ORÇAMENTO DO PERSONAL SHOPPER */}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
