@@ -9,6 +9,7 @@ import BlogSection from "./components/BlogSection";
 import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
+import ClubModal from "./components/ClubModal"; // 🔄 Importado com sucesso
 
 import ClientDashboard from "./components/ClientDashboard";
 
@@ -128,6 +129,7 @@ export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [isClubModalOpen, setIsClubModalOpen] = useState(false); // 🔄 Estado do Clube de Assinatura
   const [notification, setNotification] = useState<string | null>(null);
 
   const showNotification = (msg: string) => {
@@ -135,7 +137,7 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // Mapeamento mantido apenas para alimentar a lógica de filtros e o legado do Header
+  // Mapeamento mantido para alimentar filtros e comportamento do Header
   const departmentToCategoriesMap: Record<string, string[]> = useMemo(() => {
     return {
       "Casa e Cozinha": [
@@ -273,14 +275,14 @@ export default function App() {
       {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
         <>
+          {/* HERO COM GATILHOS DE PARÂMETROS ADICIONADOS */}
           <Hero 
             onScrollToCatalog={() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })}
             onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+            onOpenClubModal={() => setIsClubModalOpen(true)} // 🔄 Injetado controle do clube
           />
           <main className="flex-1">
             <TrustBadges />
-            
-            {/* ✂️ O BLOCO DE BOTÕES HORIZONTAIS FOI REMOVIDO DAQUI PARA FAZER O CLEAN-UP VISUAL */}
             
             {/* PRODUTOS */}
             <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
@@ -457,6 +459,7 @@ export default function App() {
 
       {/* MODAIS GLOBAIS DE INTERAÇÃO */}
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} /> {/* 🔄 Renderização acoplada */}
       
       {isCartOpen && (
         <CartDrawer 
