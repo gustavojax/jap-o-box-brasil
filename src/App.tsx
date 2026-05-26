@@ -335,11 +335,11 @@ export default function App() {
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
-            {/* CONTAINER DA LOGO DO REDIRECIONAMENTO NA ESQUERDA */}
+            {/* 🛠️ CORREÇÃO CRÍTICA: Foto real da Paula Takashiro preenchendo o bloco esquerdo em tamanho real */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
-                src="https://iili.io/CJbmWhP.md.jpg" 
-                alt="Japão Box Brasil Logo" 
+                src="https://iili.io/CJpV5fj.md.jpg" 
+                alt="Paula Takashiro" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
@@ -358,13 +358,14 @@ export default function App() {
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
-              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO REAL DA PAULA */}
+              {/* ASSINATURA AJUSTADA: Logo da empresa na bolinha pequena perto do nome */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
+                  {/* 🛠️ A bolinha pequena agora exibe a Logo oficial do Redirecionamento */}
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
-                      src="https://iili.io/CJpV5fj.md.jpg" 
-                      alt="Paula Takashiro Portrait" 
+                      src="https://iili.io/CJbmWhP.md.jpg" 
+                      alt="Japão Box Brasil Logo" 
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -385,7 +386,7 @@ export default function App() {
             <ClientDashboard 
               user={user}
               orders={orders}
-              loadingOrders={loadingOrders}
+              loadingOrders={orders}
               onCreateMockOrder={handleCreateMockOrder}
               onLogout={handleLogout}
               getStatusBadge={getStatusBadge}
