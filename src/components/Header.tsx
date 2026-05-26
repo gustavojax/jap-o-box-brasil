@@ -48,9 +48,9 @@ export default function Header({
         {/* LOGO AMPLIADO E ATUALIZADO */}
         <div 
           onClick={onLogoClick}
-          className="flex items-center gap-4 min-w-[260px] cursor-pointer hover:opacity-95 transition-opacity select-none"
+          className="flex items-center gap-4 min-w-[290px] cursor-pointer hover:opacity-95 transition-opacity select-none"
         >
-          {/* 🔄 Link direto oficial atualizado com sucesso e tamanho w-20 h-20 para dar nitidez */}
+          {/* 🔄 Link direto oficial atualizado com sucesso e tamanho w-40 h-30 para dar nitidez */}
           <img
             src="https://iili.io/CJbmWhP.jpg"
             alt="Japão Box Brasil Logo"
