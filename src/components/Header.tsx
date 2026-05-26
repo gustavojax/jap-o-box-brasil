@@ -11,6 +11,7 @@ interface Props {
   onOpenAuth: () => void;
   user: any;
   onLogout: () => void;
+  onLogoClick: () => void; // 🔄 Adicionado para suportar a ação de retorno à página inicial
 }
 
 export default function Header({
@@ -23,6 +24,7 @@ export default function Header({
   onOpenAuth,
   user,
   onLogout,
+  onLogoClick, // 🔄 Recebendo a nova propriedade
 }: Props) {
   return (
     <header className="w-full bg-white shadow-sm sticky top-0 z-50">
@@ -31,7 +33,11 @@ export default function Header({
       <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between gap-6">
 
         {/* LOGO MAIOR (SHOPEE STYLE) */}
-        <div className="flex items-center gap-4 min-w-[240px]">
+        {/* 🔄 Adicionado onClick e cursor-pointer para gerenciar o retorno seguro à home */}
+        <div 
+          onClick={onLogoClick}
+          className="flex items-center gap-4 min-w-[240px] cursor-pointer hover:opacity-90 transition-opacity"
+        >
 
           <img
             src="https://i.ibb.co/jZDQ1vd4/IMG-20260515-WA0037.jpg"
@@ -39,7 +45,7 @@ export default function Header({
             className="w-16 h-16 rounded-xl object-cover shadow-md"
           />
 
-          <div className="flex flex-col">
+          <div className="flex flex-col text-left">
             <span className="text-2xl font-black text-slate-900 leading-tight">
               Japão Box Brasil
             </span>
@@ -72,7 +78,7 @@ export default function Header({
 
               <button
                 onClick={onLogout}
-                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm"
+                className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl text-sm font-bold cursor-pointer transition-colors"
               >
                 Sair
               </button>
@@ -80,7 +86,7 @@ export default function Header({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-xl text-sm font-semibold cursor-pointer transition-colors"
             >
               Entrar
             </button>
@@ -89,13 +95,13 @@ export default function Header({
           {/* CARRINHO */}
           <button
             onClick={onOpenCart}
-            className="relative bg-black text-white px-5 py-2 rounded-xl flex items-center gap-2"
+            className="relative bg-black hover:bg-slate-900 text-white px-5 py-2 rounded-xl flex items-center gap-2 cursor-pointer transition-colors"
           >
             <ShoppingCart size={18} />
             Carrinho
 
             {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-bold">
                 {cartCount}
               </span>
             )}
@@ -107,16 +113,16 @@ export default function Header({
 
       {/* CATEGORIAS (SHOPEE STYLE BAR) */}
       <div className="border-t bg-slate-50">
-        <div className="max-w-7xl mx-auto px-4 py-3 flex gap-3 overflow-x-auto">
+        <div className="max-w-7xl mx-auto px-4 py-3 flex gap-3 overflow-x-auto scrollbar-none">
 
           {categories.map((cat) => (
             <button
               key={cat}
               onClick={() => onSelectCategory(cat)}
-              className={`text-sm whitespace-nowrap px-4 py-1.5 rounded-full border transition ${
+              className={`text-sm whitespace-nowrap px-4 py-1.5 rounded-full border transition cursor-pointer ${
                 selectedCategory === cat
-                  ? "bg-orange-500 text-white border-orange-500"
-                  : "bg-white hover:border-orange-400"
+                  ? "bg-orange-500 text-white border-orange-500 font-bold"
+                  : "bg-white text-slate-600 border-slate-200 hover:border-orange-400 hover:text-orange-500"
               }`}
             >
               {cat}
