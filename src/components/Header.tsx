@@ -1,19 +1,16 @@
 import React, { useState } from "react";
-import { ShoppingCart, Menu, ChevronDown, LogOut, Search } from "lucide-react";
+import { ShoppingBag, User, LogOut, Menu, ChevronDown, Search, Box } from "lucide-react";
 
-interface Props {
-  onSearchChange: (v: string) => void;
+interface HeaderProps {
+  onSearchChange: (query: string) => void;
   selectedCategory: string;
-  onSelectCategory: (v: string) => void;
+  onSelectCategory: (category: string) => void;
   categories: string[];
   cartCount: number;
   onOpenCart: () => void;
   onOpenAuth: () => void;
   user: any;
   onLogout: () => void;
-  onLogoClick: () => void;
-  activeTab: "store" | "account" | "about";
-  setActiveTab: (tab: "store" | "account" | "about") => void;
 }
 
 export default function Header({
@@ -26,132 +23,157 @@ export default function Header({
   onOpenAuth,
   user,
   onLogout,
-  onLogoClick,
-  activeTab,
-  setActiveTab
-}: Props) {
+}: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  return (
-    // 🌸 Fundo rosa sakura leve (bg-rose-50/60) com desfoque de fundo (backdrop-blur)
-    <header className="w-full bg-rose-50/60 backdrop-blur-md sticky top-0 z-50 border-b border-rose-100/80 shadow-sm relative overflow-hidden">
-      
-      {/* DETALHES DE SAKURA FLUTUANTES NO FUNDO (VISUAL PREMIUM JAPÃO) */}
-      <div className="absolute top-1 left-4 text-rose-300/30 text-xs select-none pointer-events-none font-serif">🌸</div>
-      <div className="absolute bottom-2 left-1/3 text-rose-300/20 text-sm select-none pointer-events-none font-serif animate-pulse">🌸</div>
-      <div className="absolute top-2 right-1/4 text-rose-300/20 text-xs select-none pointer-events-none font-serif">🌸</div>
-      <div className="absolute bottom-1 right-12 text-rose-300/30 text-sm select-none pointer-events-none font-serif">🌸</div>
+  const handleCategoryClick = (category: string) => {
+    onSelectCategory(category);
+    setIsDropdownOpen(false);
+  };
 
-      {/* LINHA 1: BARRA PRINCIPAL DE OPERAÇÃO */}
-      <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-6 relative z-10">
+  return (
+    <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 py-3 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4">
         
-        {/* LOGO AMPLIADO E ATUALIZADO */}
-        <div 
-          onClick={onLogoClick}
-          className="flex items-center gap-4 min-w-[290px] cursor-pointer hover:opacity-95 transition-opacity select-none"
-        >
-          {/* 🔄 Link direto oficial atualizado com sucesso e tamanho w-40 h-30 para dar nitidez */}
-          <img
-            src="https://iili.io/CJbmWhP.jpg"
-            alt="Japão Box Brasil Logo"
-            className="w-20 h-20 rounded-full object-cover shadow-md border-2 border-white bg-white transform hover:scale-105 transition-transform"
-          />
-          <div className="flex flex-col text-left">
-            <span className="text-2xl font-black text-slate-900 leading-tight tracking-tight">
-              Japão Box <span className="text-red-600">Brasil</span>
-            </span>
-            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest mt-0.5">
-              Redirecionamento 🇯🇵 ➔ 🇧🇷
-            </span>
+        {/* LOGO E SEÇÃO DE USUÁRIO */}
+        <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-100 flex-shrink-0 bg-slate-50">
+              <img 
+                src="https://i.ibb.co/60ec720e8b0c4f2d1dcdbb5f/file.png" 
+                alt="Japão Box Brasil" 
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=100";
+                }}
+              />
+            </div>
+            <div className="text-left">
+              <h1 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-1">
+                Japão Box <span className="text-red-600">Brasil</span>
+              </h1>
+              <p className="text-[10px] font-bold text-slate-400 tracking-widest uppercase">Redirecionamento 🇯🇵 ➔ 🇧🇷</p>
+            </div>
+          </div>
+
+          {/* ÍCONES DE AÇÃO RÁPIDA (MOBILE) */}
+          <div className="flex items-center gap-2 md:hidden">
+            <button 
+              onClick={onOpenCart} 
+              className="p-2 text-slate-700 bg-slate-50 rounded-xl border relative cursor-pointer"
+            >
+              <ShoppingBag className="w-4 h-4" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 bg-red-600 text-white font-mono font-black text-[9px] w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+                  {cartCount}
+                </span>
+              )}
+            </button>
+            {user ? (
+              <button 
+                onClick={onLogout} 
+                className="p-2 text-red-600 bg-red-50 rounded-xl border border-red-100 cursor-pointer"
+                title="Sair"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            ) : (
+              <button 
+                onClick={onOpenAuth} 
+                className="p-2 text-slate-700 bg-slate-50 rounded-xl border cursor-pointer"
+              >
+                <User className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
 
-        {/* BUSCA CENTRALIZADA */}
-        <div className="flex-1 hidden md:flex max-w-xl relative">
+        {/* BARRA DE PESQUISA INTELIGENTE */}
+        <div className="relative flex-1 max-w-md mx-auto md:mx-0">
+          <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
-            placeholder="Buscar produtos, marcas e subcategorias do Japão..."
+            placeholder="Buscar produtos no Japão..."
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full border border-rose-200/60 bg-white/80 rounded-xl pl-4 pr-10 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-400 focus:bg-white transition-all shadow-sm"
+            className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all text-left"
           />
-          <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-3" />
         </div>
 
-        {/* AÇÕES DE CONTA E SACOLA */}
-        <div className="flex items-center gap-3">
-          {user ? (
-            <div className="flex items-center gap-2 bg-white/90 border border-rose-100 p-1 pr-3 rounded-xl shadow-sm">
-              <div className="bg-slate-900 text-white w-7 h-7 rounded-lg flex items-center justify-center text-xs font-black">
-                {user.email?.charAt(0).toUpperCase()}
-              </div>
-              <span className="text-xs font-bold text-slate-700 hidden lg:block max-w-[120px] truncate">
-                {user.email}
+        {/* CONTROLES DE NAVEGAÇÃO E AUTENTICAÇÃO (DESKTOP) */}
+        <div className="hidden md:flex items-center gap-3">
+          <button 
+            onClick={onOpenCart} 
+            className="flex items-center gap-2 px-4 py-2 text-xs font-bold text-slate-700 bg-slate-50 border border-slate-200 rounded-xl hover:bg-slate-100 transition-all cursor-pointer relative"
+          >
+            <ShoppingBag className="w-4 h-4 text-slate-500" />
+            Carrinho
+            {cartCount > 0 && (
+              <span className="bg-red-600 text-white font-mono font-black text-[10px] px-1.5 py-0.5 rounded-full">
+                {cartCount}
               </span>
-              <button
+            )}
+          </button>
+
+          {user ? (
+            <div className="flex items-center gap-2">
+              <div className="bg-slate-100 px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border">
+                <Box className="w-3.5 h-3.5 text-slate-500" />
+                <span className="max-w-[100px] truncate">{user.displayName || user.email}</span>
+              </div>
+              <button 
                 onClick={onLogout}
-                className="text-slate-400 hover:text-red-600 p-1 transition-colors cursor-pointer"
+                className="p-2 text-slate-400 hover:text-red-600 bg-slate-50 border rounded-xl hover:bg-red-50 hover:border-red-100 transition-all cursor-pointer"
                 title="Sair da Conta"
               >
                 <LogOut className="w-4 h-4" />
               </button>
             </div>
           ) : (
-            <button
+            <button 
               onClick={onOpenAuth}
-              className="border border-rose-200 bg-white hover:border-red-400 text-slate-700 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all cursor-pointer shadow-sm"
             >
-              Entrar
+              <User className="w-3.5 h-3.5" />
+              Entrar / Registar
             </button>
           )}
-
-          <button
-            onClick={onOpenCart}
-            className="relative bg-slate-900 hover:bg-slate-800 text-white px-4 py-2.5 rounded-xl flex items-center gap-2 text-xs font-black uppercase tracking-wider transition-all cursor-pointer shadow-md"
-          >
-            <ShoppingCart size={14} />
-            <span className="hidden sm:inline">Carrinho</span>
-            {cartCount > 0 && (
-              <span className="bg-red-600 text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center border-2 border-white shadow-sm -mt-1">
-                {cartCount}
-              </span>
-            )}
-          </button>
         </div>
+
       </div>
 
-      {/* LINHA 2: NAVEGAÇÃO PREMIUM E DEPARTAMENTOS UNIFICADOS */}
-      <div className="border-t border-rose-100/60 bg-white/40 backdrop-blur-sm relative z-10">
-        <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-4 relative">
+      {/* 🛠️ ENGENHARIA DE CORREÇÃO DO LAYOUT MOBILE (FOTO 1) */}
+      {/* Esta linha separa o Dropdown e as Abas de forma limpa, evitando esmagamento e quebras */}
+      <div className="w-full border-t border-slate-100 bg-slate-50/50 px-4 py-2">
+        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
           
-          {/* MENU DROPDOWN DE CATEGORIAS ORGANIZADO */}
+          {/* BOTÃO DROPDOWN DE CATEGORIAS OPERACIONAL */}
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              className="flex items-center gap-2 px-3 py-1.5 bg-white border border-rose-200/60 hover:border-red-300 rounded-xl text-xs font-black text-slate-800 transition-all cursor-pointer shadow-sm"
+              className="w-full sm:w-auto flex items-center justify-between gap-2 px-3 py-2 bg-white border border-slate-200 rounded-xl text-xs font-black text-slate-800 shadow-sm hover:bg-slate-50 transition-all cursor-pointer"
             >
-              <Menu className="w-3.5 h-3.5 text-red-500" />
-              <span>Categorias Japão</span>
-              <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isDropdownOpen ? "rotate-180" : ""}`} />
+              <Menu className="w-3.5 h-3.5 text-slate-500" />
+              <span>{selectedCategory === "Todos" ? "Categorias Japão" : selectedCategory}</span>
+              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
+            {/* CONTAINER FLUTUANTE DA ÁRVORE DE CATEGORIAS */}
             {isDropdownOpen && (
               <>
                 <div className="fixed inset-0 z-40" onClick={() => setIsDropdownOpen(false)} />
-                <div className="absolute left-0 mt-2 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl z-50 p-2 grid grid-cols-1 gap-0.5 text-left animate-fadeIn">
-                  {categories.map((cat) => (
+                <div className="absolute left-0 mt-1.5 w-64 bg-white border border-slate-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 p-1.5 animate-fadeIn">
+                  <button
+                    onClick={() => handleCategoryClick("Todos")}
+                    className={`w-full text-left px-3 py-2 rounded-xl text-xs font-bold transition-all ${selectedCategory === "Todos" ? "bg-slate-900 text-white" : "text-slate-600 hover:bg-slate-50"}`}
+                  >
+                    Ver Todo o Catálogo
+                  </button>
+                  <div className="h-px bg-slate-100 my-1" />
+                  {categories.filter(c => c !== "Todos").map((cat) => (
                     <button
                       key={cat}
-                      onClick={() => {
-                        onSelectCategory(cat);
-                        setIsDropdownOpen(false);
-                        setActiveTab("store");
-                        document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
-                      }}
-                      className={`w-full text-left px-3 py-2 text-xs rounded-xl font-bold transition-all cursor-pointer ${
-                        selectedCategory === cat
-                          ? "bg-red-50 text-red-600"
-                          : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
-                      }`}
+                      onClick={() => handleCategoryClick(cat)}
+                      className={`w-full text-left px-3 py-2 rounded-xl text-xs font-semibold transition-all ${selectedCategory === cat ? "bg-red-600 text-white font-bold" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
                     >
                       {cat}
                     </button>
@@ -161,37 +183,13 @@ export default function Header({
             )}
           </div>
 
-          {/* MENUS INSTITUCIONAIS UNIFICADOS */}
-          <div className="flex gap-1.5 bg-white/90 p-1 rounded-xl border border-rose-100 shadow-sm">
-            <button
-              onClick={() => setActiveTab("store")}
-              className={`px-3 py-1.5 rounded-lg font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-500 hover:bg-slate-50"
-              }`}
-            >
-              Loja
-            </button>
-            <button
-              onClick={() => setActiveTab("about")}
-              className={`px-3 py-1.5 rounded-lg font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === "about" ? "bg-red-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-50"
-              }`}
-            >
-              Sobre Nós
-            </button>
-            <button
-              onClick={() => user ? setActiveTab("account") : onOpenAuth()}
-              className={`px-3 py-1.5 rounded-lg font-black text-[11px] uppercase tracking-wider transition-all cursor-pointer ${
-                activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-500 hover:bg-slate-50"
-              }`}
-            >
-              Minha Suíte 📦
-            </button>
+          {/* INDICADOR RETRÁTIL DO MOBILE */}
+          <div className="text-[11px] text-slate-400 font-medium text-center sm:text-right py-1 sm:py-0">
+            Filtro Ativo: <span className="text-slate-800 font-bold">{selectedCategory}</span>
           </div>
 
         </div>
       </div>
-
     </header>
   );
 }
