@@ -9,7 +9,7 @@ import BlogSection from "./components/BlogSection";
 import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
-import ClubModal from "./components/ClubModal"; // 🛠️ NOVO MODAL IMPREGNADO
+import ClubModal from "./components/ClubModal";
 
 import ClientDashboard from "./components/ClientDashboard";
 
@@ -128,7 +128,7 @@ export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
-  const [isClubModalOpen, setIsClubModalOpen] = useState(false); // 🛠️ CONTROLADOR DO CLUBE ATIVO
+  const [isClubModalOpen, setIsClubModalOpen] = useState(false);
   const [notification, setNotification] = useState<string | null>(null);
 
   const showNotification = (msg: string) => {
@@ -292,7 +292,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* RENDERIZAÇÃO CONDICIONAL */}
+      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
       {activeTab === "store" ? (
         <>
           <Hero 
@@ -301,7 +301,7 @@ export default function App() {
               document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
             }}
             onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
-            onOpenClubModal={() => setIsClubModalOpen(true)} // 🛠️ DESTRAVADO: Abre o modal do Clube direto!
+            onOpenClubModal={() => setIsClubModalOpen(true)}
           />
           <main className="flex-1">
             <TrustBadges />
@@ -349,33 +349,37 @@ export default function App() {
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
+            {/* 🛠️ CORREÇÃO DEFINITIVA: Foto real da Paula Takashiro em tamanho real na esquerda */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
-                src="https://iili.io/CJbmWhP.md.jpg" 
-                alt="Japão Box Brasil Logo" 
+                src="https://iili.io/CJpV5fj.md.jpg" 
+                alt="Paula Takashiro" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
             </div>
 
+            {/* CONTEÚDO DA HISTÓRIA */}
             <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
               <div>
                 <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um dream: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
+              {/* ASSINATURA: Logo oficial na bolinha redonda perto do nome dela */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
+                  {/* 🛠️ CORREÇÃO DEFINITIVA: Logo oficial inserida na bolinha da assinatura */}
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
-                      src="https://iili.io/CJpV5fj.md.jpg" 
-                      alt="Paula Takashiro Portrait" 
+                      src="https://iili.io/CJbmWhP.md.jpg" 
+                      alt="Japão Box Brasil Logo" 
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -415,7 +419,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte de conexão definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div className="text-left">
@@ -447,7 +451,6 @@ export default function App() {
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
-      {/* 🛠️ INJEÇÃO COMPLETA DO CLUBE DE ASSINATURA */}
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
 
     </div>
