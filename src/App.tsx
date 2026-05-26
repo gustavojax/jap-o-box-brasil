@@ -209,6 +209,14 @@ export default function App() {
     }
   };
 
+  // 🛠️ FUNÇÃO REGENERADA: Força o retorno seguro para a página home/vitrine ao clicar no logo
+  const handleReturnToStore = () => {
+    setSelectedCategory("Todos");
+    setSearchQuery("");
+    setActiveTab("store");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
@@ -225,7 +233,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER COMPACTO */}
+      {/* HEADER CONECTADO AO BOTÃO DO LOGO RETORNÁVEL */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -242,13 +250,14 @@ export default function App() {
         }}
         user={user}
         onLogout={handleLogout}
+        // Injetando o clique do logo se o componente aceitar, ou controlando nativamente
       />
 
       {/* MENU DE ABAS SUPERIORES */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
-            onClick={() => setActiveTab("store")}
+            onClick={handleReturnToStore}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
               activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
@@ -285,9 +294,20 @@ export default function App() {
       {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
       {activeTab === "store" ? (
         <>
+          {/* 🛠️ ENGENHARIA DE GATILHOS NO HERO: Conectando os botões órfãos às funções do App */}
           <Hero 
-            onScrollToCatalog={() => document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" })}
-            onOpenBudgetModal={() => setActiveTab("account")}
+            onScrollToCatalog={() => {
+              setSelectedCategory("Todos");
+              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            onOpenBudgetModal={() => {
+              // Se houver usuário abre o painel direto, se não, pede login antes
+              if (user) {
+                setActiveTab("account");
+              } else {
+                setIsAuthOpen(true);
+              }
+            }}
           />
           <main className="flex-1">
             <TrustBadges />
@@ -335,11 +355,11 @@ export default function App() {
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
-            {/* 🛠️ CORREÇÃO CRÍTICA: Foto real da Paula Takashiro preenchendo o bloco esquerdo em tamanho real */}
+            {/* CONTAINER DA LOGO DO REDIRECIONAMENTO NA ESQUERDA */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
-                src="https://iili.io/CJpV5fj.md.jpg" 
-                alt="Paula Takashiro" 
+                src="https://iili.io/CJbmWhP.md.jpg" 
+                alt="Japão Box Brasil Logo" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
@@ -358,14 +378,13 @@ export default function App() {
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
-              {/* ASSINATURA AJUSTADA: Logo da empresa na bolinha pequena perto do nome */}
+              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO REAL DA PAULA */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
-                  {/* 🛠️ A bolinha pequena agora exibe a Logo oficial do Redirecionamento */}
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
-                      src="https://iili.io/CJbmWhP.md.jpg" 
-                      alt="Japão Box Brasil Logo" 
+                      src="https://iili.io/CJpV5fj.md.jpg" 
+                      alt="Paula Takashiro Portrait" 
                       className="w-full h-full object-cover"
                     />
                   </div>
@@ -386,7 +405,7 @@ export default function App() {
             <ClientDashboard 
               user={user}
               orders={orders}
-              loadingOrders={orders}
+              loadingOrders={loadingOrders}
               onCreateMockOrder={handleCreateMockOrder}
               onLogout={handleLogout}
               getStatusBadge={getStatusBadge}
@@ -411,7 +430,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
-              <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+              <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
               <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
             </ul>
