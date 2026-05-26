@@ -15,7 +15,7 @@ import ClientDashboard from "./components/ClientDashboard";
 import { PRODUCTS } from "./data";
 import type { Product, CartItem } from "./types";
 
-import { ArrowUpDown, CheckCircle2, Clock, Truck, CheckCircle, Heart, Grid, Layers } from "lucide-react";
+import { ArrowUpDown, CheckCircle2, Clock, Truck, CheckCircle, Heart } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
@@ -118,9 +118,8 @@ export default function App() {
   };
 
   // =========================
-  // UI & NAVIGATION STATES
+  // UI & FILTERS STATES
   // =========================
-  const [selectedDepartment, setSelectedDepartment] = useState<string>("Todos");
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
@@ -135,75 +134,45 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  const departmentToCategoriesMap: Record<string, string[]> = useMemo(() => {
-    return {
-      "Casa e Cozinha": [
-        "Consumíveis de cozinha e necessidades diárias",
-        "Utensílios de mesa (Tableware)",
-        "Utensílios de cozinha (Kitchenware)",
-        "Armazenamento (Storage)",
-        "Interior",
-        "Sala de estar (Living)"
-      ],
-      "Alimentos e Limpeza": [
-        "Alimentos (Food)",
-        "Limpeza (Cleaning)",
-        "Lavanderia (Laundry)"
-      ],
-      "Tecnologia, Ferramentas e Automotivo": [
-        "Eletricidade",
-        "Ferramentas, carros e bicicletas",
-        "Reforma e renovação (Renovation)"
-      ],
-      "Beleza, Higiene e Saúde": [
-        "Maquiagem e cuidados com o cabelo",
-        "Saúde, cuidados infantis e cuidados com idosos",
-        "Higiene, cuidados bucais e produtos para banho"
-      ],
-      "Moda e Acessórios": [
-        "Bolsas e acessórios de moda",
-        "Calçados, viagem e impermeáveis",
-        "Roupas (Clothing)"
-      ],
-      "Estilo de Vida, Cultura e Exclusivos": [
-        "Papelaria (Stationery)",
-        "Presentes (Gift)",
-        "Feito à mão / Artesanal (Handmade)",
-        "Brinquedos, festas e esportes",
-        "THREEPPY"
-      ]
-    };
+  // Mapeamento completo das categorias extraídas da árvore do e-commerce
+  const allCategories = useMemo(() => {
+    return [
+      "Todos",
+      "Consumíveis de cozinha e necessidades diárias",
+      "Utensílios de mesa (Tableware)",
+      "Utensílios de cozinha (Kitchenware)",
+      "Armazenamento (Storage)",
+      "Interior",
+      "Sala de estar (Living)",
+      "Alimentos (Food)",
+      "Limpeza (Cleaning)",
+      "Lavanderia (Laundry)",
+      "Eletricidade",
+      "Ferramentas, carros e bicicletas",
+      "Reforma e renovação (Renovation)",
+      "Maquiagem e cuidados com o cabelo",
+      "Saúde, cuidados infantis e cuidados com idosos",
+      "Higiene, cuidados bucais e produtos para banho",
+      "Bolsas e acessórios de moda",
+      "Calçados, viagem e impermeáveis",
+      "Roupas (Clothing)",
+      "Papelaria (Stationery)",
+      "Presentes (Gift)",
+      "Feito à mão / Artesanal (Handmade)",
+      "Brinquedos, festas e esportes",
+      "THREEPPY"
+    ];
   }, []);
 
-  const departments = useMemo(() => {
-    return ["Todos", ...Object.keys(departmentToCategoriesMap)];
-  }, [departmentToCategoriesMap]);
-
-  const availableSubCategories = useMemo(() => {
-    if (selectedDepartment === "Todos") {
-      return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
-    }
-    return ["Todos", ...(departmentToCategoriesMap[selectedDepartment] || [])];
-  }, [selectedDepartment, departmentToCategoriesMap]);
-
-  const handleDepartmentChange = (dept: string) => {
-    setSelectedDepartment(dept);
-    setSelectedCategory("Todos");
-  };
-
-  const allFlattenedCategoriesLegacy = useMemo(() => {
-    return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
-  }, [departmentToCategoriesMap]);
-
+  // Filtragem unificada respondendo estritamente ao Dropdown do Header e Barra de Busca
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(p => {
-      const matchDept = selectedDepartment === "Todos" || (p as any).department === selectedDepartment;
       const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
       const matchSearch =
         p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         p.description.toLowerCase().includes(searchQuery.toLowerCase());
-      return matchDept && matchCat && matchSearch;
+      return matchCat && matchSearch;
     }).sort((a, b) => {
       const totalA = a.priceBRL + a.serviceFeeBRL;
       const totalB = b.priceBRL + b.serviceFeeBRL;
@@ -212,7 +181,7 @@ export default function App() {
       if (sortBy === "name") return a.name.localeCompare(b.name);
       return b.rating - a.rating;
     });
-  }, [selectedDepartment, selectedCategory, searchQuery, sortBy]);
+  }, [selectedCategory, searchQuery, sortBy]);
 
   const handleAddToCart = (product: Product) => {
     setCartItems(prev => {
@@ -258,12 +227,12 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER INTEGRADO COM GATILHO PARA A CONTA */}
+      {/* HEADER DINÂMICO CONECTADO AO DROPDOWN EXCLUSIVO */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
         onSelectCategory={setSelectedCategory}
-        categories={allFlattenedCategoriesLegacy}
+        categories={allCategories}
         cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
         onOpenAuth={() => {
@@ -277,7 +246,7 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* MENU DE ABAS RESTABELECIDO PARA EVITAR NAVEGAÇÃO ÓRFÃ */}
+      {/* MENU DE ABAS DE SUPORTE */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
@@ -315,7 +284,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* CONDICIONAL DE TELAS */}
+      {/* CONDICIONAL DE ABAS */}
       {activeTab === "store" ? (
         <>
           <Hero 
@@ -325,78 +294,14 @@ export default function App() {
           <main className="flex-1">
             <TrustBadges />
             
-            {/* 🛠️ REESTRUTURAÇÃO COMPLETA: PAINEL DE NAVEGAÇÃO PREMIUM DE DUAS COLUNAS */}
-            <section className="max-w-7xl mx-auto px-4 pt-8 pb-4 text-left">
-              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-                
-                {/* COLUNA ESQUERDA: MACRO DEPARTAMENTOS */}
-                <div className="lg:col-span-4 bg-white rounded-3xl p-4 border border-slate-200/60 shadow-sm space-y-1.5">
-                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5 px-2 mb-3">
-                    <Grid className="w-3.5 h-3.5" /> Macro Departamentos
-                  </span>
-                  
-                  <div className="flex flex-col gap-1">
-                    {departments.map((dept) => (
-                      <button
-                        key={dept}
-                        onClick={() => handleDepartmentChange(dept)}
-                        className={`w-full text-left px-4 py-3 rounded-xl font-bold text-xs transition-all cursor-pointer flex items-center justify-between group ${
-                          selectedDepartment === dept
-                            ? "bg-slate-900 text-white shadow-sm"
-                            : "bg-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"
-                        }`}
-                      >
-                        <span>{dept}</span>
-                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md transition-all ${
-                          selectedDepartment === dept 
-                            ? "bg-white/20 text-white" 
-                            : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
-                        }`}>
-                          {dept === "Todos" 
-                            ? PRODUCTS.length 
-                            : PRODUCTS.filter(p => (p as any).department === dept).length}
-                        </span>
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-                {/* COLUNA DIREITA: SUBCATEGORIAS DINÂMICAS E CONTEXTUAIS */}
-                <div className="lg:col-span-8 bg-white rounded-3xl p-5 border border-slate-200/60 shadow-sm space-y-4 h-full flex flex-col justify-center">
-                  <div className="space-y-1">
-                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
-                      <Layers className="w-3.5 h-3.5" /> Subcategorias em {selectedDepartment}
-                    </span>
-                    <p className="text-[11px] text-slate-400">Filtre por nichos específicos para refinar sua busca direta no depósito de Mie.</p>
-                  </div>
-
-                  {/* Lista Limpa Dinâmica sem quebras de linha estúpidas */}
-                  <div className="flex flex-wrap gap-2 pt-2">
-                    {availableSubCategories.map((cat) => (
-                      <button
-                        key={cat}
-                        onClick={() => setSelectedCategory(cat)}
-                        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
-                          selectedCategory === cat
-                            ? "bg-red-600 border-red-600 text-white shadow-sm shadow-red-100"
-                            : "bg-slate-50 border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-white hover:text-slate-900"
-                        }`}
-                      >
-                        {cat}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-
-              </div>
-            </section>
+            {/* ❌ REQUISITO CUMPRIDO: TODO O BLOCO "MACRO DEPARTAMENTOS" ANTIGO FOI DELETADO DAQUI COMPLETAMENTE */}
             
-            {/* PRODUTOS */}
+            {/* VITRINE DE PRODUTOS */}
             <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
               <div className="flex items-center justify-between mb-6 border-b pb-4">
                 <div className="text-left">
                   <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo: {selectedDepartment} / {selectedCategory}</p>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
                 </div>
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-slate-400" />
@@ -449,7 +354,7 @@ export default function App() {
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
                 <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
-                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, directly do Japão e da Coreia para você.</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
@@ -487,7 +392,7 @@ export default function App() {
           <div>
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém in Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div>
