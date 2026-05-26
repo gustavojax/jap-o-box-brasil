@@ -33,7 +33,7 @@ export default function Header({
   };
 
   const toggleDropdown = (e: React.MouseEvent) => {
-    e.stopPropagation(); // Impede que o clique se espalhe e feche o menu na mesma hora
+    e.stopPropagation();
     setIsDropdownOpen(!isDropdownOpen);
   };
 
@@ -41,11 +41,12 @@ export default function Header({
   const bgSakuraUrl = "https://iili.io/CJpxUiu.md.png";
 
   return (
-    <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative overflow-hidden">
+    // 🛠️ CORREÇÃO CRÍTICA: Removido overflow-hidden daqui para o dropdown não ser cortado!
+    <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative">
       
-      {/* 🌸 CAMADA DE FUNDO PREMIUM (OPACIDADE RECALIBRADA) */}
+      {/* 🌸 CAMADA DE FUNDO ISOLADA COM OVERFLOW-HIDDEN SEGURO */}
       <div 
-        className="absolute inset-0 pointer-events-none bg-cover bg-center bg-no-repeat mix-blend-multiply transition-opacity duration-300"
+        className="absolute inset-0 pointer-events-none bg-cover bg-center bg-no-repeat mix-blend-multiply transition-opacity duration-300 overflow-hidden"
         style={{ 
           backgroundImage: `url(${bgSakuraUrl})`,
           opacity: 0.45 
@@ -161,12 +162,12 @@ export default function Header({
 
       </div>
 
-      {/* 🛠️ DROPDOWN FIXADO E BLINDADO CONTRA ERROS DE CLIQUE */}
-      <div className="w-full border-t border-slate-100 bg-white/60 backdrop-blur-xs px-4 py-2 relative z-10">
+      {/* SEÇÃO DA BARRA DE CATEGORIAS */}
+      <div className="w-full border-t border-slate-100 bg-white/60 backdrop-blur-xs px-4 py-2 relative z-30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
           
-          {/* BOTÃO DROPDOWN OPERACIONAL */}
-          <div className="relative">
+          {/* CONTAINER DO BOTÃO E SEU MENUS */}
+          <div className="relative inline-block text-left">
             <button
               onClick={toggleDropdown}
               className="w-full sm:w-auto flex items-center justify-between gap-4 px-4 py-2 bg-slate-950 border border-slate-900 rounded-xl text-xs font-black text-white shadow-md hover:bg-slate-900 transition-all cursor-pointer"
@@ -176,31 +177,26 @@ export default function Header({
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {/* CONTAINER FLUTUANTE DA ÁRVORE DE CATEGORIAS */}
+            {/* CONTAINER DO MENU DROPDOWN (Z-50 EXPLICITO) */}
             {isDropdownOpen && (
-              <>
-                {/* Tela de fundo para fechar ao clicar fora */}
-                <div className="fixed inset-0 z-40 bg-transparent" onClick={() => setIsDropdownOpen(false)} />
-                
-                <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-xl max-h-80 overflow-y-auto z-50 p-2 animate-fadeIn text-left">
+              <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl max-h-80 overflow-y-auto z-50 p-2 text-left block">
+                <button
+                  onClick={(e) => handleCategoryClick("Todos", e)}
+                  className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${selectedCategory === "Todos" ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-50"}`}
+                >
+                  Ver Todo o Catálogo
+                </button>
+                <div className="h-px bg-slate-100 my-1.5" />
+                {categories.filter(c => c !== "Todos").map((cat) => (
                   <button
-                    onClick={(e) => handleCategoryClick("Todos", e)}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all ${selectedCategory === "Todos" ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-50"}`}
+                    key={cat}
+                    onClick={(e) => handleCategoryClick(cat, e)}
+                    className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition-all cursor-pointer ${selectedCategory === cat ? "bg-red-600 text-white font-bold" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
                   >
-                    Ver Todo o Catálogo
+                    {cat}
                   </button>
-                  <div className="h-px bg-slate-100 my-1.5" />
-                  {categories.filter(c => c !== "Todos").map((cat) => (
-                    <button
-                      key={cat}
-                      onClick={(e) => handleCategoryClick(cat, e)}
-                      className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-semibold transition-all ${selectedCategory === cat ? "bg-red-600 text-white font-bold" : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"}`}
-                    >
-                      {cat}
-                    </button>
-                  ))}
-                </div>
-              </>
+                ))}
+              </div>
             )}
           </div>
 
@@ -211,6 +207,11 @@ export default function Header({
 
         </div>
       </div>
+
+      {/* Backdrop transparente global para fechar o menu ao clicar fora sem bugar os cliques normais */}
+      {isDropdownOpen && (
+        <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setIsDropdownOpen(false)} />
+      )}
     </header>
   );
 }
