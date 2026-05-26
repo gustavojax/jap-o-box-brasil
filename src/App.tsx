@@ -105,7 +105,7 @@ export default function App() {
         createdAt: serverTimestamp()
       });
 
-      showNotification("Pedido de teste injetado na suíte!");
+      showNotification("Pedido de teste adicionado!");
     } catch (e) {
       console.error("Erro ao simular pedido:", e);
     }
@@ -134,7 +134,6 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // Árvore de categorias para alimentação do Header
   const allCategories = useMemo(() => {
     return [
       "Todos",
@@ -359,11 +358,10 @@ export default function App() {
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
-              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO CORRETA DA PAULA */}
+              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO REAL DA PAULA */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
-                  {/* 🛠️ URL DEFINITIVA DA PAULA ATUALIZADA AQUI */}
-                  <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-xs">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
                       src="https://iili.io/CJpV5fj.md.jpg" 
                       alt="Paula Takashiro Portrait" 
@@ -435,6 +433,8 @@ export default function App() {
       )}
       
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
     </div>
   );
