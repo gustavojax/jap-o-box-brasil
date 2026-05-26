@@ -11,6 +11,7 @@ interface HeaderProps {
   onOpenAuth: () => void;
   user: any;
   onLogout: () => void;
+  onLogoClick: () => void; // 🛠️ DECLARADO E CONECTADO DE FORMA DEFINITIVA
 }
 
 export default function Header({
@@ -23,6 +24,7 @@ export default function Header({
   onOpenAuth,
   user,
   onLogout,
+  onLogoClick, // Recebe a função de retorno à loja do App.tsx
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -37,14 +39,12 @@ export default function Header({
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // URL da ilustração de Sakura fornecida por você
   const bgSakuraUrl = "https://iili.io/CJpxUiu.md.png";
 
   return (
-    // 🛠️ CORREÇÃO CRÍTICA: Removido overflow-hidden daqui para o dropdown não ser cortado!
     <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative">
       
-      {/* 🌸 CAMADA DE FUNDO ISOLADA COM OVERFLOW-HIDDEN SEGURO */}
+      {/* CAMADA DE FUNDO ISOLADA */}
       <div 
         className="absolute inset-0 pointer-events-none bg-cover bg-center bg-no-repeat mix-blend-multiply transition-opacity duration-300 overflow-hidden"
         style={{ 
@@ -56,17 +56,19 @@ export default function Header({
       {/* CONTEÚDO DO HEADER */}
       <div className="max-w-7xl mx-auto px-4 py-3 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4 relative z-10">
         
-        {/* LOGO E SEÇÃO DE USUÁRIO */}
+        {/* LOGO E SEÇÃO DE USUÁRIO (GATILHO DE RETORNO CORRIGIDO) */}
         <div className="flex items-center justify-between gap-2">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-100 flex-shrink-0 bg-white shadow-sm">
+          {/* 🛠️ BINDING DO LOGO: Agora executa a função handleReturnToStore ao clicar em qualquer parte do bloco da marca */}
+          <div 
+            onClick={onLogoClick}
+            className="flex items-center gap-3 cursor-pointer select-none group"
+            title="Voltar para a Vitrine"
+          >
+            <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-100 flex-shrink-0 bg-white shadow-sm group-hover:scale-105 transition-transform">
               <img 
                 src="https://iili.io/CJbmWhP.md.jpg" 
                 alt="Japão Box Brasil" 
                 className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).src = "https://images.unsplash.com/photo-1578894381163-e72c17f2d45f?w=100";
-                }}
               />
             </div>
             <div className="text-left">
@@ -94,7 +96,6 @@ export default function Header({
               <button 
                 onClick={onLogout} 
                 className="p-2 text-red-600 bg-red-50 rounded-xl border border-red-100 cursor-pointer shadow-sm"
-                title="Sair"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -109,7 +110,7 @@ export default function Header({
           </div>
         </div>
 
-        {/* BARRA DE PESQUISA INTELIGENTE */}
+        {/* BARRA DE PESQUISA */}
         <div className="relative flex-1 max-w-md mx-auto md:mx-0">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
@@ -120,7 +121,7 @@ export default function Header({
           />
         </div>
 
-        {/* CONTROLES DE NAVEGAÇÃO E AUTENTICAÇÃO (DESKTOP) */}
+        {/* CONTROLES DE NAVEGAÇÃO DESKTOP */}
         <div className="hidden md:flex items-center gap-3">
           <button 
             onClick={onOpenCart} 
@@ -166,7 +167,6 @@ export default function Header({
       <div className="w-full border-t border-slate-100 bg-white/60 backdrop-blur-xs px-4 py-2 relative z-30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
           
-          {/* CONTAINER DO BOTÃO E SEU MENUS */}
           <div className="relative inline-block text-left">
             <button
               onClick={toggleDropdown}
@@ -177,7 +177,6 @@ export default function Header({
               <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
-            {/* CONTAINER DO MENU DROPDOWN (Z-50 EXPLICITO) */}
             {isDropdownOpen && (
               <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl max-h-80 overflow-y-auto z-50 p-2 text-left block">
                 <button
@@ -200,7 +199,6 @@ export default function Header({
             )}
           </div>
 
-          {/* INDICADOR DE FILTRO VIGENTE */}
           <div className="text-[11px] text-slate-500 font-semibold text-center sm:text-right py-1 sm:py-0">
             Filtro Ativo: <span className="text-slate-900 font-black">{selectedCategory}</span>
           </div>
@@ -208,7 +206,6 @@ export default function Header({
         </div>
       </div>
 
-      {/* Backdrop transparente global para fechar o menu ao clicar fora sem bugar os cliques normais */}
       {isDropdownOpen && (
         <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setIsDropdownOpen(false)} />
       )}
