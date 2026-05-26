@@ -325,43 +325,61 @@ export default function App() {
           <main className="flex-1">
             <TrustBadges />
             
-            {/* PAINEL DE NAVEGAÇÃO PREMIUM */}
-            <section className="max-w-7xl mx-auto px-4 pt-8 pb-4">
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 space-y-4">
-                <div className="flex flex-col gap-2">
-                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
-                    <Grid className="w-3.5 h-3.5 text-slate-400" /> Macro Departamentos
+            {/* 🛠️ REESTRUTURAÇÃO COMPLETA: PAINEL DE NAVEGAÇÃO PREMIUM DE DUAS COLUNAS */}
+            <section className="max-w-7xl mx-auto px-4 pt-8 pb-4 text-left">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+                
+                {/* COLUNA ESQUERDA: MACRO DEPARTAMENTOS */}
+                <div className="lg:col-span-4 bg-white rounded-3xl p-4 border border-slate-200/60 shadow-sm space-y-1.5">
+                  <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5 px-2 mb-3">
+                    <Grid className="w-3.5 h-3.5" /> Macro Departamentos
                   </span>
-                  <div className="flex flex-wrap gap-1.5">
+                  
+                  <div className="flex flex-col gap-1">
                     {departments.map((dept) => (
                       <button
                         key={dept}
                         onClick={() => handleDepartmentChange(dept)}
-                        className={`px-3 py-1.5 rounded-xl font-bold text-xs transition-all cursor-pointer border ${
+                        className={`w-full text-left px-4 py-3 rounded-xl font-bold text-xs transition-all cursor-pointer flex items-center justify-between group ${
                           selectedDepartment === dept
-                            ? "bg-slate-900 border-slate-900 text-white shadow-sm"
-                            : "bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100"
+                            ? "bg-slate-900 text-white shadow-sm"
+                            : "bg-transparent text-slate-600 hover:bg-slate-50 hover:text-slate-950"
                         }`}
                       >
-                        {dept}
+                        <span>{dept}</span>
+                        <span className={`text-[10px] font-mono px-2 py-0.5 rounded-md transition-all ${
+                          selectedDepartment === dept 
+                            ? "bg-white/20 text-white" 
+                            : "bg-slate-100 text-slate-400 group-hover:bg-slate-200"
+                        }`}>
+                          {dept === "Todos" 
+                            ? PRODUCTS.length 
+                            : PRODUCTS.filter(p => (p as any).department === dept).length}
+                        </span>
                       </button>
                     ))}
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-2 pt-2 border-t border-slate-100">
-                  <span className="text-[11px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1 text-left">
-                    <Layers className="w-3.5 h-3.5 text-slate-400" /> Subcategorias Filtradas
-                  </span>
-                  <div className="flex flex-wrap gap-1.5 max-h-36 overflow-y-auto pr-2">
+                {/* COLUNA DIREITA: SUBCATEGORIAS DINÂMICAS E CONTEXTUAIS */}
+                <div className="lg:col-span-8 bg-white rounded-3xl p-5 border border-slate-200/60 shadow-sm space-y-4 h-full flex flex-col justify-center">
+                  <div className="space-y-1">
+                    <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
+                      <Layers className="w-3.5 h-3.5" /> Subcategorias em {selectedDepartment}
+                    </span>
+                    <p className="text-[11px] text-slate-400">Filtre por nichos específicos para refinar sua busca direta no depósito de Mie.</p>
+                  </div>
+
+                  {/* Lista Limpa Dinâmica sem quebras de linha estúpidas */}
+                  <div className="flex flex-wrap gap-2 pt-2">
                     {availableSubCategories.map((cat) => (
                       <button
                         key={cat}
                         onClick={() => setSelectedCategory(cat)}
-                        className={`px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition-all cursor-pointer border ${
+                        className={`px-3 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer border ${
                           selectedCategory === cat
-                            ? "bg-rose-600 border-rose-600 text-white"
-                            : "bg-white border-slate-200 text-slate-500 hover:border-slate-300 hover:text-slate-700"
+                            ? "bg-red-600 border-red-600 text-white shadow-sm shadow-red-100"
+                            : "bg-slate-50 border-slate-200/60 text-slate-600 hover:border-slate-300 hover:bg-white hover:text-slate-900"
                         }`}
                       >
                         {cat}
@@ -369,6 +387,7 @@ export default function App() {
                     ))}
                   </div>
                 </div>
+
               </div>
             </section>
             
@@ -430,7 +449,7 @@ export default function App() {
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
                 <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
-                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, directly do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
