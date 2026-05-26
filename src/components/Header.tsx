@@ -40,7 +40,7 @@ export default function Header({
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-100 flex-shrink-0 bg-slate-50">
               <img 
-                src="https://i.ibb.co/60ec720e8b0c4f2d1dcdbb5f/file.png" 
+                src="https://i.ibb.co/RpRMDSMd/file-0000000060ec720e8b0c4f2d1dcdbb5f.png" 
                 alt="Japão Box Brasil" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
@@ -141,12 +141,11 @@ export default function Header({
 
       </div>
 
-      {/* 🛠️ ENGENHARIA DE CORREÇÃO DO LAYOUT MOBILE (FOTO 1) */}
-      {/* Esta linha separa o Dropdown e as Abas de forma limpa, evitando esmagamento e quebras */}
+      {/* COMPONENTE DE CATEGORIAS DA AMAZON JP ADAPTADO PARA MOBILE */}
       <div className="w-full border-t border-slate-100 bg-slate-50/50 px-4 py-2">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
           
-          {/* BOTÃO DROPDOWN DE CATEGORIAS OPERACIONAL */}
+          {/* BOTÃO DROPDOWN OPERACIONAL */}
           <div className="relative">
             <button
               onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -183,7 +182,7 @@ export default function Header({
             )}
           </div>
 
-          {/* INDICADOR RETRÁTIL DO MOBILE */}
+          {/* INDICADOR DE FILTRO VIGENTE */}
           <div className="text-[11px] text-slate-400 font-medium text-center sm:text-right py-1 sm:py-0">
             Filtro Ativo: <span className="text-slate-800 font-bold">{selectedCategory}</span>
           </div>
