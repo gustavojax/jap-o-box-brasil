@@ -1,309 +1,296 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useMemo } from "react";
+import { X, Plane, Send, CheckCircle2, Loader2 } from "lucide-react";
 import { YEN_TO_BRL_RATE } from "../data";
-import { Plane, HelpCircle, Send, ClipboardCheck, Sparkles } from "lucide-react";
 
 interface BudgetModalProps {
   isOpen: boolean;
   onClose: () => void;
-  prefilledData?: {
-    link: string;
-    jpPriceYen: number;
-    category: string;
-    description: string;
-  } | null;
-  onSubmitBudget: (formData: any) => void;
+  onSubmit?: () => void;
 }
 
-export default function BudgetModal({ isOpen, onClose, prefilledData, onSubmitBudget }: BudgetModalProps) {
-  const [productLink, setProductLink] = useState("");
-  const [productName, setProductName] = useState("");
-  const [priceYen, setPriceYen] = useState<number>(3000);
-  const [qty, setQty] = useState(1);
-  const [instructions, setInstructions] = useState("");
-  const [buyerName, setBuyerName] = useState("");
-  const [buyerEmail, setBuyerEmail] = useState("");
-  const [buyerPhone, setBuyerPhone] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
+export default function BudgetModal({ isOpen, onClose }: BudgetModalProps) {
+  // Estados do formulário
+  const [link, setLink] = useState("");
+  const [nomeProduto, setNomeProduto] = useState("");
+  const [precoYen, setPrecoYen] = useState<number>(3000);
+  const [quantidade, setQuantidade] = useState<number>(1);
+  const [instrucoes, setInstrucoes] = useState("");
+  const [nomeCliente, setNomeCliente] = useState("");
+  const [whatsapp, setWhatsapp] = useState("");
 
-  // Prefill hook
-  useEffect(() => {
-    if (prefilledData) {
-      setProductLink(prefilledData.link);
-      setPriceYen(prefilledData.jpPriceYen);
-      setInstructions(prefilledData.description);
-    } else {
-      setProductLink("");
-      setPriceYen(3000);
-      setInstructions("");
-    }
-  }, [prefilledData, isOpen]);
+  // Estados de envio da requisição
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  // Motor de cálculo dinâmico baseado na cotação operacional do data.ts
+  const calculos = useMemo(() => {
+    const produtoConvertido = precoYen * YEN_TO_BRL_RATE * quantity;
+    const assessoria = 25.00;
+    const freteToquio = 50.00;
+    const taxaCorreios = (produtoConvertido + assessoria + freteToquio) * 0.15; 
+    const totalGeral = produtoConvertido + assessoria + freteToquio + taxaCorreios;
+
+    return {
+      produtoConvertido,
+      assessoria,
+      freteToquio,
+      taxaCorreios,
+      totalGeral
+    };
+  }, [precoYen, quantidade]);
 
   if (!isOpen) return null;
 
-  // Real-time calculation helper
-  const baseBRL = priceYen * YEN_TO_BRL_RATE * qty;
-  const shopperFeeBRL = baseBRL < 150 ? 25 : baseBRL * 0.10;
-  const estimatedShippingBRL = Math.max(40, 35 + (qty * 15)); // lighter weight assumption
-  const estimatedTaxBRL = (baseBRL + estimatedShippingBRL) < 275 ? (baseBRL + estimatedShippingBRL) * 0.205 : (baseBRL + estimatedShippingBRL) * 0.44;
-  const estimatedTotalBRL = baseBRL + shopperFeeBRL + estimatedShippingBRL + estimatedTaxBRL;
+  const quantity = quantidade; // Aliasing seguro para a renderização matemática
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleSubmitForm = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!productLink || !buyerName || !buyerPhone) return;
-
-    setSubmitting(true);
     
-    // Simulate API delay
-    setTimeout(() => {
-      onSubmitBudget({
-        productLink,
-        productName: productName || "Item Desconhecido (Análise do Link)",
-        priceYen,
-        qty,
-        instructions,
-        buyerName,
-        buyerEmail,
-        buyerPhone,
-        estimatedTotalBRL
-      });
-      setSubmitting(false);
-      setSuccess(true);
-      
-      setTimeout(() => {
-        setSuccess(false);
-        onClose();
-        // Reset fields
-        setProductName("");
-        setBuyerName("");
-        setBuyerEmail("");
-        setBuyerPhone("");
-      }, 3500);
+    if (!link || !nomeCliente || !whatsapp) {
+      alert("Por favor, preencha os campos obrigatórios (*)");
+      return;
+    }
 
-    }, 1500);
+    setIsSubmitting(true);
+
+    // Estruturação limpa das variáveis para o corpo do e-mail
+    const dadosParaEnvio = {
+      _subject: `📦 Nova Cotação de Produto: ${nomeCliente}`,
+      emailLoja: "japaoboxbrasiljp26@gmail.com",
+      clienteNome: nomeCliente,
+      clienteWhatsApp: whatsapp,
+      produtoLink: link,
+      produtoNomeFranquia: nomeProduto || "Não informado",
+      precoOriginalYen: `¥ ${precoYen}`,
+      quantidadeSolicitada: quantity,
+      instrucoesEspeciais: instrucoes || "Nenhuma instrução informada",
+      estimativaConversaoBRL: `R$ ${calculos.produtoConvertido.toFixed(2)}`,
+      estimativaTotalChaveNaMao: `R$ ${calculos.totalGeral.toFixed(2)}`
+    };
+
+    try {
+      // 🔥 Endpoint oficial configurado com o seu ID de produção do Formspree
+      const response = await fetch("https://formspree.io/f/xwvzrwpk", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json"
+        },
+        body: JSON.stringify(dadosParaEnvio)
+      });
+
+      if (response.ok) {
+        setIsSuccess(true);
+        // Reseta os campos após o sucesso
+        setLink("");
+        setNomeProduto("");
+        setInstrucoes("");
+        setNomeCliente("");
+        setWhatsapp("");
+      } else {
+        alert("Ocorreu um erro ao processar. Certifique-se de que o formulário está ativado no painel do Formspree.");
+      }
+    } catch (error) {
+      console.error("Erro ao enviar cotação:", error);
+      alert("Erro de conexão. Verifique sua internet antes de tentar novamente.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs font-sans">
-      
-      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 md:p-8 relative shadow-2xl scrollbar-thin">
+    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+      <div className="bg-white w-full max-w-4xl rounded-3xl shadow-2xl overflow-hidden border border-slate-100 flex flex-col max-h-[90vh] md:max-h-none overflow-y-auto">
         
-        {/* Close Button */}
-        <button
-          onClick={onClose}
-          className="absolute top-4 right-4 p-1 px-2.5 rounded bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 text-xs font-black font-mono cursor-pointer"
-        >
-          FECHAR ✕
-        </button>
+        {/* CABEÇALHO DO MODAL */}
+        <div className="p-6 pb-0 flex justify-between items-start">
+          <div className="text-left">
+            <span className="bg-rose-100 text-rose-700 text-[10px] font-black px-2.5 py-1 rounded-md tracking-wider uppercase flex items-center gap-1 w-fit">
+              <Plane className="w-3 h-3" /> Personal Shopper Tóquio
+            </span>
+            <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-2">
+              Solicitar Qualquer Produto do Japão!
+            </h2>
+            <p className="text-xs text-slate-500 mt-1 max-w-xl">
+              Achou um item específico em lojas online, sebos de bonecos do Japão, lojas de cosméticos ou sites especializados? Preencha os campos abaixo de forma simples.
+            </p>
+          </div>
+          <button 
+            onClick={onClose}
+            className="text-slate-400 hover:text-slate-900 text-xs font-bold uppercase tracking-wider flex items-center gap-1 p-1 cursor-pointer transition-colors"
+          >
+            Fechar <X className="w-4 h-4" />
+          </button>
+        </div>
 
-        {!success ? (
-          <form onSubmit={handleFormSubmit} className="space-y-6">
-            
-            {/* Header Title */}
-            <div className="text-center sm:text-left border-b border-rose-100 pb-4">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-100 text-red-800 text-[10px] font-black uppercase tracking-wider font-mono">
-                <Plane className="w-3.5 h-3.5 text-red-600 animate-bounce" />
-                Personal Shopper Tóquio
-              </span>
-              <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight mt-1.5">
-                Solicitar Qualquer Produto do Japão!
-              </h3>
-              <p className="text-xs text-slate-500 mt-1">
-                Achou um item específico em lojas online, sebos de bonecos do Japão, lojas de cosméticos ou sites especializados? Preencha os campos abaixo de forma simples.
+        {/* FEEDBACK DE ENVIO DO MODAL */}
+        {isSuccess ? (
+          <div className="p-12 text-center space-y-4 max-w-md mx-auto flex flex-col items-center justify-center min-h-[350px]">
+            <CheckCircle2 className="w-16 h-16 text-emerald-500 stroke-1 animate-pulse" />
+            <div>
+              <h3 className="text-lg font-black text-slate-900 uppercase tracking-tight">Solicitação Enviada!</h3>
+              <p className="text-sm text-slate-500 font-medium mt-2 leading-relaxed">
+                Sua solicitação foi enviada, aguarde nosso contato.
               </p>
             </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+            <button 
+              onClick={() => { setIsSuccess(false); onClose(); }}
+              className="mt-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all cursor-pointer"
+            >
+              Voltar para a Loja
+            </button>
+          </div>
+        ) : (
+          /* FORMULÁRIO OPERACIONAL DE CAPTURA */
+          <form onSubmit={handleSubmitForm} className="p-6 grid grid-cols-1 md:grid-cols-12 gap-6 items-start text-left">
+            
+            {/* ENTRADAS TÉCNICAS (COLUNA ESQUERDA) */}
+            <div className="md:col-span-7 space-y-4">
               
-              {/* Form Input Side */}
-              <div className="space-y-4">
-                
-                {/* Link */}
-                <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
-                    Link Japonês do Produto *
-                  </label>
-                  <input
-                    type="url"
-                    required
-                    placeholder="Cole aqui o link do site japonês..."
-                    value={productLink}
-                    onChange={(e) => setProductLink(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                  />
-                </div>
-
-                {/* Name of Product */}
-                <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
-                    Nome / Franquia do Produto (Se souber)
-                  </label>
-                  <input
-                    type="text"
-                    placeholder="Ex: Figures Demon Slayer, Jill Stuart Gloss"
-                    value={productName}
-                    onChange={(e) => setProductName(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                  />
-                </div>
-
-                {/* Yen Price & Qty Side by side */}
-                <div className="grid grid-cols-2 gap-3.5">
-                  <div>
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
-                      Preço em Yen Japão (¥)
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      placeholder="Ex: 2500"
-                      value={priceYen || ""}
-                      onChange={(e) => setPriceYen(Math.max(1, parseInt(e.target.value) || 0))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-bold text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
-                      Quantidade
-                    </label>
-                    <input
-                      type="number"
-                      min="1"
-                      value={qty}
-                      onChange={(e) => setQty(Math.max(1, parseInt(e.target.value) || 1))}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs font-mono font-medium text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                    />
-                  </div>
-                </div>
-
-                {/* Instructions */}
-                <div>
-                  <label className="block text-[10px] font-black text-slate-500 uppercase tracking-widest mb-1.5">
-                    Instruções Especiais de Compra
-                  </label>
-                  <textarea
-                    rows={2}
-                    placeholder="Ex: Quero com a caixa lacrada. Se tiver a cor rosa, prefiro rosa..."
-                    value={instructions}
-                    onChange={(e) => setInstructions(e.target.value)}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white resize-none"
-                  />
-                </div>
-
-                <div className="border-t border-slate-100 pt-4 space-y-3.5">
-                  <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block font-sans">Sua Ficha de Contato:</span>
-                  
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Nome Sobrenome"
-                        value={buyerName}
-                        onChange={(e) => setBuyerName(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                      />
-                    </div>
-                    <div>
-                      <input
-                        type="tel"
-                        required
-                        placeholder="WhatsApp (C/ DDD)"
-                        value={buyerPhone}
-                        onChange={(e) => setBuyerPhone(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-red-500 focus:bg-white"
-                      />
-                    </div>
-                  </div>
-                </div>
-
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Link Japonês do Produto *</label>
+                <input 
+                  type="url" 
+                  required
+                  placeholder="Cole aqui o link do site japonês..." 
+                  value={link}
+                  onChange={(e) => setLink(e.target.value)}
+                  className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                />
               </div>
 
-              {/* Estimate Calculation Live display on the right Side */}
-              <div className="bg-slate-900 text-white rounded-2xl p-5 md:p-6 space-y-4 self-stretch flex flex-col justify-between">
-                
-                <div>
-                  <div className="pb-3 border-b border-white/10 mb-4 text-center">
-                    <span className="text-[10px] font-mono text-rose-300 font-bold uppercase tracking-wider block">
-                      SIMULAÇÃO DINÂMICA PREÇO ESTIMADO
-                    </span>
-                    <h4 className="text-sm font-bold text-gray-300 mt-1">Previsão no Brasil Chave na Mão</h4>
-                  </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Nome / Franquia do Produto (Se souber)</label>
+                <input 
+                  type="text" 
+                  placeholder="Ex: Figures Demon Slayer, Jill Stuart Gloss" 
+                  value={nomeProduto}
+                  onChange={(e) => setNomeProduto(e.target.value)}
+                  className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                />
+              </div>
 
-                  <div className="space-y-3 text-[11px] text-gray-400">
-                    
-                    <div className="flex justify-between items-center">
-                      <span>Produto Convertido</span>
-                      <span className="font-mono text-white">R$ {baseBRL.toFixed(2)}</span>
-                    </div>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Preço em Yen Japão (¥)</label>
+                  <input 
+                    type="number" 
+                    min="1"
+                    placeholder="3000" 
+                    value={precoYen}
+                    onChange={(e) => setPrecoYen(Math.max(1, parseInt(e.target.value) || 0))}
+                    className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-black font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Quantidade</label>
+                  <input 
+                    type="number" 
+                    min="1"
+                    placeholder="1" 
+                    value={quantidade}
+                    onChange={(e) => setQuantidade(Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-black font-mono focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
 
-                    <div className="flex justify-between items-center">
-                      <span>Shopper assessoria</span>
-                      <span className="font-mono text-white">R$ {shopperFeeBRL.toFixed(2)}</span>
-                    </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Instruções Especiais de Compra</label>
+                <textarea 
+                  rows={2}
+                  placeholder="Ex: Quero com a caixa lacrada. Se tiver a cor rosa, prefiro rosa..." 
+                  value={instrucoes}
+                  onChange={(e) => setInstrucoes(e.target.value)}
+                  className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all resize-none"
+                />
+              </div>
 
-                    <div className="flex justify-between items-center">
-                      <span>Frete Econômico Tóquio</span>
-                      <span className="font-mono text-white">R$ {estimatedShippingBRL.toFixed(2)}</span>
-                    </div>
+              <div className="space-y-1 pt-2 border-t border-slate-100">
+                <label className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Sua Ficha de Contato *</label>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="Nome Sobrenome" 
+                    value={nomeCliente}
+                    onChange={(e) => setNomeCliente(e.target.value)}
+                    className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                  />
+                  <input 
+                    type="text" 
+                    required
+                    placeholder="WhatsApp (C/ DDD)" 
+                    value={whatsapp}
+                    onChange={(e) => setWhatsapp(e.target.value)}
+                    className="w-full border border-slate-200 bg-slate-50/50 rounded-xl px-4 py-2.5 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all"
+                  />
+                </div>
+              </div>
 
-                    <div className="flex justify-between items-center text-rose-300">
-                      <span>Previsão Taxa Correios</span>
-                      <span className="font-mono font-bold">R$ {estimatedTaxBRL.toFixed(2)}</span>
-                    </div>
+            </div>
 
-                  </div>
-
-                  {/* Total line */}
-                  <div className="border-t border-white/10 mt-5 pt-4 text-center">
-                    <span className="text-[9px] font-bold text-gray-400 uppercase tracking-widest block">VALOR TOTAL DE REFERÊNCIA</span>
-                    <span className="text-xl md:text-2xl font-black text-amber-300 font-mono">
-                      R$ {estimatedTotalBRL.toFixed(2)}
-                    </span>
-                  </div>
+            {/* BOX DE PREVISÃO TÉCNICA (COLUNA DIREITA ESCURA) */}
+            <div className="md:col-span-5 bg-slate-950 text-white rounded-3xl p-5 flex flex-col justify-between shadow-xl min-h-[380px]">
+              <div className="space-y-4">
+                <div className="text-center border-b border-white/10 pb-3">
+                  <span className="text-[9px] font-black text-orange-400 uppercase tracking-widest block">Simulação Dinâmica Preço Estimado</span>
+                  <h4 className="text-sm font-black tracking-tight mt-0.5">Previsão no Brasil Chave na Mão</h4>
                 </div>
 
-                <div className="pt-4 space-y-2.5">
-                  <button
-                    type="submit"
-                    disabled={submitting}
-                    className="w-full py-3 bg-red-600 hover:bg-red-500 text-white font-bold text-xs uppercase rounded-xl shadow-lg transition-transform text-center cursor-pointer select-none"
-                  >
-                    {submitting ? "Verificando Link..." : "Pedir Cotação Oficial Japão ➔"}
-                  </button>
-                  <p className="text-[9px] text-gray-500 text-center leading-tight">
-                    *Nosso personal shopper irá checar se o estoque está disponível nas lojas físicas ou portais digitais e vai te responder um link final de compra consolidada diretamente no WhatsApp no mesmo dia!
-                  </p>
+                <div className="space-y-2 text-xs font-medium text-slate-300">
+                  <div className="flex justify-between">
+                    <span>Produto Convertido:</span>
+                    <span className="font-bold text-white">R$ {calculos.produtoConvertido.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Shopper assessoria:</span>
+                    <span className="font-bold text-white">R$ {calculos.assessoria.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>Frete Econômico Tóquio:</span>
+                    <span className="font-bold text-white">R$ {calculos.freteToquio.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-slate-400">
+                    <span>Previsão Taxa Correios:</span>
+                    <span>R$ {calculos.taxaCorreios.toFixed(2)}</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-4 pt-4 border-t border-white/10">
+                <div className="text-center">
+                  <span className="text-[9px] font-black uppercase text-slate-400 tracking-wider block">Valor Total de Referência</span>
+                  <p className="text-2xl font-black text-yellow-400 mt-1">R$ {calculos.totalGeral.toFixed(2)}</p>
                 </div>
 
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full py-3 bg-red-600 hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider rounded-xl transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer disabled:bg-slate-800 disabled:text-slate-500"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Processando...
+                    </>
+                  ) : (
+                    <>
+                      Pedir Cotação Oficial Japão <Send className="w-3.5 h-3.5" />
+                    </>
+                  )}
+                </button>
+
+                <p className="text-[9px] text-slate-400 leading-relaxed text-center italic">
+                  *Nosso personal shopper irá checar se o estoque está disponível nas lojas físicas ou portais digitais e vai te responder um link final de compra consolidada diretamente no WhatsApp no mesmo dia!
+                </p>
               </div>
 
             </div>
 
           </form>
-        ) : (
-          /* Success Screen */
-          <div className="py-16 text-center space-y-4 animate-in fade-in duration-300 font-sans">
-            <div className="w-16 h-16 bg-red-600 rounded-full flex items-center justify-center text-white text-3xl mx-auto shadow-md">
-              🌸
-            </div>
-            <div className="space-y-1">
-              <h3 className="text-lg font-black text-slate-900">Pedido de Orçamento Cadastrado!</h3>
-              <p className="text-sm text-amber-600 font-semibold">Tóquio já está em busca da sua mercadoria.</p>
-              <div className="max-w-md mx-auto bg-slate-50 p-4 rounded-xl border border-slate-100 text-xs text-slate-600 space-y-2 pt-2 mt-4 text-left">
-                <p><strong>Cliente:</strong> {buyerName}</p>
-                <p className="truncate"><strong>Link Enviado:</strong> {productLink}</p>
-                <p className="font-mono text-rose-600 font-semibold"><strong>Previsão Estimada total:</strong> R$ {estimatedTotalBRL.toFixed(2)}</p>
-              </div>
-              <p className="text-xs text-slate-500 max-w-sm mx-auto pt-4 leading-relaxed">
-                Nossos representantes em Tóquio enviarão a confirmação com fotos de estoque e cotação de frete final diretamente para o seu WhatsApp cadastrado.
-              </p>
-            </div>
-          </div>
         )}
 
       </div>
-
     </div>
   );
 }
