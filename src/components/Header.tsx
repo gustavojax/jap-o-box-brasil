@@ -33,10 +33,10 @@ export default function Header({
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   return (
-    // 🌸 ALTERADO: Fundo agora possui um tom rosa bem leve (bg-rose-50/60) com desfoque de fundo elegante
+    // 🌸 Fundo rosa sakura leve (bg-rose-50/60) com desfoque de fundo (backdrop-blur)
     <header className="w-full bg-rose-50/60 backdrop-blur-md sticky top-0 z-50 border-b border-rose-100/80 shadow-sm relative overflow-hidden">
       
-      {/* DETALHES DE SAKURA FLUTUANTES NO FUNDO DO HEADER (VISUAL PREMIUM) */}
+      {/* DETALHES DE SAKURA FLUTUANTES NO FUNDO (VISUAL PREMIUM JAPÃO) */}
       <div className="absolute top-1 left-4 text-rose-300/30 text-xs select-none pointer-events-none font-serif">🌸</div>
       <div className="absolute bottom-2 left-1/3 text-rose-300/20 text-sm select-none pointer-events-none font-serif animate-pulse">🌸</div>
       <div className="absolute top-2 right-1/4 text-rose-300/20 text-xs select-none pointer-events-none font-serif">🌸</div>
@@ -45,14 +45,14 @@ export default function Header({
       {/* LINHA 1: BARRA PRINCIPAL DE OPERAÇÃO */}
       <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between gap-6 relative z-10">
         
-        {/* LOGO AMPLIADA E ATUALIZADA (PROPOSTA SEGUNDA IMAGEM) */}
+        {/* LOGO AMPLIADO E ATUALIZADO */}
         <div 
           onClick={onLogoClick}
           className="flex items-center gap-4 min-w-[260px] cursor-pointer hover:opacity-95 transition-opacity select-none"
         >
-          {/* 🔄 URL atualizada para a nova logo oficial e tamanho expandido para dar destaque aos detalhes */}
+          {/* 🔄 Link direto oficial atualizado com sucesso e tamanho w-20 h-20 para dar nitidez */}
           <img
-            src="https://i.ibb.co/3mYmG0M6/image.png"
+            src="https://iili.io/CJbmWhP.jpg"
             alt="Japão Box Brasil Logo"
             className="w-20 h-20 rounded-full object-cover shadow-md border-2 border-white bg-white transform hover:scale-105 transition-transform"
           />
