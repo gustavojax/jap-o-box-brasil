@@ -134,7 +134,7 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // Mapeamento completo das categorias extraídas da árvore do e-commerce
+  // Árvore de categorias para alimentação do Header
   const allCategories = useMemo(() => {
     return [
       "Todos",
@@ -164,7 +164,6 @@ export default function App() {
     ];
   }, []);
 
-  // Filtragem unificada respondendo estritamente ao Dropdown do Header e Barra de Busca
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(p => {
       const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
@@ -227,7 +226,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER DINÂMICO CONECTADO AO DROPDOWN EXCLUSIVO */}
+      {/* HEADER COMPACTO */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -246,7 +245,7 @@ export default function App() {
         onLogout={handleLogout}
       />
 
-      {/* MENU DE ABAS DE SUPORTE */}
+      {/* MENU DE ABAS SUPERIORES */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
           <button
@@ -284,7 +283,7 @@ export default function App() {
         </div>
       </div>
 
-      {/* CONDICIONAL DE ABAS */}
+      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
       {activeTab === "store" ? (
         <>
           <Hero 
@@ -293,8 +292,6 @@ export default function App() {
           />
           <main className="flex-1">
             <TrustBadges />
-            
-            {/* ❌ REQUISITO CUMPRIDO: TODO O BLOCO "MACRO DEPARTAMENTOS" ANTIGO FOI DELETADO DAQUI COMPLETAMENTE */}
             
             {/* VITRINE DE PRODUTOS */}
             <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
@@ -338,34 +335,50 @@ export default function App() {
       ) : activeTab === "about" ? (
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
+            
+            {/* CONTAINER DA LOGO DO REDIRECIONAMENTO NA ESQUERDA */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
                 src="https://iili.io/CJbmWhP.md.jpg" 
-                alt="Paula Takashiro" 
+                alt="Japão Box Brasil Logo" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
             </div>
 
+            {/* CONTEÚDO DA HISTÓRIA */}
             <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
               <div>
                 <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
-              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
+              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
                 <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
+              
+              {/* ASSINATURA TOTALMENTE CORRIGIDA COM A FOTO CORRETA DA PAULA */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
-                  <p className="text-lg font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                <div className="flex items-center gap-3 text-left">
+                  {/* 🛠️ URL DEFINITIVA DA PAULA ATUALIZADA AQUI */}
+                  <div className="w-10 h-10 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-xs">
+                    <img 
+                      src="https://iili.io/CJpV5fj.md.jpg" 
+                      alt="Paula Takashiro Portrait" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+                    <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                  </div>
                 </div>
-                <Heart className="w-8 h-8 text-rose-500 fill-rose-100 stroke-1" />
+                <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
               </div>
             </div>
+
           </div>
         </main>
       ) : (
@@ -387,15 +400,16 @@ export default function App() {
         </main>
       )}
 
+      {/* RODAPÉ */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div>
+          <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém in Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
-          <div>
+          <div className="text-left">
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
               <li><button onClick={() => setActiveTab("store")} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
