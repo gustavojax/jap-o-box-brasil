@@ -168,7 +168,7 @@ export default function App() {
         "Calçados, viagem e impermeáveis",
         "Roupas (Clothing)"
       ],
-      "Estilo de Vida, Cultura e Exclusivos": [
+      "Estilo de Vida, Culture e Exclusivos": [
         "Papelaria (Stationery)",
         "Presentes (Gift)",
         "Feito à mão / Artesanal (Handmade)",
@@ -178,12 +178,10 @@ export default function App() {
     };
   }, []);
 
-  // Macro Departamentos únicos memorizados
   const departments = useMemo(() => {
     return ["Todos", ...Object.keys(departmentToCategoriesMap)];
   }, [departmentToCategoriesMap]);
 
-  // Subcategorias dinâmicas dependentes do Macro Departamento selecionado
   const availableSubCategories = useMemo(() => {
     if (selectedDepartment === "Todos") {
       return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
@@ -191,13 +189,11 @@ export default function App() {
     return ["Todos", ...(departmentToCategoriesMap[selectedDepartment] || [])];
   }, [selectedDepartment, departmentToCategoriesMap]);
 
-  // Reset do filtro subordinado caso mude o pai
   const handleDepartmentChange = (dept: string) => {
     setSelectedDepartment(dept);
     setSelectedCategory("Todos");
   };
 
-  // Legado para compatibilidade estrutural com a assinatura do Header se necessário
   const allFlattenedCategoriesLegacy = useMemo(() => {
     return ["Todos", ...Object.values(departmentToCategoriesMap).flat()];
   }, [departmentToCategoriesMap]);
@@ -270,66 +266,27 @@ export default function App() {
         </div>
       )}
 
-     {/* HEADER */}
-<Header
-  onSearchChange={setSearchQuery}
-  selectedCategory={selectedCategory}
-  onSelectCategory={setSelectedCategory}
-  categories={allFlattenedCategoriesLegacy}
-  cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
-  onOpenCart={() => setIsCartOpen(true)}
-  onOpenAuth={() => setIsAuthOpen(true)}
-  user={user}
-  onLogout={handleLogout}
-  // 🔄 CORREÇÃO: Força o reset completo de abas e filtros do ecossistema
-  onLogoClick={() => {
-    setActiveTab("store");            // 1. Altera a aba ativa de volta para a "Loja"
-    setSelectedDepartment("Todos");   // 2. Limpa o filtro de macro-departamentos
-    setSelectedCategory("Todos");     // 3. Limpa o filtro de subcategorias
-    setSearchQuery("");               // 4. Reseta a barra de pesquisa textual
-    
-    // 5. Garante a rolagem suave para o topo caso o usuário esteja abaixo da dobra
-    window.scrollTo({ top: 0, behavior: "smooth" }); 
-  }}
-/>
-
-      {/* MENU DE ABAS SUPERIOR */}
-      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
-        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
-          <button
-            onClick={() => setActiveTab("store")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Loja
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("about")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Sobre Nós
-          </button>
-
-          <button
-            onClick={() => {
-              if (user) {
-                setActiveTab("account");
-              } else {
-                setIsAuthOpen(true);
-              }
-            }}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Minha Suíte & Painel 📦
-          </button>
-        </div>
-      </div>
+      {/* HEADER INTEGRADO - NAVEGAÇÃO PREMIUM SEM ELEMENTOS ÓRFÃOS */}
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={allFlattenedCategoriesLegacy}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        user={user}
+        onLogout={handleLogout}
+        activeTab={activeTab}
+        setActiveTab={setActiveTab}
+        onLogoClick={() => {
+          setActiveTab("store");
+          setSelectedDepartment("Todos");
+          setSelectedCategory("Todos");
+          setSearchQuery("");
+          window.scrollTo({ top: 0, behavior: "smooth" }); 
+        }}
+      />
 
       {/* CONDICIONAL DE TELAS */}
       {activeTab === "store" ? (
@@ -341,9 +298,9 @@ export default function App() {
           <main className="flex-1">
             <TrustBadges />
             
-            {/* PAINEL DE NAVEGAÇÃO PREMIUM - ESTILO AMAZON JP */}
+            {/* PAINEL DE NAVEGAÇÃO INTERNO - ORGANIZAÇÃO ESTILO AMAZON JP */}
             <section className="max-w-7xl mx-auto px-4 pt-8 pb-4">
-              <div className="bg-white rounded-2xl p-4 shadow-sm border border-slate-200/60 space-y-4">
+              <div className="bg-white rounded-2xl p-5 shadow-sm border border-slate-200/60 space-y-4">
                 
                 {/* 1. Seleção de Macro Departamentos */}
                 <div className="flex flex-col gap-2">
@@ -427,7 +384,6 @@ export default function App() {
               )}
             </section>
 
-        
             <Testimonials />
             <BlogSection />
           </main>
@@ -451,7 +407,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
