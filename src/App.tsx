@@ -270,18 +270,28 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER */}
-      <Header
-        onSearchChange={setSearchQuery}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={allFlattenedCategoriesLegacy}
-        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
-        user={user}
-        onLogout={handleLogout}
-      />
+     {/* HEADER */}
+<Header
+  onSearchChange={setSearchQuery}
+  selectedCategory={selectedCategory}
+  onSelectCategory={setSelectedCategory}
+  categories={allFlattenedCategoriesLegacy}
+  cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+  onOpenCart={() => setIsCartOpen(true)}
+  onOpenAuth={() => setIsAuthOpen(true)}
+  user={user}
+  onLogout={handleLogout}
+  // 🔄 CORREÇÃO: Força o reset completo de abas e filtros do ecossistema
+  onLogoClick={() => {
+    setActiveTab("store");            // 1. Altera a aba ativa de volta para a "Loja"
+    setSelectedDepartment("Todos");   // 2. Limpa o filtro de macro-departamentos
+    setSelectedCategory("Todos");     // 3. Limpa o filtro de subcategorias
+    setSearchQuery("");               // 4. Reseta a barra de pesquisa textual
+    
+    // 5. Garante a rolagem suave para o topo caso o usuário esteja abaixo da dobra
+    window.scrollTo({ top: 0, behavior: "smooth" }); 
+  }}
+/>
 
       {/* MENU DE ABAS SUPERIOR */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
