@@ -40,7 +40,7 @@ export default function Header({
           <div className="flex items-center gap-3">
             <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-100 flex-shrink-0 bg-slate-50">
               <img 
-                src="https://i.ibb.co/RpRMDSMd/file-0000000060ec720e8b0c4f2d1dcdbb5f.png" 
+                src="https://iili.io/CJbmWhP.md.jpg" 
                 alt="Japão Box Brasil" 
                 className="w-full h-full object-cover"
                 onError={(e) => {
