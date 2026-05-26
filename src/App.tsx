@@ -9,6 +9,7 @@ import BlogSection from "./components/BlogSection";
 import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
+import ClubModal from "./components/ClubModal"; // 🛠️ NOVO MODAL IMPREGNADO
 
 import ClientDashboard from "./components/ClientDashboard";
 
@@ -127,6 +128,7 @@ export default function App() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [isClubModalOpen, setIsClubModalOpen] = useState(false); // 🛠️ CONTROLADOR DO CLUBE ATIVO
   const [notification, setNotification] = useState<string | null>(null);
 
   const showNotification = (msg: string) => {
@@ -209,7 +211,6 @@ export default function App() {
     }
   };
 
-  // 🛠️ FIX DEFINITIVO DO LOGO: Retorno imediato e limpo para a vitrine
   const handleReturnToStore = () => {
     setSelectedCategory("Todos");
     setSearchQuery("");
@@ -233,7 +234,7 @@ export default function App() {
         </div>
       )}
 
-      {/* HEADER CORRIGIDO COM EVENTO DO LOGO INJETADO */}
+      {/* HEADER COMPACTO */}
       <Header
         onSearchChange={setSearchQuery}
         selectedCategory={selectedCategory}
@@ -250,7 +251,7 @@ export default function App() {
         }}
         user={user}
         onLogout={handleLogout}
-        onLogoClick={handleReturnToStore} // Garante a execução da rota ao clicar no logo
+        onLogoClick={handleReturnToStore}
       />
 
       {/* MENU DE ABAS SUPERIORES */}
@@ -294,22 +295,13 @@ export default function App() {
       {/* RENDERIZAÇÃO CONDICIONAL */}
       {activeTab === "store" ? (
         <>
-          {/* 🛠️ BINDING DO HERO TOTALMENTE CORRIGIDO E SEGURO */}
           <Hero 
             onScrollToCatalog={() => {
               setSelectedCategory("Todos");
               document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
             }}
-            // ABRE O FORMULÁRIO DO PERSONAL SHOPPER NA HORA, SEM EXIGIR LOGIN TRAVADO
             onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
-            // ABRE O MODAL OU DIRECIONA PARA O CLUBE DE ASSINATURA
-            onOpenClubModal={() => {
-              if (user) {
-                setActiveTab("account");
-              } else {
-                setIsAuthOpen(true);
-              }
-            }}
+            onOpenClubModal={() => setIsClubModalOpen(true)} // 🛠️ DESTRAVADO: Abre o modal do Clube direto!
           />
           <main className="flex-1">
             <TrustBadges />
@@ -372,9 +364,9 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um dream: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
-                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências uniques, com confiança, dedicação e amor em cada envio.</p>
+                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
@@ -423,7 +415,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte de conexão definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div className="text-left">
@@ -451,10 +443,12 @@ export default function App() {
         />
       )}
       
-      {/* MODAL DE ORÇAMENTO DO PERSONAL SHOPPER */}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
 
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+
+      {/* 🛠️ INJEÇÃO COMPLETA DO CLUBE DE ASSINATURA */}
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
 
     </div>
   );
