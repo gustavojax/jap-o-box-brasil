@@ -6,7 +6,7 @@ export const YEN_TO_BRL_RATE = 0.035; // Valor médio de conversão do Iene (JP�
 // 🛒 Catálogo de Produtos estruturado por Departamentos Estilo Amazon JP
 export const PRODUCTS: Product[] = [
   // ==========================================
-  // LOTE ANTERIOR MANTIDO INTEGRALMENTE
+  // LOTE ORIGINAL MANTIDO INTEGRALMENTE
   // ==========================================
   {
     id: "senka-perfect-whip",
@@ -16,7 +16,7 @@ export const PRODUCTS: Product[] = [
     priceBRL: 54.90,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://ztdkbgpn/51j8-ue-scrl-ac-uf1000-1000-ql80-fmwebp.webp",
+    image: "https://i.ibb.co/zTdKBgPN/51j8-UE-scr-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
     reviewsCount: 245,
     department: "Beleza, Higiene e Saúde",
@@ -130,7 +130,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 🧴 NOVOS INGRESSOS: SKIN CARE
+  // 🧴 SEÇÃO: SKIN CARE (NOVOS PRODUTOS)
   // ==========================================
   {
     id: "femimore-glutathione-soap",
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 💇‍♀️ NOVOS INGRESSOS: HAIR CARE
+  // 💇‍♀️ SEÇÃO: HAIR CARE (NOVOS PRODUTOS)
   // ==========================================
   {
     id: "tsubaki-moist-repair-red",
@@ -349,7 +349,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "tsubaki-premium-cool-blue",
     name: "Tsubaki Premium Cool (Blue)",
-    jpName: "TSUBAKI プレミアム クール スカルp",
+    jpName: "TSUBAKI プレミアム クール スカルプ",
     description: "Kit Shampoo + Condicionador Cooling Sensation.",
     priceBRL: 169.00,
     serviceFeeBRL: 40.00,
@@ -408,7 +408,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 🛍️ NOVOS INGRESSOS: ACESSÓRIOS & HIGIENE
+  // 🛍️ SEÇÃO: ACESSÓRIOS (NOVOS PRODUTOS)
   // ==========================================
   {
     id: "sheglam-brow-brush",
