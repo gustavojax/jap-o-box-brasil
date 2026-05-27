@@ -26,7 +26,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
-    jpName: "毛穴撫子 お米のパック",
+    jpName: "毛穴撫子 お米의パック",
     description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
     priceBRL: 85.90,
     serviceFeeBRL: 25.00,
@@ -130,7 +130,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 🧴 SEÇÃO: SKIN CARE (NOVOS PRODUTOS)
+  // 🧴 SEÇÃO: SKIN CARE (PREÇOS CORRIGIDOS)
   // ==========================================
   {
     id: "femimore-glutathione-soap",
@@ -299,7 +299,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 💇‍♀️ SEÇÃO: HAIR CARE (NOVOS PRODUTOS)
+  // 💇‍♀️ SEÇÃO: HAIR CARE (PREÇOS CORRIGIDOS)
   // ==========================================
   {
     id: "tsubaki-moist-repair-red",
@@ -328,7 +328,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 340,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Maaging e cuidados com o cabelo",
     stock: 25
   },
   {
@@ -408,7 +408,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 🛍️ SEÇÃO: ACESSÓRIOS (NOVOS PRODUTOS)
+  // 🛍️ SEÇÃO: ACESSÓRIOS (PREÇOS CORRIGIDOS)
   // ==========================================
   {
     id: "sheglam-brow-brush",
