@@ -1,12 +1,12 @@
 import { Product, BlogPost } from "./types";
 
-// 🪙 TAXAS DE CONVERSÃO DE MOEDA (Exigido por BudgetModal.tsx e calculadoras)
-export const YEN_TO_BRL_RATE = 0.035; // Valor médio de conversão do Iene (JP¥) para Real (R$)
+// 🪙 TAXAS DE CONVERSÃO DE MOEDA
+export const YEN_TO_BRL_RATE = 0.035;
 
-// 🛒 Catálogo de Produtos estruturado por Departamentos Estilo Amazon JP
+// 🛒 Catálogo de Produtos
 export const PRODUCTS: Product[] = [
   // ==========================================
-  // LOTE ORIGINAL MANTIDO INTEGRALMENTE
+  // ITENS DE SKIN CARE
   // ==========================================
   {
     id: "senka-perfect-whip",
@@ -26,7 +26,7 @@ export const PRODUCTS: Product[] = [
   {
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
-    jpName: "毛穴撫子 お米의パック",
+    jpName: "毛穴撫子 お米のパック",
     description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
     priceBRL: 85.90,
     serviceFeeBRL: 25.00,
@@ -128,10 +128,6 @@ export const PRODUCTS: Product[] = [
     category: "Maquiagem e cuidados com o cabelo",
     stock: 25
   },
-
-  // ==========================================
-  // 🧴 SEÇÃO: SKIN CARE (PREÇOS CORRIGIDOS)
-  // ==========================================
   {
     id: "femimore-glutathione-soap",
     name: "Femimore Glutathione Bubble Soap",
@@ -299,7 +295,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 💇‍♀️ SEÇÃO: HAIR CARE (PREÇOS CORRIGIDOS)
+  // 💇‍♀️ SEÇÃO: HAIR CARE
   // ==========================================
   {
     id: "tsubaki-moist-repair-red",
@@ -328,7 +324,7 @@ export const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 340,
     department: "Beleza, Higiene e Saúde",
-    category: "Maaging e cuidados com o cabelo",
+    category: "Maquiagem e cuidados com o cabelo",
     stock: 25
   },
   {
@@ -408,7 +404,7 @@ export const PRODUCTS: Product[] = [
   },
 
   // ==========================================
-  // 🛍️ SEÇÃO: ACESSÓRIOS (PREÇOS CORRIGIDOS)
+  // 🛍️ SEÇÃO: ACESSÓRIOS
   // ==========================================
   {
     id: "sheglam-brow-brush",
@@ -433,7 +429,7 @@ export const PRODUCTS: Product[] = [
     priceBRL: 146.00,
     serviceFeeBRL: 35.00,
     shippingEstBRL: 50.00,
-    image: "https://i.ibb.co/KgRprTR/61sa9-Ojx3-JL-AC-UF1000-1000-QL80-FMwebp.webp",
+    image: "https://i.ibb.co/ksMxWzbF/1-bbd45f2b-c684-4b30-ab4d-1e7c3384e254.png",
     rating: 5.0,
     reviewsCount: 65,
     department: "Beleza, Higiene e Saúde",
@@ -463,7 +459,7 @@ export const PRODUCTS: Product[] = [
     priceBRL: 120.00,
     serviceFeeBRL: 30.00,
     shippingEstBRL: 25.00,
-    image: "https://i.ibb.co/5xjcBXN6/D-Q-NP-806727-MLU75555056272-042024-F.webp",
+    image: "https://i.ibb.co/KgRprTR/61sa9-Ojx3-JL-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
@@ -472,7 +468,6 @@ export const PRODUCTS: Product[] = [
   }
 ];
 
-// ⭐ Depoimentos exigidos pelo componente Testimonials.tsx
 export const TESTIMONIALS = [
   {
     id: "1",
@@ -492,7 +487,6 @@ export const TESTIMONIALS = [
   }
 ];
 
-// 📝 Constante exigida pelo componente BlogSection.tsx
 export const BLOG_POSTS: BlogPost[] = [
   {
     id: "post-1",
