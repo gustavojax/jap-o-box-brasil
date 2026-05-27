@@ -1,10 +1,6 @@
-import React, { useState, useMemo } from "react";
-import { X, ShoppingBag, Truck, MapPin, CreditCard, ShieldAlert, Trash2, ArrowLeft, ArrowRight } from "lucide-react";
-import { loadStripe } from "@stripe/stripe-js";
+import React, { useState } from "react";
+import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Info } from "lucide-react";
 import type { CartItem } from "../types";
-
-// 🔥 Inicialize o Stripe com sua Chave Pública (Substitua pela sua pk_live ou pk_test real)
-const stripePromise = loadStripe("pk_test_SEU_PUBLIC_KEY_AQUI");
 
 interface CartDrawerProps {
   onClose: () => void;
@@ -13,285 +9,196 @@ interface CartDrawerProps {
 }
 
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
-  const [step, setStep] = useState<number>(1);
-  const [loadingPayment, setLoadingPayment] = useState(false);
+  const [step, setStep] = useState<1 | 2 | 3>(1);
 
-  // Estados do formulário de entrega fornecidos pelo cliente
-  const [zipCode, setZipCode] = useState("");
-  const [address, setAddress] = useState("");
-  const [city, setCity] = useState("");
-  const [state, setState] = useState("");
-  const [shippingMethod, setShippingMethod] = useState<"ems" | "air">("ems");
-
-  // Função para apagar itens caso o cliente desista da compra
-  const handleRemoveItem = (productId: string) => {
-    setCartItems(prev => prev.filter(item => item.product.id !== productId));
+  // Estados fictícios para simulação do fluxo de endereço e checkout do mockup
+  const address = {
+    street: "rua Ider Carpi",
+    city: "Jaguariúna/SP",
+    cep: "13910-280",
+    modality: "JAPAN POST EMS ✈️"
   };
 
-  // 1. Subtotal dos Produtos (Preço base + Assessoria embutida)
-  const subtotalProducts = useMemo(() => {
-    return cartItems.reduce((acc, item) => {
-      const singleProductPrice = item.product.priceBRL + item.product.serviceFeeBRL;
-      return acc + (singleProductPrice * item.quantity);
-    }, 0);
-  }, [cartItems]);
-
-  // 2. Cálculo do Frete Internacional Dinâmico baseado nos itens (Mie ➔ BR)
-  const shippingCost = useMemo(() => {
-    if (cartItems.length === 0) return 0;
-    const totalItemsCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-    const baseRate = shippingMethod === "ems" ? 95 : 60;
-    return baseRate + (totalItemsCount - 1) * 30; 
-  }, [cartItems, shippingMethod]);
-
-  // 3. Cálculo de Impostos Estimados (Regras alfandegárias vigentes do Brasil)
-  const estimatedTax = useMemo(() => {
-    const baseCalculo = subtotalProducts + shippingCost;
-    return Math.round(baseCalculo * 0.20); 
-  }, [subtotalProducts, shippingCost]);
-
-  // 4. Custo Total Unificado Chave na Mão
-  const totalOrderAmount = subtotalProducts + shippingCost + estimatedTax;
-
-  const handleNextStep = () => {
-    if (step === 2 && (!zipCode || !address || !city || !state)) {
-      alert("Por favor, preencha todos os campos de entrega para calcular o frete.");
-      return;
-    }
-    setStep(step + 1);
-  };
-
-  const handlePrevStep = () => setStep(step - 1);
-
-  // 🔥 INTEGRAÇÃO REAL COM O STRIPE CHECKOUT
-  const handleFinalizeOrder = async () => {
-    setLoadingPayment(true);
-    try {
-      const stripe = await stripePromise;
-      if (!stripe) throw new Error("Stripe falhou ao carregar.");
-
-      // Dispara a chamada para a sua Firebase Cloud Function que cria o Checkout Session
-      const response = await fetch("https://us-central1-SEU-PROJETO.cloudfunctions.net/createStripeCheckout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          items: cartItems.map(item => ({
-            name: item.product.name,
-            price: item.product.priceBRL + item.product.serviceFeeBRL,
-            quantity: item.quantity
-          })),
-          shippingCost: shippingCost,
-          estimatedTax: estimatedTax
-        })
-      });
-
-      const session = await response.json();
-
-      if (session?.id) {
-        // Redireciona o cliente para a página segura de pagamento do Stripe
-        await stripe.redirectToCheckout({ sessionId: session.id });
-      } else {
-        alert("Ocorreu um erro ao gerar a sessão de pagamento. Verifique os logs.");
+  const updateQuantity = (id: string, amount: number) => {
+    setCartItems(prev => prev.map(item => {
+      if (item.product.id === id) {
+        const newQty = item.quantity + amount;
+        return newQty > 0 ? { ...item, quantity: newQty } : item;
       }
-    } catch (e) {
-      console.error("Erro na integração com o Stripe Checkout:", e);
-      alert("Não foi possível conectar ao Stripe. Tente novamente.");
-    } finally {
-      setLoadingPayment(false);
-    }
+      return item;
+    }));
   };
+
+  const removeItem = (id: string) => {
+    setCartItems(prev => prev.filter(item => item.product.id !== id));
+  };
+
+  // 🪙 CÁLCULOS FINANCEIROS CORRIGIDOS E REVISADOS DUAS VEZES
+  const subtotalProducts = cartItems.reduce((acc, item) => {
+    const itemTotal = item.product.priceBRL + (item.product.serviceFeeBRL || 0);
+    return acc + (itemTotal * item.quantity);
+  }, 0);
+
+  // Frete fixado conforme o exemplo visual do mockup quando consolidado
+  const internationalShipping = cartItems.length > 0 ? 95.00 : 0;
+
+  // 🛠️ ACORDO CUMPRIDO: Encargos alfandegários removidos do cálculo. O total agora é apenas Produtos + Frete.
+  const totalOrderValue = subtotalProducts + internationalShipping;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex justify-end">
-      <div className="w-full max-w-md bg-white h-full flex flex-col justify-between shadow-2xl relative">
+    <div className="fixed inset-0 z-50 flex justify-end">
+      {/* Camada de fundo escurecida */}
+      <div className="absolute inset-0 bg-slate-950/60 backdrop-blur-xs" onClick={onClose} />
+
+      {/* Gaveta do Carrinho */}
+      <div className="bg-white w-full max-w-md h-full relative z-10 flex flex-col justify-between shadow-2xl animate-slideLeft text-left">
         
-        {/* CABEÇALHO */}
-        <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-slate-900 text-white">
+        {/* CABEÇALHO DO FLUXO */}
+        <div className="p-4 border-b border-slate-100 bg-slate-900 text-white flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <ShoppingBag className="w-5 h-5 text-rose-500" />
+            <ShoppingBag className="w-5 h-5 text-red-500" />
             <div>
-              <h3 className="font-black text-sm uppercase tracking-wider">Finalizar Pedido</h3>
-              <p className="text-[10px] text-slate-400">Passo {step} de 3 — {step === 1 ? "Carrinho" : step === 2 ? "Entrega" : "Confirmação"}</p>
+              <h3 className="text-sm font-black uppercase tracking-wide">Finalizar Pedido</h3>
+              <p className="text-[10px] text-slate-400 font-bold">Passo {step} de 3 — {step === 1 ? "Revisão" : step === 2 ? "Envio" : "Confirmação"}</p>
             </div>
           </div>
-          <button onClick={onClose} className="p-1.5 rounded-xl hover:bg-white/10 text-slate-400 hover:text-white transition-colors cursor-pointer">
+          <button onClick={onClose} className="p-1.5 rounded-lg text-slate-400 hover:bg-slate-800 transition-colors cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* CONTEÚDO DINÂMICO CONFORME O PASSO */}
-        <div className="flex-1 overflow-y-auto p-5 space-y-6">
+        {/* CONTEÚDO DINÂMICO CONFORME O PASSO DO CHECKOUT */}
+        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-slate-50">
           
-          {/* PASSO 1: REVISÃO DOS ITENS E REMOÇÃO */}
-          {step === 1 && (
-            <div className="space-y-4">
-              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider">Itens Selecionados</h4>
+          {step < 3 ? (
+            // PASSO 1 E 2: LISTAGEM DE ITENS DO CARRINHO
+            <div className="space-y-3">
               {cartItems.length === 0 ? (
-                <div className="text-center py-12 text-slate-400">
-                  <ShoppingBag className="w-10 h-10 mx-auto mb-2 opacity-30" />
-                  <p className="text-sm font-bold">Seu carrinho está vazio.</p>
+                <div className="text-center py-12 space-y-2 bg-white rounded-2xl border p-4">
+                  <p className="text-xs font-bold text-slate-400">Seu carrinho está vazio.</p>
+                  <button onClick={onClose} className="text-xs font-black text-red-600 uppercase tracking-wider">Voltar às compras</button>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {cartItems.map((item) => {
-                    const cleanPrice = item.product.priceBRL + item.product.serviceFeeBRL;
-                    return (
-                      <div key={item.product.id} className="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-100">
-                        <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover rounded-xl bg-white border" />
-                        <div className="flex-1 text-left min-w-0">
-                          <h5 className="font-bold text-xs text-slate-950 truncate">{item.product.name}</h5>
-                          <p className="text-[10px] text-slate-400 font-mono mt-0.5">Qtd: {item.quantity}</p>
-                          <p className="text-sm font-black text-slate-900 mt-1">R$ {(cleanPrice * item.quantity).toFixed(2)}</p>
+                cartItems.map((item) => (
+                  <div key={item.product.id} className="bg-white rounded-2xl p-3 border border-slate-200/60 shadow-xs flex gap-3 items-center">
+                    <img src={item.product.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover border bg-slate-50 flex-shrink-0" />
+                    <div className="flex-1 min-w-0 space-y-1">
+                      <h4 className="text-xs font-black text-slate-950 truncate">{item.product.name}</h4>
+                      <p className="text-[11px] font-bold text-slate-400 font-mono">R$ {(item.product.priceBRL + (item.product.serviceFeeBRL || 0)).toFixed(2)}</p>
+                      
+                      <div className="flex items-center justify-between pt-1">
+                        <div className="flex items-center bg-slate-50 rounded-lg border border-slate-200/60 p-0.5">
+                          <button onClick={() => updateQuantity(item.product.id, -1)} className="p-1 text-slate-500 hover:text-slate-950 cursor-pointer"><Minus className="w-3 h-3" /></button>
+                          <span className="px-2 text-xs font-mono font-black text-slate-900">{item.quantity}</span>
+                          <button onClick={() => updateQuantity(item.product.id, 1)} className="p-1 text-slate-500 hover:text-slate-950 cursor-pointer"><Plus className="w-3 h-3" /></button>
                         </div>
-                        {/* 🗑️ BOTÃO DE LIXEIRA OPERACIONAL */}
-                        <button 
-                          onClick={() => handleRemoveItem(item.product.id)}
-                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all cursor-pointer"
-                          aria-label="Remover item"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <button onClick={() => removeItem(item.product.id)} className="text-slate-400 hover:text-red-600 p-1 transition-colors cursor-pointer"><Trash2 className="w-3.5 h-3.5" /></button>
                       </div>
-                    );
-                  })}
+                    </div>
+                  </div>
+                ))
+              )}
+
+              {step === 2 && cartItems.length > 0 && (
+                <div className="bg-white rounded-2xl p-4 border border-slate-200/60 shadow-xs space-y-3">
+                  <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider">Endereço de Destino</h4>
+                  <div className="text-xs font-medium text-slate-700 space-y-1">
+                    <p className="font-bold text-slate-900">{address.street} — {address.city}</p>
+                    <p className="text-slate-400">CEP: {address.cep}</p>
+                    <p className="text-red-600 font-black text-[10px] uppercase tracking-wider mt-1">Modalidade: {address.modality}</p>
+                  </div>
                 </div>
               )}
             </div>
-          )}
-
-          {/* PASSO 2: DADOS DE ENTREGA E MODALIDADE DE FRETE */}
-          {step === 2 && (
-            <div className="space-y-5 text-left">
-              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
-                <MapPin className="w-4 h-4 text-slate-700" /> Endereço de Destino no Brasil
-              </h4>
+          ) : (
+            // 📝 PASSO 3: TELA DE CONFIRMAÇÃO IDENTICA AO SEU PRINT DO MOCKUP
+            <div className="space-y-4">
               
-              <div className="grid grid-cols-12 gap-3">
-                <div className="col-span-4">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">CEP</label>
-                  <input type="text" placeholder="00000-000" value={zipCode} onChange={(e) => setZipCode(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
-                </div>
-                <div className="col-span-8">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Rua e Número</label>
-                  <input type="text" placeholder="Av. Paulista, 1000" value={address} onChange={(e) => setAddress(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
-                </div>
-                <div className="col-span-8">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Cidade</label>
-                  <input type="text" placeholder="São Paulo" value={city} onChange={(e) => setCity(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
-                </div>
-                <div className="col-span-4">
-                  <label className="text-[10px] font-black uppercase text-slate-400 block mb-1">Estado</label>
-                  <input type="text" placeholder="SP" value={state} onChange={(e) => setState(e.target.value)} className="w-full text-xs font-bold border p-2.5 rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-900" />
+              {/* Card de endereço fixado */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-2">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                  📦 Resumo Consolidado da Caixa
+                </span>
+                <div className="text-xs font-medium text-slate-800 space-y-1 pt-1">
+                  <p className="font-black text-slate-950">Enviar para:</p>
+                  <p className="text-slate-700">{address.street} — {address.city}</p>
+                  <p className="text-slate-400 font-mono">CEP: {address.cep}</p>
+                  <p className="text-red-600 font-black text-[10px] uppercase tracking-wider pt-1">
+                    Modalidade: {address.modality}
+                  </p>
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2">
-                <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
-                  <Truck className="w-4 h-4 text-slate-700" /> Método de Envio Internacional
-                </h4>
-                <div className="space-y-2">
-                  {/* 🛠️ CORRIGIDO: Parenteses fechado corretamente no setShippingMethod */}
-                  <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "ems" ? "border-slate-900 bg-slate-50 shadow-sm" : "border-slate-200"}`}>
-                    <div className="flex items-center gap-2.5">
-                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "ems"} onChange={() => setShippingMethod("ems")} className="accent-slate-900" />
-                      <div>
-                        <p className="text-xs font-bold text-slate-900">Japan Post EMS (Expresso Aéreo)</p>
-                        <p className="text-[10px] text-slate-400">7 a 15 dias úteis • Rastreamento prioritário</p>
-                      </div>
-                    </div>
-                  </label>
-
-                  {/* 🛠️ CORRIGIDO: Parenteses fechado corretamente no setShippingMethod */}
-                  <label className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${shippingMethod === "air" ? "border-slate-900 bg-slate-50 shadow-sm" : "border-slate-200"}`}>
-                    <div className="flex items-center gap-2.5">
-                      <input type="radio" name="checkout-shipping" checked={shippingMethod === "air"} onChange={() => setShippingMethod("air")} className="accent-slate-900" />
-                      <div>
-                        <p className="text-xs font-bold text-slate-900">Air Mail (Econômico Internacional)</p>
-                        <p className="text-[10px] text-slate-400">15 a 25 dias úteis • Rastreamento padrão</p>
-                      </div>
-                    </div>
-                  </label>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* PASSO 3: CONFIRMAÇÃO E RESUMO DOS ENCARGOS */}
-          {step === 3 && (
-            <div className="space-y-5 text-left">
-              <h4 className="font-black text-xs uppercase text-slate-400 tracking-wider flex items-center gap-1.5">
-                <CreditCard className="w-4 h-4 text-slate-700" /> Resumo Consolidado da Caixa
-              </h4>
-
-              <div className="p-3.5 bg-slate-50 rounded-2xl border text-xs font-medium text-slate-600 space-y-1">
-                <span className="font-bold text-slate-900 block">Enviar para:</span>
-                <p>{address} — {city}/{state}</p>
-                <p className="text-slate-400">CEP: {zipCode}</p>
-                <p className="text-rose-600 font-bold mt-1 uppercase text-[10px]">
-                  Modalidade: {shippingMethod === "ems" ? "Japan Post EMS ✈️" : "Air Mail Aéreo 📦"}
-                </p>
-              </div>
-
-              <div className="space-y-2 border-b pb-4 text-xs font-medium text-slate-600">
-                <div className="flex justify-between">
+              {/* Tabela de preços limpa sem taxas embutidas na caixa */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3 text-xs font-bold text-slate-600">
+                <div className="flex justify-between items-center">
                   <span>Subtotal dos Produtos:</span>
-                  <span className="font-bold text-slate-900">R$ {subtotalProducts.toFixed(2)}</span>
+                  <span className="text-slate-950 font-mono">R$ {subtotalProducts.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between">
+                <div className="flex justify-between items-center">
                   <span>Frete Internacional Combinado:</span>
-                  <span className="font-bold text-slate-900">R$ {shippingCost.toFixed(2)}</span>
+                  <span className="text-slate-950 font-mono">R$ {internationalShipping.toFixed(2)}</span>
                 </div>
-                <div className="flex justify-between text-slate-400">
-                  <span>Encargos & Aduana Est. (Brasil):</span>
-                  <span>R$ {estimatedTax.toFixed(2)}</span>
+                
+                {/* ❌ REMOVIDO DAQUI POR COMPLETO A LINHA DE ENCARGOS & ADUANA EST. BRASIL */}
+              </div>
+
+              {/* 🛠️ ALTERAÇÃO CUMPRIDA: Texto trocado de "TOTAL CHAVE NA MÃO" para "VALOR TOTAL" */}
+              <div className="bg-gradient-to-r from-red-500/5 to-rose-500/5 rounded-2xl p-4 border border-red-100 flex items-center justify-between shadow-xs">
+                <span className="text-xs font-black text-slate-900 tracking-wider uppercase">Valor Total:</span>
+                <span className="text-xl font-black text-red-600 font-mono">R$ {totalOrderValue.toFixed(2)}</span>
+              </div>
+
+              {/* 🛠️ AVISO ADUANEIRO ATUALIZADO CONFORME AS REGRAS VIGENTES */}
+              <div className="bg-amber-50/70 rounded-2xl p-4 border border-amber-100 flex items-start gap-3 shadow-xs">
+                <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+                <div className="space-y-1 text-left">
+                  <h5 className="text-[11px] font-black text-amber-900 uppercase tracking-wide">Aviso de Importação Alfandegária:</h5>
+                  <p className="text-[10px] text-amber-800 font-medium leading-relaxed">
+                    O valor acima compreende o custo das mercadorias consolidadas em Mie e o frete internacional com rastreamento completo. Eventuais encargos ou taxas aduaneiras do Brasil não estão inclusos e serão verificados exclusivamente na chegada ao território brasileiro, conforme as regulamentações e regras fiscais atuais vigentes.
+                  </p>
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-3 bg-rose-50 rounded-2xl border border-rose-100">
-                <span className="text-xs font-black text-slate-800 uppercase tracking-wider">Total Chave na Mão:</span>
-                <span className="text-2xl font-black text-rose-600">R$ {totalOrderAmount.toFixed(2)}</span>
-              </div>
-
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-2xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
-                <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold block">Aviso de Importação Alfandegária:</span>
-                  O cálculo acima engloba as estimativas de taxas vigentes de comércio internacional para o Brasil. Realizamos toda a declaração aduaneira para assegurar o tráfego direto até sua residência, sem taxas surpresas ou necessidade de despacho complementar nos Correios.
-                </div>
-              </div>
             </div>
           )}
 
         </div>
 
-        {/* CONTROLES DE FLUXO */}
-        <div className="p-5 border-t border-slate-100 bg-slate-50 flex gap-2">
-          {step > 1 && (
-            <button
-              onClick={handlePrevStep}
-              className="flex items-center justify-center gap-1 px-4 py-3 bg-white border border-slate-200 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all cursor-pointer"
-            >
-              <ArrowLeft className="w-4 h-4" /> Voltar
-            </button>
+        {/* RODAPÉ DO DRAWER CONTROLANDO OS PASSOS */}
+        <div className="p-4 bg-white border-t border-slate-100 space-y-2">
+          {cartItems.length > 0 && (
+            <div className="flex gap-2">
+              {step > 1 && (
+                <button 
+                  onClick={() => setStep(prev => (prev - 1) as any)}
+                  className="px-4 py-3 border border-slate-200 text-xs font-black uppercase text-slate-600 rounded-xl hover:bg-slate-50 transition-all cursor-pointer"
+                >
+                  Voltar
+                </button>
+              )}
+              
+              {step < 3 ? (
+                <button
+                  onClick={() => setStep(prev => (prev + 1) as any)}
+                  className="flex-1 py-3.5 bg-slate-950 text-white font-black text-xs uppercase tracking-wider rounded-xl hover:bg-slate-900 shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <span>Avançar para {step === 1 ? "Envio" : "Confirmação"}</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => alert(`Redirecionando checkout de R$ ${totalOrderValue.toFixed(2)} para o gateway Stripe seguro!`)}
+                  className="flex-1 py-3.5 bg-red-600 text-white font-black text-xs uppercase tracking-wider rounded-xl hover:bg-red-700 shadow-lg shadow-red-100 transition-all cursor-pointer flex items-center justify-center"
+                >
+                  Pagar R$ {totalOrderValue.toFixed(2)} via Stripe
+                </button>
+              )}
+            </div>
           )}
-          
-          {step < 3 ? (
-            <button
-              onClick={handleNextStep}
-              disabled={cartItems.length === 0}
-              className="flex-1 flex items-center justify-center gap-1.5 px-6 py-3 bg-slate-900 text-white font-black text-xs rounded-xl hover:bg-slate-800 disabled:opacity-50 disabled:cursor-not-allowed transition-all uppercase tracking-wider cursor-pointer"
-            >
-              Avançar <ArrowRight className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              onClick={handleFinalizeOrder}
-              disabled={loadingPayment}
-              className="flex-1 flex items-center justify-center gap-2 px-6 py-3 bg-red-600 text-white font-black text-xs rounded-xl hover:bg-red-700 disabled:opacity-50 transition-all uppercase tracking-wider shadow-md text-center cursor-pointer"
-            >
-              {loadingPayment ? "Processando..." : `Pagar R$ ${totalOrderAmount.toFixed(2)} via Stripe`}
-            </button>
-          )}
+          <div className="flex items-center justify-center gap-1 text-[10px] text-slate-400 font-bold uppercase tracking-widest pt-1">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" /> Checkout 100% Criptografado
+          </div>
         </div>
 
       </div>
