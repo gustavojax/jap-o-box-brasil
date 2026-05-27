@@ -430,14 +430,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* 🛠️ INCLUSÃO DO BANNER DE MEIOS DE PAGAMENTO (DESKTOP E MOBILE) */}
+        {/* 🛠️ BANNER DE MEIOS DE PAGAMENTO INTEGRADO COM O NOVO LINK SEGURO */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
           <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
           <div className="w-full max-w-2xl">
             <img 
-              src="https://i.ibb.co/6Yh08m3S/181923.jpg" // URL hospedada da imagem fornecida
+              src="https://iili.io/CdLPwBa.md.jpg" // Link definitivo atualizado aqui
               alt="Meios de Pagamento: Stripe, Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix" 
-              className="w-full h-auto object-contain select-none pointer-events-none mix-blend-multiply"
+              className="w-full h-auto object-contain select-none pointer-events-none"
             />
           </div>
           <p className="text-[11px] font-semibold text-slate-400">Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.</p>
