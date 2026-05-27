@@ -349,7 +349,7 @@ export default function App() {
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
-            {/* 🛠️ CORREÇÃO DEFINITIVA: Foto real da Paula Takashiro em tamanho real na esquerda */}
+            {/* FOTO PAULA TAKASHIRO */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
                 src="https://iili.io/CJpV5fj.md.jpg" 
@@ -372,10 +372,8 @@ export default function App() {
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
               
-              {/* ASSINATURA: Logo oficial na bolinha redonda perto do nome dela */}
               <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                 <div className="flex items-center gap-3 text-left">
-                  {/* 🛠️ CORREÇÃO DEFINITIVA: Logo oficial inserida na bolinha da assinatura */}
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
                       src="https://iili.io/CJbmWhP.md.jpg" 
@@ -413,7 +411,7 @@ export default function App() {
         </main>
       )}
 
-      {/* RODAPÉ */}
+      {/* RODAPÉ DO ECOSSISTEMA */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="text-left">
@@ -431,7 +429,22 @@ export default function App() {
             </ul>
           </div>
         </div>
-        <div className="max-w-7xl mx-auto px-4 mt-12 pt-6 border-t border-slate-100 text-center text-xs text-slate-400 space-y-2">
+
+        {/* 🛠️ INCLUSÃO DO BANNER DE MEIOS DE PAGAMENTO (DESKTOP E MOBILE) */}
+        <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
+          <div className="w-full max-w-2xl">
+            <img 
+              src="https://i.ibb.co/6Yh08m3S/181923.jpg" // URL hospedada da imagem fornecida
+              alt="Meios de Pagamento: Stripe, Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix" 
+              className="w-full h-auto object-contain select-none pointer-events-none mix-blend-multiply"
+            />
+          </div>
+          <p className="text-[11px] font-semibold text-slate-400">Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.</p>
+        </div>
+
+        {/* CRÉDITOS E DIREITOS AUTORAIS */}
+        <div className="max-w-7xl mx-auto px-4 mt-6 text-center text-xs text-slate-400 space-y-2">
           <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
           <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
             Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
