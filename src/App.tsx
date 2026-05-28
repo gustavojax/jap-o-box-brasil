@@ -74,11 +74,100 @@ const PRODUCTS: Product[] = [
     stock: 25
   },
   {
+    id: "medicube-zero-pore-one-day-serum",
+    name: "Medicube Zero Pore One Day Serum (30 ml)",
+    jpName: "メディキューブ ゼロポア ワンデー セラム",
+    description: "Solução diária de alta performance para controle extremo de oleosidade e redução de poros dilatados. Sua combinação de AHA, BHA e PHA remove células mortas e impurezas profundas, uniformizando a textura da pele rapidamente.",
+    priceBRL: 180.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/xdHzFKrm/pores.png", 
+    rating: 4.8,
+    reviewsCount: 150,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "medicube-one-day-exosome-shot",
+    name: "Medicube One Day Exosome Shot 2000 (30 ml)",
+    jpName: "メディキューブ エクソソームショット2000",
+    description: "Sérum inovador com tecnologia de micro-spicules que simula o efeito de um microagulhamento clínico. Promove renovação celular acelerada, desobstrui cravos e entrega ativos profundamente para refinar a textura e fechar poros.",
+    priceBRL: 165.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/hPrM2R8d/oneday.png", 
+    rating: 4.9,
+    reviewsCount: 120,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "medicube-kojic-acid-turmeric-niacinamide",
+    name: "Medicube Kojic Acid Turmeric Niacinamide Serum (30 ml)",
+    jpName: "メディキューブ コウジ酸ターメリックナイアシンアミド",
+    description: "Tratamento intensivo com microcápsulas antioxidantes focado em apagar manchas escuras, melasmas e marcas de acne. O ácido kójico e a cúrcuma atuam direto na produção de melanina, devolvendo um tom homogêneo à pele.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/tTKmGd70/kojac.png",
+    rating: 4.8,
+    reviewsCount: 88,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
+  {
+    id: "medicube-glutathione-glow-serum",
+    name: "Medicube Glutathione Glow Serum (30 g)",
+    jpName: "メディキューブ グルタチオングロウセラム",
+    description: "Desenvolvido para reverter o aspecto de pele cansada e sem vida. Utiliza a glutationa lipossomada para garantir máxima absorção, entregando uma ação antioxidante potente e o cobiçado efeito de luminosidade espelhada (glow).",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/7hJXB5NB/black.png", 
+    rating: 4.9,
+    reviewsCount: 145,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 18
+  },
+  {
+    id: "medicube-retinol-nmn-boosting-serum",
+    name: "Medicube Retinol NMN Boosting Serum (30 ml)",
+    jpName: "メディキューブ レチノールNMNブースティングセラム",
+    description: "Potente sérum antienvelhecimento global. Combina retinol encapsulado de liberação prolongada (que reduz rugas e linhas finas sem irritar) ao NMN, um poderoso ativo que recarrega a energia celular e devolve firmeza à pele.",
+    priceBRL: 188.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/xTcS256Z/medicube.png", 
+    reviewsCount: 92,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 10
+  },
+  {
+    id: "medicube-pdrn-one-day-ampoule",
+    name: "Medicube PDRN One Day Ampoule (10 un. de 1,5 ml)",
+    jpName: "メディキューブ PDRNワンデーアンプル",
+    description: "Tratamento reconstrutor premium em ampolas fracionadas. Formulado com DNA de salmão (PDRN) a 99% de pureza, ele acelera a regeneração celular, estimula o colágeno e aumenta drasticamente a densidade e o viço da pele madura.",
+    priceBRL: 155.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/0QRN63Br/medipouere.png", 
+    rating: 5.0,
+    reviewsCount: 115,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 12
+  },
+  {
     id: "biore-makeup-remover-oil",
     name: "Biore Makeup Remover Oil",
     jpName: "ビオレ メイク落とし クレンジングオイル",
     description: "Óleo remover de maquiagem Biore.",
-    priceBRL: 90.00,
+    priceBRL: 89.90,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/4R4D5mJm/D-Q-NP-955266-MLA92278985694-092025-F.webp",
@@ -229,7 +318,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI プレミアムEX リペアマスク",
     description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
     priceBRL: 99.00,
-    serviceFeeBRL: 0, // ZERADO - MOSTRARÁ R$ 99,00 EXATOS
+    serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 35.00,
     image: "https://i.postimg.cc/9MkMbKDt/tsuba.png",
     rating: 4.9,
@@ -244,7 +333,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI モイスト＆リペア キット",
     description: "Kit Shampoo + Condicionador Moist & Repair.",
     priceBRL: 179.90,
-    serviceFeeBRL: 0, // ZERADO - MOSTRARÁ R$ 179,90 EXATOS
+    serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 65.00,
     image: "https://i.postimg.cc/ZRs9g0Mg/tsubas.png",
     rating: 4.9,
@@ -530,7 +619,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇲🇽 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
