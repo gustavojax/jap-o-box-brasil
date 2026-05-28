@@ -273,7 +273,7 @@ const PRODUCTS: Product[] = [
     name: "Sheglam Brow Brush & Dip",
     jpName: "シーグラム ブロウブラシ＆ディップ",
     description: "Lápis + escova para sobrancelhas (Taupe).",
-    priceBRL: 160.00,
+    priceBRL: 75.00,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 30.00,
     image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
