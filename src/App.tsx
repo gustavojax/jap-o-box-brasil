@@ -22,7 +22,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 
 // ==========================================
-// BASE DE DADOS DE PRODUTOS COM IMAGENS CORRIGIDAS (LINKS REAIS/PÚBLICOS)
+// BASE DE DADOS DE PRODUTOS CORRIGIDA E CONFERIDA
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
@@ -34,7 +34,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 120.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 25.00,
-    image: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=500&q=80", // Fallback limpo de alta resolução para produto de higiene
+    image: "https://images.unsplash.com/photo-1607613009820-a29f7bb81c04?auto=format&fit=crop&w=500&q=80",
     rating: 4.9,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
@@ -49,7 +49,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 110.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80", // Imagem pública estável para sabonete premium/Skincare
+    image: "https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=500&q=80",
     rating: 4.8,
     reviewsCount: 64,
     department: "Beleza, Higiene e Saúde",
@@ -66,7 +66,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 89.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/61Nl-H6b7qL._SL1500_.jpg", // Link CDN oficial da Amazon para o Óleo Bioré
+    image: "https://m.media-amazon.com/images/I/61Nl-H6b7qL._SL1500_.jpg",
     rating: 4.8,
     reviewsCount: 420,
     department: "Beleza, Higiene e Saúde",
@@ -81,7 +81,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 110.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/61M-81wBfGL._SL1500_.jpg", // Link CDN oficial da Amazon para o Gokujyun Oil
+    image: "https://m.media-amazon.com/images/I/61M-81wBfGL._SL1500_.jpg",
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
@@ -96,7 +96,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 54.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/51H-OOfZ1tL._SL1000_.jpg", // Link CDN oficial da Amazon para o Perfect Whip
+    image: "https://m.media-amazon.com/images/I/51H-OOfZ1tL._SL1000_.jpg",
     rating: 4.9,
     reviewsCount: 245,
     department: "Beleza, Higiene e Saúde",
@@ -106,12 +106,12 @@ const PRODUCTS: Product[] = [
   {
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
-    jpName: "毛穴撫子 お米のパック",
+    jpName: "毛穴撫子 お米 de パック",
     description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros e uniformiza o tom.",
     priceBRL: 85.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 40.00,
-    image: "https://m.media-amazon.com/images/I/61NfTBy2V2L._SL1000_.jpg", // Link CDN oficial da Amazon para Keana Rice Pack
+    image: "https://m.media-amazon.com/images/I/61NfTBy2V2L._SL1000_.jpg",
     rating: 4.8,
     reviewsCount: 188,
     department: "Beleza, Higiene e Saúde",
@@ -126,7 +126,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 65.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
-    image: "https://m.media-amazon.com/images/I/61f4bC7NWeL._SL1200_.jpg", // Link CDN oficial da Amazon para Numbuzin
+    image: "https://m.media-amazon.com/images/I/61f4bC7NWeL._SL1200_.jpg",
     rating: 4.7,
     reviewsCount: 95,
     department: "Beleza, Higiene e Saúde",
@@ -141,7 +141,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 128.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
-    image: "https://m.media-amazon.com/images/I/51A3I1h-ZtL._SL1000_.jpg", // Link CDN oficial da Amazon para Celimax Retinal
+    image: "https://m.media-amazon.com/images/I/51A3I1h-ZtL._SL1000_.jpg",
     rating: 4.9,
     reviewsCount: 130,
     department: "Beleza, Higiene e Saúde",
@@ -156,7 +156,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 112.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
-    image: "https://m.media-amazon.com/images/I/51wU-f8Vl+L._SL1024_.jpg", // Link CDN oficial da Amazon para Celimax Spot Care
+    image: "https://m.media-amazon.com/images/I/51wU-f8Vl+L._SL1024_.jpg",
     rating: 4.6,
     reviewsCount: 74,
     department: "Beleza, Higiene e Saúde",
@@ -171,7 +171,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 138.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
-    image: "https://m.media-amazon.com/images/I/51rYgTcoS2L._SL1000_.jpg", // Link CDN oficial da Amazon para Celimax Retinol Serum
+    image: "https://m.media-amazon.com/images/I/51rYgTcoS2L._SL1000_.jpg",
     rating: 4.8,
     reviewsCount: 112,
     department: "Beleza, Higiene e Saúde",
@@ -186,7 +186,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 182.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/51rEx62CqyL._SL1500_.jpg", // Link CDN oficial da Amazon para ReFa Heart Comb
+    image: "https://m.media-amazon.com/images/I/51rEx62CqyL._SL1500_.jpg",
     rating: 5.0,
     reviewsCount: 320,
     department: "Beleza, Higiene e Saúde",
@@ -201,7 +201,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 149.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/513yN9154DL._SL1500_.jpg", // Link CDN oficial da Amazon para ReFa Heart Comb Red
+    image: "https://m.media-amazon.com/images/I/513yN9154DL._SL1500_.jpg",
     rating: 4.9,
     reviewsCount: 215,
     department: "Beleza, Higiene e Saúde",
@@ -212,11 +212,11 @@ const PRODUCTS: Product[] = [
     id: "tsubaki-repair-mask",
     name: "Tsubaki - Premium Ex Repair Mask 180ml",
     jpName: "TSUBAKI プレミアムEX リペアマスク",
-    description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
+    description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo.",
     priceBRL: 99.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/61d7bC-k7fL._SL1500_.jpg", // ✨ LINK TOTALMENTE NOVO E DIRETO DA AMAZON (IMAGEM DA MÁSCARA GOLD)
+    image: "https://m.media-amazon.com/images/I/61d7bC-k7fL._SL1500_.jpg",
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -231,7 +231,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 179.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
-    image: "https://m.media-amazon.com/images/I/51z8wGvI8-L._SL1000_.jpg", // ✨ LINK TOTALMENTE NOVO E DIRETO DA AMAZON (IMAGEM DO SHAMPOO/CONDICIONADOR VERMELHO)
+    image: "https://m.media-amazon.com/images/I/51z8wGvI8-L._SL1000_.jpg",
     rating: 4.9,
     reviewsCount: 280,
     department: "Beleza, Higiene e Saúde",
@@ -246,7 +246,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 179.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
-    image: "https://m.media-amazon.com/images/I/51LpZ7A8ZpL._SL1000_.jpg", // Link CDN oficial da Amazon para Tsubaki Yellow
+    image: "https://m.media-amazon.com/images/I/51LpZ7A8ZpL._SL1000_.jpg",
     rating: 4.8,
     reviewsCount: 340,
     department: "Beleza, Higiene e Saúde",
@@ -261,7 +261,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 220.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
-    image: "https://m.media-amazon.com/images/I/51S8PzXzOfL._SL1000_.jpg", // Link CDN oficial da Amazon para Tsubaki Black
+    image: "https://m.media-amazon.com/images/I/51S8PzXzOfL._SL1000_.jpg",
     rating: 4.9,
     reviewsCount: 412,
     department: "Beleza, Higiene e Saúde",
@@ -276,7 +276,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 160.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
-    image: "https://m.media-amazon.com/images/I/41E9ZJtC8sL._SL1000_.jpg", // Link CDN oficial da Amazon para Sheglam Brush
+    image: "https://m.media-amazon.com/images/I/41E9ZJtC8sL._SL1000_.jpg",
     rating: 4.5,
     reviewsCount: 118,
     department: "Beleza, Higiene e Saúde",
@@ -291,7 +291,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 146.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 50.00,
-    image: "https://m.media-amazon.com/images/I/51b9E-W6xYL._SL1080_.jpg", // Link CDN oficial da Amazon para Medicube Pro
+    image: "https://m.media-amazon.com/images/I/51b9E-W6xYL._SL1080_.jpg",
     rating: 5.0,
     reviewsCount: 65,
     department: "Beleza, Higiene e Saúde",
@@ -306,7 +306,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 90.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 40.00,
-    image: "https://m.media-amazon.com/images/I/51Y7W6818XL._SL1000_.jpg", // Link CDN oficial da Amazon para TraEn Tool
+    image: "https://m.media-amazon.com/images/I/51Y7W6818XL._SL1000_.jpg",
     rating: 4.6,
     reviewsCount: 39,
     department: "Beleza, Higiene e Saúde",
@@ -316,10 +316,6 @@ const PRODUCTS: Product[] = [
 ];
 
 export default function App() {
-
-  // =========================
-  // AUTH & NAVIGATION STATE
-  // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "account" | "about">("store");
@@ -350,10 +346,7 @@ export default function App() {
     setLoadingOrders(true);
 
     const ordersRef = collection(db, "orders");
-    const q = query(
-      ordersRef, 
-      where("userId", "==", user.uid)
-    );
+    const q = query(ordersRef, where("userId", "==", user.uid));
 
     const unsubOrders = onSnapshot(q, (snapshot) => {
       const ordersList: any[] = [];
@@ -411,9 +404,6 @@ export default function App() {
     setActiveTab("store");
   };
 
-  // =========================
-  // UI & FILTERS STATES
-  // =========================
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
@@ -510,3 +500,235 @@ export default function App() {
     setActiveTab("store");
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span className="hidden md:inline text-slate-400">|</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+      </div>
+
+      {notification && (
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
+          {notification}
+        </div>
+      )}
+
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={allCategories}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => {
+          if (user) {
+            setActiveTab("account");
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+        user={user}
+        onLogout={handleLogout}
+        onLogoClick={handleReturnToStore}
+      />
+
+      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1">
+          <button
+            onClick={handleReturnToStore}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Loja
+          </button>
+          
+          <button
+            onClick={() => setActiveTab("about")}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Sobre Nós
+          </button>
+
+          <button
+            onClick={() => {
+              if (user) {
+                setActiveTab("account");
+              } else {
+                setIsAuthOpen(true);
+              }
+            }}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Minha Suíte & Painel 📦
+          </button>
+        </div>
+      </div>
+
+      {activeTab === "store" ? (
+        <>
+          <Hero 
+            onScrollToCatalog={() => {
+              setSelectedCategory("Todos");
+              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+            onOpenClubModal={() => setIsClubModalOpen(true)}
+          />
+          <main className="flex-1">
+            <TrustBadges />
+            
+            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
+              <div className="flex items-center justify-between mb-6 border-b pb-4">
+                <div className="text-left">
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ArrowUpDown className="w-4 h-4 text-slate-400" />
+                  <select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value)}
+                    className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
+                  >
+                    <option value="popular">Popularidade</option>
+                    <option value="priceAsc">Menor preço</option>
+                    <option value="priceDesc">Maior preço</option>
+                    <option value="name">Nome A-Z</option>
+                  </select>
+                </div>
+              </div>
+
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60 p-6">
+                  <p className="text-sm font-bold text-slate-400">Nenhum produto encontrado nesta categoria no momento.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map(p => (
+                    <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
+                  ))}
+                </div>
+              )}
+            </section>
+
+            <Testimonials />
+            <BlogSection />
+          </main>
+        </>
+      ) : activeTab === "about" ? (
+        <main className="flex-1 bg-slate-50 py-12 px-4">
+          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
+            <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
+              <img 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" 
+                alt="Paula Takashiro" 
+                className="w-full h-full object-cover absolute inset-0 opacity-90"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
+            </div>
+
+            <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
+              <div>
+                <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
+              </div>
+              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências uniques, com confiança, dedicação e amor em cada envio.</p>
+                <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
+              </div>
+              
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-left">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
+                    <img 
+                      src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&w=150&q=80" 
+                      alt="Japão Box Brasil Logo" 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+                    <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                  </div>
+                </div>
+                <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : (
+        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+          {user ? (
+            <ClientDashboard 
+              user={user}
+              orders={orders}
+              loadingOrders={loadingOrders}
+              onCreateMockOrder={handleCreateMockOrder}
+              onLogout={handleLogout}
+              getStatusBadge={getStatusBadge}
+            />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
+            </div>
+          )}
+        </main>
+      )}
+
+      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="text-left">
+            <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
+            <p className="text-sm leading-relaxed text-slate-500">
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+            </p>
+          </div>
+          <div className="text-left">
+            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
+            <ul className="space-y-2 text-sm font-medium">
+              <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
+              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
+          <div className="w-full max-w-2xl text-center font-bold bg-slate-50 text-slate-700 py-3 rounded-2xl border border-slate-200">
+            💳 Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.
+          </div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 mt-6 text-center text-xs text-slate-400 space-y-2">
+          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+          </p>
+        </div>
+      </footer>
+
+      {isCartOpen && (
+        <CartDrawer 
+          onClose={() => setIsCartOpen(false)} 
+          cartItems={cartItems} 
+          setCartItems={setCartItems} 
+        />
+      )}
+      
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+    </div>
+  );
+}
