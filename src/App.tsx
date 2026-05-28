@@ -42,6 +42,21 @@ const PRODUCTS: Product[] = [
     stock: 50
   },
   {
+    id: "im-from-rice-toner",
+    name: "I'm From Rice Toner (150 ml)",
+    jpName: "アイムフロム ライストナー (米糠)",
+    description: "Suaviza a pele com extratos de arroz e farelo de arroz, proporcionando hidratação e nutrição profunda. Ideal para melhorar a textura da pele e promover uma tez suave.",
+    priceBRL: 139.90,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/pTdNrdXw/rice.png",
+    rating: 4.9,
+    reviewsCount: 312,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 25
+  },
+  {
     id: "femimore-glutathione-soap",
     name: "Femimore Glutathione Bubble Soap",
     jpName: "フェミモア グルタチオン バブルソープ",
