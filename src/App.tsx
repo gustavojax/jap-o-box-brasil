@@ -81,7 +81,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 110.00,
     serviceFeeBRL: 25.00,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C2KI7Hu.md.jpg",
+    image: "https://iili.io/C2KC1bp.md.png", // 🛠️ ALTERAÇÃO EXECUTADA: Imagem corrigida com sucesso
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
@@ -216,7 +216,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C2KmTAu.md.png", // 🛠️ ALTERAÇÃO EXECUTADA: Link definitivo atualizado aqui
+    image: "https://iili.io/C2KmTAu.md.png",
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -710,7 +710,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém in Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div className="text-left">
