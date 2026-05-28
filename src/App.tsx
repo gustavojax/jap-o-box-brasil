@@ -78,7 +78,7 @@ const PRODUCTS: Product[] = [
     name: "Biore Makeup Remover Oil",
     jpName: "ビオレ メイク落とし クレンジングオイル",
     description: "Óleo remover de maquiagem Biore.",
-    priceBRL: 89.90,
+    priceBRL: 90.00,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/4R4D5mJm/D-Q-NP-955266-MLA92278985694-092025-F.webp",
