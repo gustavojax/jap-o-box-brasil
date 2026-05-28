@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Info } from "lucide-react";
+import { X, ShoppingBag, Plus, Minus, Trash2, ArrowRight, ShieldCheck, Info, Ticket } from "lucide-react";
 import type { CartItem } from "../types";
 
 interface CartDrawerProps {
@@ -10,6 +10,11 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
+
+  // Estados do Cupom de Indicação
+  const [couponInput, setCouponInput] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState<{ code: string; discountPct: number } | null>(null);
+  const [couponError, setCouponError] = useState("");
 
   // Estados fictícios para simulação do fluxo de endereço e checkout do mockup
   const address = {
@@ -33,7 +38,28 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setCartItems(prev => prev.filter(item => item.product.id !== id));
   };
 
-  // 🪙 CÁLCULOS FINANCEIROS CORRIGIDOS E REVISADOS DUAS VEZES
+  // Funções do Cupom
+  const handleApplyCoupon = () => {
+    const code = couponInput.trim().toUpperCase();
+    
+    // Regra da imagem: Verifica se o cupom começa com JAPO10 (ex: JAPO10-SUITE7047)
+    if (code.startsWith("JAPO10")) {
+      setAppliedCoupon({ code, discountPct: 0.10 }); // 10% de desconto no frete
+      setCouponError("");
+      setCouponInput("");
+    } else if (code === "") {
+      setCouponError("Digite um código de cupom.");
+    } else {
+      setCouponError("Cupom inválido ou expirado.");
+    }
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponError("");
+  };
+
+  // 🪙 CÁLCULOS FINANCEIROS CORRIGIDOS
   const subtotalProducts = cartItems.reduce((acc, item) => {
     const itemTotal = item.product.priceBRL + (item.product.serviceFeeBRL || 0);
     return acc + (itemTotal * item.quantity);
@@ -42,8 +68,12 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   // Frete fixado conforme o exemplo visual do mockup quando consolidado
   const internationalShipping = cartItems.length > 0 ? 95.00 : 0;
 
-  // 🛠️ ACORDO CUMPRIDO: Encargos alfandegários removidos do cálculo. O total agora é apenas Produtos + Frete.
-  const totalOrderValue = subtotalProducts + internationalShipping;
+  // Cálculo de desconto no Frete (Regra: 10% de desconto APENAS no envio internacional)
+  const shippingDiscount = appliedCoupon ? internationalShipping * appliedCoupon.discountPct : 0;
+  const finalShipping = internationalShipping - shippingDiscount;
+
+  // Total Final = Produtos + (Frete - Desconto)
+  const totalOrderValue = subtotalProducts + finalShipping;
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end">
@@ -81,7 +111,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               ) : (
                 cartItems.map((item) => (
                   <div key={item.product.id} className="bg-white rounded-2xl p-3 border border-slate-200/60 shadow-xs flex gap-3 items-center">
-                    <img src={item.product.image} alt={item.name} className="w-16 h-16 rounded-xl object-cover border bg-slate-50 flex-shrink-0" />
+                    <img src={item.product.image} alt={item.product.name} className="w-16 h-16 rounded-xl object-cover border bg-slate-50 flex-shrink-0" />
                     <div className="flex-1 min-w-0 space-y-1">
                       <h4 className="text-xs font-black text-slate-950 truncate">{item.product.name}</h4>
                       <p className="text-[11px] font-bold text-slate-400 font-mono">R$ {(item.product.priceBRL + (item.product.serviceFeeBRL || 0)).toFixed(2)}</p>
@@ -100,7 +130,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               )}
 
               {step === 2 && cartItems.length > 0 && (
-                <div className="bg-white rounded-2xl p-4 border border-slate-200/60 shadow-xs space-y-3">
+                <div className="bg-white rounded-2xl p-4 border border-slate-200/60 shadow-xs space-y-3 mt-4">
                   <h4 className="text-xs font-black uppercase text-slate-400 tracking-wider">Endereço de Destino</h4>
                   <div className="text-xs font-medium text-slate-700 space-y-1">
                     <p className="font-bold text-slate-900">{address.street} — {address.city}</p>
@@ -111,7 +141,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               )}
             </div>
           ) : (
-            // 📝 PASSO 3: TELA DE CONFIRMAÇÃO IDENTICA AO SEU PRINT DO MOCKUP
+            // 📝 PASSO 3: TELA DE CONFIRMAÇÃO IDENTICA AO SEU PRINT DO MOCKUP COM CUPOM
             <div className="space-y-4">
               
               {/* Card de endereço fixado */}
@@ -129,6 +159,42 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                 </div>
               </div>
 
+              {/* MÓDULO DE CUPOM DE INDICAÇÃO */}
+              <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3">
+                <span className="text-[10px] font-black uppercase text-slate-400 tracking-wider flex items-center gap-1">
+                  <Ticket className="w-3.5 h-3.5 text-red-600" /> Cupom de Indicação
+                </span>
+                
+                {appliedCoupon ? (
+                  <div className="flex items-center justify-between bg-emerald-50 border border-emerald-200 px-3 py-2.5 rounded-xl">
+                    <div>
+                      <p className="text-xs font-black text-emerald-700">{appliedCoupon.code}</p>
+                      <p className="text-[10px] font-medium text-emerald-600 mt-0.5">10% OFF no frete internacional aplicado!</p>
+                    </div>
+                    <button onClick={handleRemoveCoupon} className="text-emerald-600 hover:text-emerald-800 text-xs font-bold px-2 cursor-pointer transition-colors">
+                      Remover
+                    </button>
+                  </div>
+                ) : (
+                  <div className="flex gap-2">
+                    <input
+                      type="text"
+                      placeholder="Ex: JAPO10-SUITE7047"
+                      value={couponInput}
+                      onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                      className="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs font-bold text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 uppercase transition-all"
+                    />
+                    <button 
+                      onClick={handleApplyCoupon}
+                      className="bg-slate-900 hover:bg-slate-800 text-white px-4 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                    >
+                      Aplicar
+                    </button>
+                  </div>
+                )}
+                {couponError && <p className="text-[10px] font-bold text-red-500">{couponError}</p>}
+              </div>
+
               {/* Tabela de preços limpa sem taxas embutidas na caixa */}
               <div className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm space-y-3 text-xs font-bold text-slate-600">
                 <div className="flex justify-between items-center">
@@ -140,16 +206,22 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                   <span className="text-slate-950 font-mono">R$ {internationalShipping.toFixed(2)}</span>
                 </div>
                 
-                {/* ❌ REMOVIDO DAQUI POR COMPLETO A LINHA DE ENCARGOS & ADUANA EST. BRASIL */}
+                {/* Linha de Desconto do Cupom */}
+                {appliedCoupon && (
+                  <div className="flex justify-between items-center text-emerald-600 bg-emerald-50/50 p-1.5 rounded-lg -mx-1.5">
+                    <span>Desconto Indicação (Frete):</span>
+                    <span className="font-mono font-black">- R$ {shippingDiscount.toFixed(2)}</span>
+                  </div>
+                )}
               </div>
 
-              {/* 🛠️ ALTERAÇÃO CUMPRIDA: Texto trocado de "TOTAL CHAVE NA MÃO" para "VALOR TOTAL" */}
+              {/* VALOR TOTAL */}
               <div className="bg-gradient-to-r from-red-500/5 to-rose-500/5 rounded-2xl p-4 border border-red-100 flex items-center justify-between shadow-xs">
                 <span className="text-xs font-black text-slate-900 tracking-wider uppercase">Valor Total:</span>
                 <span className="text-xl font-black text-red-600 font-mono">R$ {totalOrderValue.toFixed(2)}</span>
               </div>
 
-              {/* 🛠️ AVISO ADUANEIRO ATUALIZADO CONFORME AS REGRAS VIGENTES */}
+              {/* AVISO ADUANEIRO ATUALIZADO CONFORME AS REGRAS VIGENTES */}
               <div className="bg-amber-50/70 rounded-2xl p-4 border border-amber-100 flex items-start gap-3 shadow-xs">
                 <Info className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
                 <div className="space-y-1 text-left">
