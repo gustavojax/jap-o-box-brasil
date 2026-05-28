@@ -139,7 +139,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 110.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C2KC1bp.md.png", // 🛠️ ALTERAÇÃO EXECUTADA: Nova URL injetada aqui
+    image: "https://iili.io/C2KI7Hu.md.jpg", // 🛠️ ALTERAÇÃO EXECUTADA: Link corrigido aqui
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
@@ -442,7 +442,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🔬 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
@@ -637,7 +637,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém in Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div className="text-left">
