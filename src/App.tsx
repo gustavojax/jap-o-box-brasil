@@ -34,7 +34,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 120.00,
     serviceFeeBRL: 30.00,
     shippingEstBRL: 25.00,
-    image: "https://iili.io/C2KS5Cb.png", // 🛠️ ALTERAÇÃO EXECUTADA: Nova URL da escova
+    image: "https://iili.io/C2KS5Cb.png",
     rating: 4.9,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
@@ -216,7 +216,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iuli.io/C2KI7Hu.md.jpg", // 🛠️ ALTERAÇÃO EXECUTADA: Nova URL da máscara Tsubaki
+    image: "https://iili.io/C2KmTAu.md.png", // 🛠️ ALTERAÇÃO EXECUTADA: Link definitivo atualizado aqui
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
