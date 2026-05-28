@@ -216,7 +216,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 0, // ZERADO - MOSTRARÁ R$ 99,00 EXATOS
     shippingEstBRL: 35.00,
-    image: "https://iuli.io/C2KmTAu.md.png",
+    image: "https://i.postimg.cc/9MkMbKDt/tsuba.png",
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -231,7 +231,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 179.90,
     serviceFeeBRL: 0, // ZERADO - MOSTRARÁ R$ 179,90 EXATOS
     shippingEstBRL: 65.00,
-    image: "https://iuli.io/C2fzdHg.md.png",
+    image: "https://i.postimg.cc/ZRs9g0Mg/tsubas.png",
     rating: 4.9,
     reviewsCount: 280,
     department: "Beleza, Higiene e Saúde",
@@ -276,7 +276,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 160.00,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 30.00,
-    image: "https://i.ibb.co/TMZfCTb7/51t-I64-y-KJL-AC-UF1000-1000-QL80-FMwebp.webp",
+    image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
     rating: 4.5,
     reviewsCount: 118,
     department: "Beleza, Higiene e Saúde",
@@ -306,7 +306,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 90.00,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 40.00,
-    image: "https://i.ibb.co/cK9D6kbs/518v56f-Av-DL-AC-UF1000-1000-QL80-FMwebp.webp",
+    image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
     rating: 4.6,
     reviewsCount: 39,
     department: "Beleza, Higiene e Saúde",
