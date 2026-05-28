@@ -22,7 +22,7 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 
 // ==========================================
-// BASE DE DADOS DE PRODUTOS COM TAXAS ZERADAS para EXIBIR PREÇO EXATO
+// BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
@@ -32,7 +32,7 @@ const PRODUCTS: Product[] = [
     jpName: "モフラシ 歯ブラシ 特殊設計",
     description: "Escova de dentes especial ergonômica.",
     priceBRL: 120.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 25.00,
     image: "https://iili.io/C2KS5Cb.png",
     rating: 4.9,
@@ -47,7 +47,7 @@ const PRODUCTS: Product[] = [
     jpName: "フェミモア グルタチオン バブルソープ",
     description: "Sabonete em espuma com Glutathione. Limpeza suave, controle de oleosidade e clareamento leve.",
     priceBRL: 110.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
     rating: 4.8,
@@ -74,14 +74,104 @@ const PRODUCTS: Product[] = [
     stock: 25
   },
   {
+    id: "medicube-placenta-capsule-serum",
+    name: "Medicube Placenta Capsule Serum (25 ml)",
+    jpName: "メディキューブ プラセンタ カプセル セラム",
+    description: "Tratamento inovador de alta performance em gel repleto de microcápsulas activas. Combina os benefícios regenerativos da placenta com a ação iluminadora e protetora de um complexo de vitaminas. Hidrata profundamente, combate o tom opaco e restaura a firmeza de peles extremamente secas.",
+    priceBRL: 220.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 42,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
+  {
+    id: "medicube-hyaluronic-multi-peptide-serum",
+    name: "Medicube Hyaluronic Multi Peptide Serum (30 ml)",
+    jpName: "メディキューブ ヒアルロン マルチ ペプチド",
+    description: "Um super booster de hidratação e sustentação cutânea. Sua fórmula une uma alta concentração de ácido hialurônico para preenchimento imediato das linhas de expressão a um complexo robusto de peptídeos que estimula a produção natural de colágeno.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 65,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "medicube-pdrn-pink-collagen-exosome-shot",
+    name: "Medicube PDRN Pink Collagen Exosome Shot 7500 (30 ml)",
+    jpName: "メディキューブ PDRN ピンクコラーゲン エクソソーム",
+    description: "Sérum de tratamento intensivo que combina o poder reconstrutor do PDRN (DNA de Salmão) com a alta permeação dos exossomos e do colágeno. Ideal para redefinir o contorno facial, fechar poros por sustentação e acelerar a firmeza.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 54,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 10
+  },
+  {
+    id: "medicube-exosome-cica-ampoule",
+    name: "Medicube Exosome Cica Ampoule (30 ml)",
+    jpName: "メディキューブ エクソソーム シカ アンプル",
+    description: "Ampola de tratamento calmante e reparador de barreira. Utiliza a tecnologia de exossomos para fazer com que as propriedades regenerativas da Centelha Asiática (Cica) penetrem profundamente na pele, aliviando irritações e vermelhidões.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 73,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 18
+  },
+  {
+    id: "medicube-azelaic-acid-16-bb",
+    name: "Medicube Azelaic Acid 16 BB Calming Serum (30 ml)",
+    jpName: "メディキューブ アゼライン酸 16 BB",
+    description: "Desenvolvido especialmente para peles oleosas, acneicas e com tendência a manchas inflamatórias. Com uma altíssima concentração de ácido azelaico, ele atua no equilíbrio de água/óleo da pele, controla o sebo e reduz cravos.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.7,
+    reviewsCount: 39,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 14
+  },
+  {
+    id: "medicube-pdrn-pink-peptide-serum",
+    name: "Medicube PDRN Pink Peptide Serum (30 ml)",
+    jpName: "メディキューブ PDRN ピンク ペプチド セラム",
+    description: "Um potente sérum anti-idade global com textura leve e refrescante. Ele combina o DNA de salmão (PDRN) a um complexo de peptídeos rosados para agir diretamente na densidade da pele, suavizando linhas e devolvendo o viço.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 48,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 22
+  },
+  {
     id: "medicube-zero-pore-one-day-serum",
     name: "Medicube Zero Pore One Day Serum (30 ml)",
     jpName: "メディキューブ ゼロポア ワンデー セラム",
-    description: "Solução diária de alta performance para controle extremo de oleosidade e redução de poros dilatados. Sua combinação de AHA, BHA e PHA remove células mortas e impurezas profundas, uniformizando a textura da pele rapidamente.",
+    description: "Solução diária de alta performance para controle extremo de oleosidade e redução de poros dilatados. Sua combinação de AHA, BHA e PHA remove células mortas e impurezas profundas.",
     priceBRL: 180.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/xdHzFKrm/pores.png", 
+    image: "insira link aqui",
     rating: 4.8,
     reviewsCount: 150,
     department: "Beleza, Higiene e Saúde",
@@ -92,11 +182,11 @@ const PRODUCTS: Product[] = [
     id: "medicube-one-day-exosome-shot",
     name: "Medicube One Day Exosome Shot 2000 (30 ml)",
     jpName: "メディキューブ エクソソームショット2000",
-    description: "Sérum inovador com tecnologia de micro-spicules que simula o efeito de um microagulhamento clínico. Promove renovação celular acelerada, desobstrui cravos e entrega ativos profundamente para refinar a textura e fechar poros.",
+    description: "Sérum inovador com tecnologia de micro-spicules que simula o efeito de um microagulhamento clínico. Promoves renovação celular acelerada e fecha poros.",
     priceBRL: 165.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/hPrM2R8d/oneday.png", 
+    image: "insira link aqui",
     rating: 4.9,
     reviewsCount: 120,
     department: "Beleza, Higiene e Saúde",
@@ -107,11 +197,11 @@ const PRODUCTS: Product[] = [
     id: "medicube-kojic-acid-turmeric-niacinamide",
     name: "Medicube Kojic Acid Turmeric Niacinamide Serum (30 ml)",
     jpName: "メディキューブ コウジ酸ターメリックナイアシンアミド",
-    description: "Tratamento intensivo com microcápsulas antioxidantes focado em apagar manchas escuras, melasmas e marcas de acne. O ácido kójico e a cúrcuma atuam direto na produção de melanina, devolvendo um tom homogêneo à pele.",
+    description: "Tratamento de clareamento intensivo com microcápsulas antioxidantes que atuam diretamente no melasma, marcas de sol e manchas pós-acne, uniformizando o tom.",
     priceBRL: 175.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/tTKmGd70/kojac.png",
+    image: "insira link aqui",
     rating: 4.8,
     reviewsCount: 88,
     department: "Beleza, Higiene e Saúde",
@@ -121,12 +211,12 @@ const PRODUCTS: Product[] = [
   {
     id: "medicube-glutathione-glow-serum",
     name: "Medicube Glutathione Glow Serum (30 g)",
-    jpName: "メディキューブ グルタチオングロウセラム",
-    description: "Desenvolvido para reverter o aspecto de pele cansada e sem vida. Utiliza a glutationa lipossomada para garantir máxima absorção, entregando uma ação antioxidante potente e o cobiçado efeito de luminosidade espelhada (glow).",
+    jpName: "メディキューブ グルタチion グロウセラム",
+    description: "Desenvolvido para reverter o aspecto de pele cansada e sem vida. Utiliza a glutationa lipossomada para garantir máxima absorção e efeito glow.",
     priceBRL: 175.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/7hJXB5NB/black.png", 
+    image: "insira link aqui",
     rating: 4.9,
     reviewsCount: 145,
     department: "Beleza, Higiene e Saúde",
@@ -137,11 +227,12 @@ const PRODUCTS: Product[] = [
     id: "medicube-retinol-nmn-boosting-serum",
     name: "Medicube Retinol NMN Boosting Serum (30 ml)",
     jpName: "メディキューブ レチノールNMNブースティングセラム",
-    description: "Potente sérum antienvelhecimento global. Combina retinol encapsulado de liberação prolongada (que reduz rugas e linhas finas sem irritar) ao NMN, um poderoso ativo que recarrega a energia celular e devolve firmeza à pele.",
+    description: "Potente sérum antienvelhecimento global. Combina retinol encapsulado de liberação prolongada ao NMN, um poderoso ativo que recarrega a energia celular.",
     priceBRL: 188.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/xTcS256Z/medicube.png", 
+    image: "insira link aqui",
+    rating: 4.9,
     reviewsCount: 92,
     department: "Beleza, Higiene e Saúde",
     category: "Maquiagem e cuidados com o cabelo",
@@ -151,11 +242,11 @@ const PRODUCTS: Product[] = [
     id: "medicube-pdrn-one-day-ampoule",
     name: "Medicube PDRN One Day Ampoule (10 un. de 1,5 ml)",
     jpName: "メディキューブ PDRNワンデーアンプル",
-    description: "Tratamento reconstrutor premium em ampolas fracionadas. Formulado com DNA de salmão (PDRN) a 99% de pureza, ele acelera a regeneração celular, estimula o colágeno e aumenta drasticamente a densidade e o viço da pele madura.",
+    description: "Tratamento reconstrutor premium em ampolas fracionadas. Formulado com DNA de salmão (PDRN) a 99% de pureza, ele acelera a regeneração celular.",
     priceBRL: 155.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/0QRN63Br/medipouere.png", 
+    image: "insira link aqui",
     rating: 5.0,
     reviewsCount: 115,
     department: "Beleza, Higiene e Saúde",
@@ -168,7 +259,7 @@ const PRODUCTS: Product[] = [
     jpName: "ビオレ メイク落とし クレンジングオイル",
     description: "Óleo remover de maquiagem Biore.",
     priceBRL: 89.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/4R4D5mJm/D-Q-NP-955266-MLA92278985694-092025-F.webp",
     rating: 4.8,
@@ -183,7 +274,7 @@ const PRODUCTS: Product[] = [
     jpName: "肌ラボ 極潤 オイルクレンジング",
     description: "Óleo de limpeza facial demaquilante com Ácido Hialurônico.",
     priceBRL: 110.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://iili.io/C2KC1bp.md.png",
     rating: 5.0,
@@ -198,7 +289,7 @@ const PRODUCTS: Product[] = [
     jpName: "専科 パーフェクトホイップ",
     description: "Espuma de limpeza facial mais vendida do Japão. Cria uma espuma rica e cremosa que limpa profundamente sem ressecar a pele.",
     priceBRL: 54.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/zTdKBgPN/51j8-UE-scr-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
@@ -213,7 +304,7 @@ const PRODUCTS: Product[] = [
     jpName: "毛穴撫子 お米のパック",
     description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
     priceBRL: 85.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 40.00,
     image: "https://i.ibb.co/RTRdCfFq/new-collection-31-2.png",
     rating: 4.8,
@@ -228,7 +319,7 @@ const PRODUCTS: Product[] = [
     jpName: "ナンバーズイン 9番 シートマスク",
     description: "Máscara lifting com NMN + 50 Peptídeos. Efeito firmador, melhora elasticidade e combate sinais de envelhecimento.",
     priceBRL: 65.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
     image: "https://i.ibb.co/35xTPT5B/61-Yvzp-Im-BGL.jpg",
     rating: 4.7,
@@ -243,7 +334,7 @@ const PRODUCTS: Product[] = [
     jpName: "セリマックス レチナールブースター",
     description: "Booster potente com Retinal. Promove firmeza intensa e melhora rugas.",
     priceBRL: 128.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/99gRf3rD/D-NQ-NP-643899-MLA107452017338-032026-OO.jpg",
     rating: 4.9,
@@ -258,7 +349,7 @@ const PRODUCTS: Product[] = [
     jpName: "セリマックス ブライトニングクリーム",
     description: "Creme clareador para poros e manchas com Niacinamida + Acido Tranexâmico.",
     priceBRL: 112.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/S4BY3fL4/L-g0212699726-001.jpg",
     rating: 4.6,
@@ -273,7 +364,7 @@ const PRODUCTS: Product[] = [
     jpName: "セリマックス レチノール美容液",
     description: "Sérum com Retinol que firma a pele, reduz linhas finas e melhora a textura.",
     priceBRL: 138.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/1Jbvy4fQ/D-Q-NP-711608-MLA104228285762-012026-F.webp",
     rating: 4.8,
@@ -288,7 +379,7 @@ const PRODUCTS: Product[] = [
     jpName: "リファハートコーム シルバー/ゴールド",
     description: "Pente massajador capilar ReFa em formato de coração. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
     priceBRL: 182.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/KxZ54zJw/61-FK4n-NNLj-L-AC-SL1500.jpg",
     rating: 5.0,
@@ -303,7 +394,7 @@ const PRODUCTS: Product[] = [
     jpName: "リファハートコーム レッド",
     description: "Pente massajador capilar ReFa em formato de coração na cor vermelha. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
     priceBRL: 149.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/CK50750k/pct-refa-heart-comb-aira-shinered-01.jpg",
     rating: 4.9,
@@ -318,7 +409,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI プレミアムEX リペアマスク",
     description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
     priceBRL: 99.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.postimg.cc/9MkMbKDt/tsuba.png",
     rating: 4.9,
@@ -333,7 +424,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI モイスト＆リペア キット",
     description: "Kit Shampoo + Condicionador Moist & Repair.",
     priceBRL: 179.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
     image: "https://i.postimg.cc/ZRs9g0Mg/tsubas.png",
     rating: 4.9,
@@ -348,7 +439,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI ボリューム＆リペア キット",
     description: "Kit Shampoo + Condicionador Volume & Repair.",
     priceBRL: 179.90,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/q3tT4fHg/41x-M-SSU8x-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.8,
@@ -363,7 +454,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI プレミアムEX ダメージケア",
     description: "Kit Shampoo + Condicionador EX Damage Care.",
     priceBRL: 220.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/gZnNpzT7/51v-XAUJ7-We-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
@@ -378,7 +469,7 @@ const PRODUCTS: Product[] = [
     jpName: "シーグラム ブロウブラシ＆ディップ",
     description: "Lápis + escova para sobrancelhas (Taupe).",
     priceBRL: 75.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
     image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
     rating: 4.5,
@@ -393,7 +484,7 @@ const PRODUCTS: Product[] = [
     jpName: "メディキューブ 美顔器 ブースタープロ",
     description: "Dispositivo facial Medicube Booster Pro.",
     priceBRL: 146.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 50.00,
     image: "https://i.ibb.co/ksMxWzbF/1-bbd45f2b-c684-4b30-ab4d-1e7c3384e254.png",
     rating: 5.0,
@@ -408,7 +499,7 @@ const PRODUCTS: Product[] = [
     jpName: "TraEn 230 脱毛器 フェイス＆ボディ",
     description: "Removedor de pelos facial / corporal.",
     priceBRL: 90.00,
-    serviceFeeBRL: 0, // ZERADO
+    serviceFeeBRL: 0,
     shippingEstBRL: 40.00,
     image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
     rating: 4.6,
@@ -619,7 +710,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span>🇲🇽 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
