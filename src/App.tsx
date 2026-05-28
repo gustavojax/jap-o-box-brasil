@@ -22,19 +22,19 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 
 // ==========================================
-// BASE DE DADOS DE PRODUTOS ATUALIZADA
+// BASE DE DADOS DE PRODUTOS CORRIGIDA E CONFERIDA
 // ==========================================
 const PRODUCTS: Product[] = [
-  // --- SKIN CARE ---
+  // --- 🧴 CATEGORIA: SKIN CARE ---
   {
     id: "senka-perfect-whip",
     name: "Senka Perfect Whip",
     jpName: "専科 パーフェクトホイップ",
-    description: "Espuma de limpeza facial mais vendida do Japão.",
-    priceBRL: 54.90, // PREÇO CORRIGIDO
+    description: "Espuma de limpeza facial mais vendida do Japão. Cria uma espuma rica e cremosa que limpa profundamente sem ressecar a pele.",
+    priceBRL: 54.90,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://ztdkbgpn/51j8-ue-scrl-ac-uf1000-1000-ql80-fmwebp.webp",
+    image: "https://i.ibb.co/zTdKBgPN/51j8-UE-scr-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
     reviewsCount: 245,
     department: "Beleza, Higiene e Saúde",
@@ -45,8 +45,8 @@ const PRODUCTS: Product[] = [
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
     jpName: "毛穴撫子 お米のパック",
-    description: "Máscara facial de arroz japonês 100%.",
-    priceBRL: 85.90, // PREÇO CORRIGIDO
+    description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
+    priceBRL: 85.90,
     serviceFeeBRL: 25.00,
     shippingEstBRL: 40.00,
     image: "https://i.ibb.co/RTRdCfFq/new-collection-31-2.png",
@@ -60,8 +60,8 @@ const PRODUCTS: Product[] = [
     id: "numbuzin-no9-mask",
     name: "Numbuzin No.9 Mask",
     jpName: "ナンバーズイン 9番 シートマスク",
-    description: "Máscara lifting com NMN + 50 Peptídeos.",
-    priceBRL: 65.90, // PREÇO CORRIGIDO
+    description: "Máscara lifting com NMN + 50 Peptídeos. Efeito firmador, melhora elasticidade e combate sinais de envelhecimento.",
+    priceBRL: 65.90,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 30.00,
     image: "https://i.ibb.co/35xTPT5B/61-Yvzp-Im-BGL.jpg",
@@ -72,26 +72,11 @@ const PRODUCTS: Product[] = [
     stock: 15
   },
   {
-    id: "celimax-pore-brightening",
-    name: "Celimax Pore Brightening Spot Care Cream",
-    jpName: "セリマックス ブライトニングクリーム",
-    description: "Creme clareador para poros e manchas.",
-    priceBRL: 112.90, // PREÇO CORRIGIDO
-    serviceFeeBRL: 30.00,
-    shippingEstBRL: 45.00,
-    image: "https://i.ibb.co/S4BY3fL4/L-g0212699726-001.jpg",
-    rating: 4.6,
-    reviewsCount: 74,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 22
-  },
-  {
     id: "celimax-retinal-booster",
     name: "Celimax Retinal Shot Tightening Booster",
     jpName: "セリマックス レチナールブースター",
-    description: "Booster potente com Retinal.",
-    priceBRL: 128.90, // PREÇO CORRIGIDO
+    description: "Booster potente com Retinal. Promove firmeza intensa e melhora rugas.",
+    priceBRL: 128.90,
     serviceFeeBRL: 35.00,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/99gRf3rD/D-NQ-NP-643899-MLA107452017338-032026-OO.jpg",
@@ -102,11 +87,26 @@ const PRODUCTS: Product[] = [
     stock: 14
   },
   {
+    id: "celimax-pore-brightening",
+    name: "Celimax Pore Brightening Spot Care Cream",
+    jpName: "セリマックス ブライトニングクリーム",
+    description: "Creme clareador para poros e manchas com Niacinamida + Ácido Tranexâmico.",
+    priceBRL: 112.90,
+    serviceFeeBRL: 30.00,
+    shippingEstBRL: 45.00,
+    image: "https://i.ibb.co/S4BY3fL4/L-g0212699726-001.jpg",
+    rating: 4.6,
+    reviewsCount: 74,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 22
+  },
+  {
     id: "celimax-retinol-shot",
     name: "Celimax Retinol Shot Tightening Serum",
     jpName: "セリマックス レチノール美容液",
-    description: "Sérum com Retinol que firma a pele.",
-    priceBRL: 138.90, // PREÇO CORRIGIDO
+    description: "Sérum com Retinol que firma a pele, reduz linhas finas e melhora a textura.",
+    priceBRL: 138.90,
     serviceFeeBRL: 35.00,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/1Jbvy4fQ/D-Q-NP-711608-MLA104228285762-012026-F.webp",
@@ -120,8 +120,8 @@ const PRODUCTS: Product[] = [
     id: "femimore-glutathione-soap",
     name: "Femimore Glutathione Bubble Soap",
     jpName: "フェミモア グルタチオン バブルソープ",
-    description: "Sabonete em espuma com Glutathione.",
-    priceBRL: 110.00, // PREÇO MANTIDO
+    description: "Sabonete em espuma com Glutathione. Limpeza suave, controle de oleosidade e clareamento leve.",
+    priceBRL: 110.00,
     serviceFeeBRL: 25.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
@@ -131,30 +131,29 @@ const PRODUCTS: Product[] = [
     category: "Maquiagem e cuidados com o cabelo",
     stock: 20
   },
-  // --- PRODUTO INCLUSO (HADA LABO) ---
   {
     id: "hada-labo-gokujyun-oil",
     name: "Hada Labo® Gokujyun Oil Cleasing",
     jpName: "肌ラボ 極潤 オイルクレンジング",
     description: "Óleo de limpeza facial demaquilante com Ácido Hialurônico.",
-    priceBRL: 110.00, // PREÇO INCLUSO
+    priceBRL: 110.00,
     serviceFeeBRL: 25.00,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C239BXR.jpg", // IMAGEM INCLUSA
+    image: "https://iuli.io/C239BXR.jpg",
     rating: 5.0,
-    reviewsCount: 512,
+    reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
     category: "Maquiagem e cuidados com o cabelo",
-    stock: 45
+    stock: 40
   },
 
-  // --- HAIR CARE & ACESSÓRIOS ---
+  // --- 🛍️ CATEGORIA: ACESSÓRIOS ---
   {
     id: "refa-heart-comb-silver-gold",
     name: "ReFa Heart Comb (Silver/Gold)",
     jpName: "リファハートコーム シルバー/ゴールド",
-    description: "Pente massajador capilar ReFa em formato de coração.",
-    priceBRL: 182.90, // PREÇO CORRIGIDO
+    description: "Pente massajador capilar ReFa em formato de coração. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
+    priceBRL: 182.90,
     serviceFeeBRL: 45.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/KxZ54zJw/61-FK4n-NNLj-L-AC-SL1500.jpg",
@@ -168,8 +167,8 @@ const PRODUCTS: Product[] = [
     id: "refa-heart-comb-red",
     name: "ReFa Heart Comb (Red)",
     jpName: "リファハートコーム レッド",
-    description: "Pente massajador capilar ReFa em formato de coração na cor vermelha.",
-    priceBRL: 149.90, // PREÇO CORRIGIDO
+    description: "Pente massajador capilar ReFa em formato de coração na cor vermelha. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
+    priceBRL: 149.90,
     serviceFeeBRL: 40.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/CK50750k/pct-refa-heart-comb-aira-shinered-01.jpg",
@@ -179,18 +178,19 @@ const PRODUCTS: Product[] = [
     category: "Maquiagem e cuidados com o cabelo",
     stock: 25
   },
-  // --- PRODUTO INCLUSO (TSUBAKI MASK) ---
+
+  // --- 💇‍♀️ CATEGORIA: HAIR CARE ---
   {
     id: "tsubaki-repair-mask",
     name: "Tsubaki - Premium Ex Repair Mask 180ml",
     jpName: "TSUBAKI プレミアムEX リペアマスク",
-    description: "Máscara de reparação intensiva.",
-    priceBRL: 99.00, // PREÇO INCLUSO
+    description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
+    priceBRL: 99.00,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C23JZen.jpg", // IMAGEM INCLUSA
+    image: "https://iuli.io/C23JZen.jpg",
     rating: 4.9,
-    reviewsCount: 412,
+    reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
     category: "Maquiagem e cuidados com o cabelo",
     stock: 30
@@ -200,7 +200,7 @@ const PRODUCTS: Product[] = [
     name: "Tsubaki Moist & Repair (Red)",
     jpName: "TSUBAKI モイスト＆リペア キット",
     description: "Kit Shampoo + Condicionador Moist & Repair.",
-    priceBRL: 179.90, // PREÇO CORRIGIDO
+    priceBRL: 179.90,
     serviceFeeBRL: 40.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/Vc4BKtBp/41o-PS-quar-L-AC-UF1000-1000-QL80-FMwebp.webp",
@@ -215,7 +215,7 @@ const PRODUCTS: Product[] = [
     name: "Tsubaki Premium Volume & Repair (Yellow)",
     jpName: "TSUBAKI ボリューム＆リペア キット",
     description: "Kit Shampoo + Condicionador Volume & Repair.",
-    priceBRL: 179.90, // PREÇO CORRIGIDO
+    priceBRL: 179.90,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/q3tT4fHg/41x-M-SSU8x-L-AC-UF1000-1000-QL80-FMwebp.webp",
@@ -230,7 +230,7 @@ const PRODUCTS: Product[] = [
     name: "Tsubaki Premium EX Damage Care (Black)",
     jpName: "TSUBAKI プレミアムEX ダメージケア",
     description: "Kit Shampoo + Condicionador EX Damage Care.",
-    priceBRL: 220.00, // PREÇO CORRIGIDO
+    priceBRL: 220.00,
     serviceFeeBRL: 25.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/gZnNpzT7/51v-XAUJ7-We-L-AC-UF1000-1000-QL80-FMwebp.webp",
@@ -385,7 +385,6 @@ export default function App() {
     ];
   }, []);
 
-  // FILTRAGEM COM A BASE DE DADOS ATUALIZADA
   const filteredProducts = useMemo(() => {
     return PRODUCTS.filter(p => {
       const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
@@ -587,7 +586,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
@@ -651,13 +650,13 @@ export default function App() {
           </div>
         </div>
 
-        {/* BANNER DE MEIOS DE PAGAMENTO INTEGRADO COM O NOVO LINK SEGURO */}
+        {/* BANNER DE MEIOS DE PAGAMENTO */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
           <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
           <div className="w-full max-w-2xl">
             <img 
               src="https://iili.io/CdLPwBa.md.jpg" 
-              alt="Meios de Pagamento: Stripe, Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix" 
+              alt="Meios de Pagamento" 
               className="w-full h-auto object-contain select-none pointer-events-none"
             />
           </div>
