@@ -34,11 +34,11 @@ const PRODUCTS: Product[] = [
     priceBRL: 120.00,
     serviceFeeBRL: 30.00,
     shippingEstBRL: 25.00,
-    image: "https://iili.io/KgRprTR/61sa9-Ojx3-JL-AC-UF1000-1000-QL80-FMwebp.webp",
+    image: "https://iili.io/C2KS5Cb.png", // 🛠️ ALTERAÇÃO EXECUTADA: Nova URL da escova
     rating: 4.9,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    category: "Higiene, cuidados bucais e produtos para banho",
     stock: 50
   },
   {
@@ -53,9 +53,11 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 64,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    category: "Higiene, cuidados bucais e produtos para banho",
     stock: 20
   },
+
+  // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
   {
     id: "biore-makeup-remover-oil",
     name: "Biore Makeup Remover Oil",
@@ -68,7 +70,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 420,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    category: "Maquiagem e cuidados com o cabelo",
     stock: 35
   },
   {
@@ -83,11 +85,9 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    category: "Maquiagem e cuidados com o cabelo",
     stock: 40
   },
-
-  // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
   {
     id: "senka-perfect-whip",
     name: "Senka Perfect Whip",
@@ -167,7 +167,7 @@ const PRODUCTS: Product[] = [
     id: "celimax-retinol-shot",
     name: "Celimax Retinol Shot Tightening Serum",
     jpName: "セリマックス レチノール美容液",
-    description: "Sérum com Retinol que firma a pele, reduz lines finas e melhora a textura.",
+    description: "Sérum com Retinol que firma a pele, reduz linhas finas e melhora a textura.",
     priceBRL: 138.90,
     serviceFeeBRL: 35.00,
     shippingEstBRL: 45.00,
@@ -216,7 +216,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iuli.io/C23JZen.jpg",
+    image: "https://iuli.io/C2KI7Hu.md.jpg", // 🛠️ ALTERAÇÃO EXECUTADA: Nova URL da máscara Tsubaki
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
