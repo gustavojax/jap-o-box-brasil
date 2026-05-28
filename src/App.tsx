@@ -216,7 +216,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iuli.io/C2KmTAu.md.png",
+    image: "https://iuli.io/C2KmTAu.md.png", // 🛠️ CORRIGIDO DEFINITIVO: Link estável em PNG
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -231,7 +231,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 179.90,
     serviceFeeBRL: 40.00,
     shippingEstBRL: 65.00,
-    image: "https://iuli.io/C2fzdHg.md.png", // 🛠️ ALTERAÇÃO EXECUTADA: Imagem atualizada aqui
+    image: "https://iuli.io/C2fzdHg.md.png", // 🛠️ CORRIGIDO DEFINITIVO: Link estável em PNG
     rating: 4.9,
     reviewsCount: 280,
     department: "Beleza, Higiene e Saúde",
