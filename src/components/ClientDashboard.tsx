@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Package, MapPin, LogOut, Copy, CheckCircle2, Clock, Truck, PlusCircle } from "lucide-react";
+import { Package, MapPin, LogOut, Copy, CheckCircle2, Truck, PlusCircle, Award, Gift, Check } from "lucide-react";
 
 interface ClientDashboardProps {
   user: any;
@@ -19,6 +19,9 @@ export default function ClientDashboard({
   getStatusBadge
 }: ClientDashboardProps) {
   const [copied, setCopied] = useState(false);
+  const [couponCopied, setCouponCopied] = useState(false);
+
+  const couponCode = "JAPO10-SUITE7047";
 
   const handleCopyAddress = () => {
     const addressText = `〒510-8021 三重県四日市市松寺二丁目3-15 The Tomorrow`;
@@ -27,8 +30,14 @@ export default function ClientDashboard({
     setTimeout(() => setCopied(false), 2000);
   };
 
+  const handleCopyCoupon = () => {
+    navigator.clipboard.writeText(couponCode);
+    setCouponCopied(true);
+    setTimeout(() => setCouponCopied(false), 2000);
+  };
+
   return (
-    <div className="max-w-4xl mx-auto space-y-6 animate-in fade-in duration-500">
+    <div className="max-w-5xl mx-auto space-y-6 animate-in fade-in duration-500">
       
       {/* CABEÇALHO DO PAINEL */}
       <div className="bg-white p-6 md:p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -52,7 +61,7 @@ export default function ClientDashboard({
         
         {/* COLUNA ESQUERDA: ENDEREÇO DA SUÍTE */}
         <div className="md:col-span-5 space-y-6">
-          <div className="bg-slate-900 rounded-3xl p-6 shadow-xl relative overflow-hidden">
+          <div className="bg-slate-900 rounded-3xl p-6 shadow-xl relative overflow-hidden h-full">
             <div className="absolute top-0 right-0 p-4 opacity-10">
               <MapPin className="w-24 h-24 text-white" />
             </div>
@@ -127,7 +136,7 @@ export default function ClientDashboard({
                   <div key={order.id} className="border border-slate-100 bg-slate-50 rounded-2xl p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                     <div>
                       <div className="flex items-center gap-2 mb-1">
-                        <span className="text-[10px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-widest">
+                        <span className="text-[10px] font-black text-slate-400 bg-white px-2 py-0.5 rounded-md border border-slate-200 uppercase tracking-widest font-mono">
                           ID: {order.id.slice(0, 8)}
                         </span>
                         {getStatusBadge(order.status)}
@@ -153,6 +162,65 @@ export default function ClientDashboard({
         </div>
 
       </div>
+
+      {/* SESSÃO: PROGRAMA DE INDICAÇÕES */}
+      <div className="bg-white rounded-3xl p-6 md:p-8 border border-slate-200 shadow-sm mt-6">
+        <div className="flex items-start gap-3 mb-6">
+          <Award className="w-6 h-6 text-rose-600 flex-shrink-0 mt-1" />
+          <div>
+            <h2 className="text-lg font-black text-slate-900 tracking-tight">Programa de Indicações</h2>
+            <p className="text-sm text-slate-500 mt-1">
+              Indique amigos e dê a eles <span className="font-bold text-rose-600">10% de desconto</span> no primeiro envio internacional. Quanto mais amigos indicar, mais benefícios você acumula na sua suíte!
+            </p>
+          </div>
+        </div>
+
+        {/* CARD VERMELHO DO CUPOM */}
+        <div className="bg-[#cc0022] rounded-3xl p-6 md:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-lg shadow-rose-600/20 mb-6">
+          <div className="text-white space-y-2">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/80">Seu Cupom de Desconto</p>
+            <p className="text-3xl md:text-4xl font-mono font-black tracking-wider">{couponCode}</p>
+            <p className="text-xs font-medium text-white/80 pt-1">
+              Compartilhe este código para ser aplicado diretamente na aba de checkout.
+            </p>
+          </div>
+          
+          <button 
+            onClick={handleCopyCoupon}
+            className="w-full md:w-auto bg-white text-rose-600 hover:bg-slate-50 px-8 py-4 rounded-full font-black text-sm uppercase tracking-wider transition-all flex items-center justify-center gap-2 flex-shrink-0"
+          >
+            {couponCopied ? (
+              <>
+                <CheckCircle2 className="w-4 h-4 text-emerald-500" /> Copiado!
+              </>
+            ) : (
+              "Copiar Cupom"
+            )}
+          </button>
+        </div>
+
+        {/* COMO FUNCIONA */}
+        <div className="bg-slate-50 rounded-2xl p-6 border border-slate-100">
+          <h3 className="text-xs font-black text-slate-900 uppercase tracking-widest mb-4 flex items-center gap-2">
+            <Gift className="w-4 h-4 text-rose-600" /> Como funciona o benefício?
+          </h3>
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+              <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+              Seu amigo insere o código <strong className="text-slate-900">{couponCode}</strong> durante o fechamento da caixa.
+            </li>
+            <li className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+              <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+              Ele ganha 10% de desconto imediato sobre o valor do frete internacional vindo de Mie.
+            </li>
+            <li className="flex items-start gap-3 text-sm text-slate-600 font-medium">
+              <Check className="w-5 h-5 text-emerald-500 flex-shrink-0" />
+              Você ganha relevância na plataforma e acumula vantagens exclusivas de pontuação para usar no armazém.
+            </li>
+          </ul>
+        </div>
+      </div>
+
     </div>
   );
 }
