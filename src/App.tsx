@@ -42,21 +42,6 @@ const PRODUCTS: Product[] = [
     stock: 50
   },
   {
-    id: "im-from-rice-toner",
-    name: "I'm From Rice Toner (150 ml)",
-    jpName: "アイムフロム ライストナー (米糠)",
-    description: "Suaviza a pele com extratos de arroz e farelo de arroz, proporcionando hidratação e nutrição profunda. Ideal para melhorar a textura da pele e promover uma tez suave.",
-    priceBRL: 139.90,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/pTdNrdXw/rice.png",
-    rating: 4.9,
-    reviewsCount: 312,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 25
-  },
-  {
     id: "femimore-glutathione-soap",
     name: "Femimore Glutathione Bubble Soap",
     jpName: "フェミモア グルタチオン バブルソープ",
@@ -73,6 +58,21 @@ const PRODUCTS: Product[] = [
   },
 
   // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
+  {
+    id: "im-from-rice-toner",
+    name: "I'm From Rice Toner (150 ml)",
+    jpName: "アイムフロム ライストナー (米糠)",
+    description: "Suaviza a pele com extratos de arroz e farelo de arroz, proporcionando hidratação e nutrição profunda. Ideal para melhorar a textura da pele e promover uma tez suave.",
+    priceBRL: 139.90,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/pTdNrdXw/rice.png",
+    rating: 4.9,
+    reviewsCount: 312,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 25
+  },
   {
     id: "biore-makeup-remover-oil",
     name: "Biore Makeup Remover Oil",
@@ -530,7 +530,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span>🇲🇽 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
