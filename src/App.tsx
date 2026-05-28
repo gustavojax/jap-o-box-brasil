@@ -306,7 +306,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 90.00,
     serviceFeeBRL: 0, // ZERADO
     shippingEstBRL: 40.00,
-    image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
+    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
     rating: 4.6,
     reviewsCount: 39,
     department: "Beleza, Higiene e Saúde",
