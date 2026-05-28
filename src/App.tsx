@@ -22,17 +22,79 @@ import { onAuthStateChanged, signOut } from "firebase/auth";
 import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
 
 // ==========================================
-// BASE DE DADOS DE PRODUTOS 100% REVISADA
+// BASE DE DADOS DE PRODUTOS 100% REVISADA E CATEGORIZADA
 // ==========================================
 const PRODUCTS: Product[] = [
-  // --- 🧴 CATEGORIA: SKIN CARE ---
+  // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
+  {
+    id: "mofurashi-toothbrush",
+    name: "Mofurashi Toothbrush",
+    jpName: "モフラシ 歯ブラシ 特殊設計",
+    description: "Escova de dentes especial ergonômica.",
+    priceBRL: 120.00,
+    serviceFeeBRL: 30.00,
+    shippingEstBRL: 25.00,
+    image: "https://iili.io/KgRprTR/61sa9-Ojx3-JL-AC-UF1000-1000-QL80-FMwebp.webp",
+    rating: 4.9,
+    reviewsCount: 154,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    stock: 50
+  },
+  {
+    id: "femimore-glutathione-soap",
+    name: "Femimore Glutathione Bubble Soap",
+    jpName: "フェミモア グルタチオン バブルソープ",
+    description: "Sabonete em espuma com Glutathione. Limpeza suave, controle de oleosidade e clareamento leve.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 25.00,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
+    rating: 4.8,
+    reviewsCount: 64,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    stock: 20
+  },
+  {
+    id: "biore-makeup-remover-oil",
+    name: "Biore Makeup Remover Oil",
+    jpName: "ビオレ メイク落とし クレンジングオイル",
+    description: "Óleo remover de maquiagem Biore.",
+    priceBRL: 89.90,
+    serviceFeeBRL: 20.00,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/4R4D5mJm/D-Q-NP-955266-MLA92278985694-092025-F.webp",
+    rating: 4.8,
+    reviewsCount: 420,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    stock: 35
+  },
+  {
+    id: "hada-labo-gokujyun-oil",
+    name: "Hada Labo® Gokujyun Oil Cleasing",
+    jpName: "肌ラボ 極潤 オイルクレンジング",
+    description: "Óleo de limpeza facial demaquilante com Ácido Hialurônico.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 25.00,
+    shippingEstBRL: 35.00,
+    image: "https://iili.io/C2KI7Hu.md.jpg",
+    rating: 5.0,
+    reviewsCount: 195,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene, cuidados bucais e produtos para banho", // CATEGORIA CORRETA
+    stock: 40
+  },
+
+  // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
   {
     id: "senka-perfect-whip",
     name: "Senka Perfect Whip",
     jpName: "専科 パーフェクトホイップ",
     description: "Espuma de limpeza facial mais vendida do Japão. Cria uma espuma rica e cremosa que limpa profundamente sem ressecar a pele.",
     priceBRL: 54.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/zTdKBgPN/51j8-UE-scr-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
@@ -47,7 +109,7 @@ const PRODUCTS: Product[] = [
     jpName: "毛穴撫子 お米のパック",
     description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
     priceBRL: 85.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 25.00,
     shippingEstBRL: 40.00,
     image: "https://i.ibb.co/RTRdCfFq/new-collection-31-2.png",
     rating: 4.8,
@@ -62,7 +124,7 @@ const PRODUCTS: Product[] = [
     jpName: "ナンバーズイン 9番 シートマスク",
     description: "Máscara lifting com NMN + 50 Peptídeos. Efeito firmador, melhora elasticidade e combate sinais de envelhecimento.",
     priceBRL: 65.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 20.00,
     shippingEstBRL: 30.00,
     image: "https://i.ibb.co/35xTPT5B/61-Yvzp-Im-BGL.jpg",
     rating: 4.7,
@@ -77,7 +139,7 @@ const PRODUCTS: Product[] = [
     jpName: "セリマックス レチナールブースター",
     description: "Booster potente com Retinal. Promove firmeza intensa e melhora rugas.",
     priceBRL: 128.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 35.00,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/99gRf3rD/D-NQ-NP-643899-MLA107452017338-032026-OO.jpg",
     rating: 4.9,
@@ -92,7 +154,7 @@ const PRODUCTS: Product[] = [
     jpName: "セリマックス ブライトニングクリーム",
     description: "Creme clareador para poros e manchas com Niacinamida + Acido Tranexâmico.",
     priceBRL: 112.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 30.00,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/S4BY3fL4/L-g0212699726-001.jpg",
     rating: 4.6,
@@ -105,9 +167,9 @@ const PRODUCTS: Product[] = [
     id: "celimax-retinol-shot",
     name: "Celimax Retinol Shot Tightening Serum",
     jpName: "セリマックス レチノール美容液",
-    description: "Sérum com Retinol que firma a pele, reduz linhas finas e melhora a textura.",
+    description: "Sérum com Retinol que firma a pele, reduz lines finas e melhora a textura.",
     priceBRL: 138.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 35.00,
     shippingEstBRL: 45.00,
     image: "https://i.ibb.co/1Jbvy4fQ/D-Q-NP-711608-MLA104228285762-012026-F.webp",
     rating: 4.8,
@@ -117,44 +179,12 @@ const PRODUCTS: Product[] = [
     stock: 18
   },
   {
-    id: "femimore-glutathione-soap",
-    name: "Femimore Glutathione Bubble Soap",
-    jpName: "フェミモア グルタチオン バブルソープ",
-    description: "Sabonete em espuma com Glutathione. Limpeza suave, controle de oleosidade e clareamento leve.",
-    priceBRL: 110.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
-    rating: 4.8,
-    reviewsCount: 64,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 20
-  },
-  {
-    id: "hada-labo-gokujyun-oil",
-    name: "Hada Labo® Gokujyun Oil Cleasing",
-    jpName: "肌ラボ 極潤 オイルクレンジング",
-    description: "Óleo de limpeza facial demaquilante com Ácido Hialurônico.",
-    priceBRL: 110.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://iili.io/C2KI7Hu.md.jpg",
-    rating: 5.0,
-    reviewsCount: 195,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 40
-  },
-
-  // --- 🛍️ CATEGORIA: ACESSÓRIOS ---
-  {
     id: "refa-heart-comb-silver-gold",
     name: "ReFa Heart Comb (Silver/Gold)",
     jpName: "リファハートコーム シルバー/ゴールド",
     description: "Pente massajador capilar ReFa em formato de coração. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
     priceBRL: 182.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 45.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/KxZ54zJw/61-FK4n-NNLj-L-AC-SL1500.jpg",
     rating: 5.0,
@@ -169,7 +199,7 @@ const PRODUCTS: Product[] = [
     jpName: "リファハートコーム レッド",
     description: "Pente massajador capilar ReFa em formato de coração na cor vermelha. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
     priceBRL: 149.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 40.00,
     shippingEstBRL: 35.00,
     image: "https://i.ibb.co/CK50750k/pct-refa-heart-comb-aira-shinered-01.jpg",
     rating: 4.9,
@@ -178,17 +208,15 @@ const PRODUCTS: Product[] = [
     category: "Maquiagem e cuidados com o cabelo",
     stock: 25
   },
-
-  // --- 💇‍♀️ CATEGORIA: HAIR CARE ---
   {
     id: "tsubaki-repair-mask",
     name: "Tsubaki - Premium Ex Repair Mask 180ml",
     jpName: "TSUBAKI プレミアムEX リペアマスク",
     description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
     priceBRL: 99.00,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 20.00,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C23JZen.jpg", // 🛠️ FIXO: Aspas limpas e corrigidas de forma definitiva
+    image: "https://iuli.io/C23JZen.jpg",
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -201,7 +229,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI モイスト＆リペア キット",
     description: "Kit Shampoo + Condicionador Moist & Repair.",
     priceBRL: 179.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 40.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/Vc4BKtBp/41o-PS-quar-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
@@ -216,7 +244,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI ボリューム＆リペア キット",
     description: "Kit Shampoo + Condicionador Volume & Repair.",
     priceBRL: 179.90,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 20.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/q3tT4fHg/41x-M-SSU8x-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.8,
@@ -231,7 +259,7 @@ const PRODUCTS: Product[] = [
     jpName: "TSUBAKI プレミアムEX ダメージケア",
     description: "Kit Shampoo + Condicionador EX Damage Care.",
     priceBRL: 220.00,
-    serviceFeeBRL: 0,
+    serviceFeeBRL: 25.00,
     shippingEstBRL: 65.00,
     image: "https://i.ibb.co/gZnNpzT7/51v-XAUJ7-We-L-AC-UF1000-1000-QL80-FMwebp.webp",
     rating: 4.9,
@@ -239,6 +267,51 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Maquiagem e cuidados com o cabelo",
     stock: 20
+  },
+  {
+    id: "sheglam-brow-brush",
+    name: "Sheglam Brow Brush & Dip",
+    jpName: "シーグラム ブロウブラシ＆ディップ",
+    description: "Lápis + escova para sobrancelhas (Taupe).",
+    priceBRL: 160.00,
+    serviceFeeBRL: 40.00,
+    shippingEstBRL: 30.00,
+    image: "https://i.ibb.co/TMZfCTb7/51t-I64-y-KJL-AC-UF1000-1000-QL80-FMwebp.webp",
+    rating: 4.5,
+    reviewsCount: 118,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 30
+  },
+  {
+    id: "medicube-booster-pro",
+    name: "Medicube Booster Pro",
+    jpName: "メディキューブ 美顔器 ブースタープロ",
+    description: "Dispositivo facial Medicube Booster Pro.",
+    priceBRL: 146.00,
+    serviceFeeBRL: 35.00,
+    shippingEstBRL: 50.00,
+    image: "https://i.ibb.co/ksMxWzbF/1-bbd45f2b-c684-4b30-ab4d-1e7c3384e254.png",
+    rating: 5.0,
+    reviewsCount: 65,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 8
+  },
+  {
+    id: "traen-230-hair-removal",
+    name: "TraEn 230 Hair Removal Tool",
+    jpName: "TraEn 230 脱毛器 フェイス＆ボディ",
+    description: "Removedor de pelos facial / corporal.",
+    priceBRL: 90.00,
+    serviceFeeBRL: 25.00,
+    shippingEstBRL: 40.00,
+    image: "https://i.ibb.co/cK9D6kbs/518v56f-Av-DL-AC-UF1000-1000-QL80-FMwebp.webp",
+    rating: 4.6,
+    reviewsCount: 39,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 14
   }
 ];
 
