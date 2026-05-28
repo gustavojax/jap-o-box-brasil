@@ -139,7 +139,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 110.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://iili.io/C2KI7Hu.md.jpg", // 🛠️ ALTERAÇÃO EXECUTADA: Link corrigido aqui
+    image: "https://iili.io/C2KI7Hu.md.jpg",
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
@@ -188,7 +188,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://iuli.io/C23JZen.jpg",
+    image: "https://iili.io/C23JZen.jpg", // 🛠️ FIXO: Aspas limpas e corrigidas de forma definitiva
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
@@ -587,7 +587,7 @@ export default function App() {
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
                 <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
-                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, directly do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
@@ -637,7 +637,7 @@ export default function App() {
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém in Mie para a sua casa no Brasil de forma 100% segura e transparente.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
           <div className="text-left">
