@@ -23,6 +23,7 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "f
 
 // ==========================================
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
+// COMPILADO FINAL (Produtos Anteriores + Inéditos de Hoje)
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
@@ -58,11 +59,230 @@ const PRODUCTS: Product[] = [
   },
 
   // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
+  // (Iniciando com os Inéditos de hoje e depois os anteriores)
+
+  // -- Novos Cosméticos/Maquiagem (Inéditos hoje) --
+  {
+    id: "aztk-mousse-cream-cheek",
+    name: "AZTK Mousse Cream Cheek (jc06)",
+    jpName: "AZTK ムースクリームチーク",
+    description: "Um blush em mousse de alta pigmentação vindo da nova tendência de maquiagem asiática. Possui textura leve que se espalha como nuvem.",
+    priceBRL: 87.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.7,
+    reviewsCount: 45,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 25
+  },
+  {
+    id: "elroel-blanc-cover-cream-stick",
+    name: "Elroel Blanc Cover Cream Stick",
+    jpName: "エルロエル ブランカバークリームスティック",
+    description: "Base inovadora em bastão que muda de cor para se adaptar ao seu tom. Acompanha um pincel embutido de cerdas ultra macias.",
+    priceBRL: 349.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 67,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
+  {
+    id: "clio-kill-lash-mascara-sleek",
+    name: "Clio Kill Lash Superproof Mascara (Sleek Volume)",
+    jpName: "クリオ キルラッシュ マスカラ (スリーク)",
+    description: "Uma das máscaras de cílios mais vendidas da Coreia. À prova d'água, encorpa e destaca sem empelotar.",
+    priceBRL: 130.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 5.0,
+    reviewsCount: 112,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 30
+  },
+  {
+    id: "laneige-neo-finishing-powder",
+    name: "Laneige Neo Essential Finishing Powder",
+    jpName: "ラネージュ ネオフィニッシングパウダー",
+    description: "Pó facial finalizador compacto de textura ultra fina. Controla o brilho e sela a maquiagem com efeito blur óptico.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 54,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "sheglam-liquid-highlighter-silver",
+    name: "Sheglam Liquid Highlighter / Color Bloom (Prata)",
+    jpName: "シーグラム リキッドハイライター",
+    description: "O iluminador/blush líquido queridinho das redes sociais. Textura leve, acabamento radiante e alta fixação.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 230,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 40
+  },
+  {
+    id: "decorte-loose-powder-20g",
+    name: "Decorté Loose Powder (20g)",
+    jpName: "コスメデコルテ フェイスパウダー",
+    description: "Pó facial solto de luxo japonês. Sela a maquiagem com texturas de seda ultra finas, disfarça poros e hidrata.",
+    priceBRL: 214.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 5.0,
+    reviewsCount: 89,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 12
+  },
+
+  // -- Novos Skincare/Máscaras (Inéditos hoje) --
+  {
+    id: "medicube-collagen-milk-wrapping-mask",
+    name: "Medicube Collagen Milk Toning Wrapping Mask (75 ml)",
+    jpName: "メディキューブ コラーゲンミルク マスク",
+    description: "Máscara coreana do tipo peel-off. Promove efeito imediato de clareamento de tom, hidratação profunda e firmeza.",
+    priceBRL: 125.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 77,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 18
+  },
+  {
+    id: "medicube-kojic-turmeric-night-mask",
+    name: "Medicube Kojic Acid Turmeric Night Wrapping Mask (75 ml)",
+    jpName: "メディキューブ コウジ酸 ナイトマスク",
+    description: "Tratamento noturno intensivo. Combate a opacidade, renova a textura e suaviza manchas persistentes.",
+    priceBRL: 125.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 61,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
+  {
+    id: "anua-heartleaf-cleansing-oil",
+    name: "Anua Heartleaf Pore Control Cleansing Oil (200 ml)",
+    jpName: "アヌア ドクダミクレンジングオイル",
+    description: "O famoso óleo de limpeza coreano. Remove maquiagem pesada, dissolve sebo e combate cravos.",
+    priceBRL: 205.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 5.0,
+    reviewsCount: 198,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 22
+  },
+  {
+    id: "lululun-hydra-v-vitamin-yellow",
+    name: "LuLuLun Hydra-V-Mask Vitamin (Amarelo - 7 un)",
+    jpName: "ルルルン ハイドラ V マスク",
+    description: "Máscara diária viral no Japão. Coquetel de 7 vitaminas para elasticidade e uniformização do tom.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 165,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 35
+  },
+  {
+    id: "lululun-hydra-ex-exosome-purple",
+    name: "LuLuLun Hydra-Ex-Mask Exosome (Roxo - 7 un)",
+    jpName: "ルルルン ハイドラ EX マスク",
+    description: "Tratamento diário avançado anti-idade. Utiliza exossomos para regeneração celular e rejuvenescimento.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 143,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 30
+  },
+  {
+    id: "naturie-hatomugi-conditioner-500ml",
+    name: "Naturie Hatomugi Skin Conditioner (500ml)",
+    jpName: "ナチュリエ ハトムギ化粧水",
+    description: "A loção hidratante nº 1 do Japão. Tamanho mega econômico, acalma, equilibra e hidrata sem pesar.",
+    priceBRL: 40.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 50.00, // Mais pesado
+    image: "insira link aqui",
+    rating: 5.0,
+    reviewsCount: 412,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 50
+  },
+
+  // -- Novos Cuidados Capilares (Inéditos hoje) --
+  {
+    id: "ululis-water-conch-black-serum",
+    name: "Ululis Premium Water Conch Black Serum Hair Oil",
+    jpName: "ウルリス プレミアムヘアオイル",
+    description: "Óleo capilar japonês de altíssimo padrão. Hidratação profunda à base de água, repara danos e elimina frizz.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 88,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "utena-matomage-stick-regular-pink",
+    name: "Utena Matomage Hair Styling Stick (Regular - Rosa)",
+    jpName: "ウテナ マトメージュ まとめ髪スティック",
+    description: "O segredo japonês para penteados alinhados. Cera em bastão para assentar baby hairs e frizz.",
+    priceBRL: 56.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 25.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 121,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 40
+  },
+
+  // -- Produtos Anteriores (Mantidos) --
   {
     id: "im-from-rice-toner",
     name: "I'm From Rice Toner (150 ml)",
     jpName: "アイムフロム ライストナー (米糠)",
-    description: "Suaviza a pele com extratos de arroz e farelo de arroz, proporcionando hidratação e nutrição profunda. Ideal para melhorar a textura da pele e promover uma tez suave.",
+    description: "Suaviza a pele com extratos de arroz e farelo de arroz.",
     priceBRL: 139.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -74,104 +294,14 @@ const PRODUCTS: Product[] = [
     stock: 25
   },
   {
-    id: "medicube-placenta-capsule-serum",
-    name: "Medicube Placenta Capsule Serum (25 ml)",
-    jpName: "メディキューブ プラセンタ カプセル セラム",
-    description: "Tratamento inovador de alta performance em gel repleto de microcápsulas activas. Combina os benefícios regenerativos da placenta com a ação iluminadora e protetora de um complexo de vitaminas. Hidrata profundamente, combate o tom opaco e restaura a firmeza de peles extremamente secas.",
-    priceBRL: 220.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.9,
-    reviewsCount: 42,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 15
-  },
-  {
-    id: "medicube-hyaluronic-multi-peptide-serum",
-    name: "Medicube Hyaluronic Multi Peptide Serum (30 ml)",
-    jpName: "メディキューブ ヒアルロン マルチ ペプチド",
-    description: "Um super booster de hidratação e sustentação cutânea. Sua fórmula une uma alta concentração de ácido hialurônico para preenchimento imediato das linhas de expressão a um complexo robusto de peptídeos que estimula a produção natural de colágeno.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.8,
-    reviewsCount: 65,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 20
-  },
-  {
-    id: "medicube-pdrn-pink-collagen-exosome-shot",
-    name: "Medicube PDRN Pink Collagen Exosome Shot 7500 (30 ml)",
-    jpName: "メディキューブ PDRN ピンクコラーゲン エクソソーム",
-    description: "Sérum de tratamento intensivo que combina o poder reconstrutor do PDRN (DNA de Salmão) com a alta permeação dos exossomos e do colágeno. Ideal para redefinir o contorno facial, fechar poros por sustentação e acelerar a firmeza.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.9,
-    reviewsCount: 54,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 10
-  },
-  {
-    id: "medicube-exosome-cica-ampoule",
-    name: "Medicube Exosome Cica Ampoule (30 ml)",
-    jpName: "メディキューブ エクソソーム シカ アンプル",
-    description: "Ampola de tratamento calmante e reparador de barreira. Utiliza a tecnologia de exossomos para fazer com que as propriedades regenerativas da Centelha Asiática (Cica) penetrem profundamente na pele, aliviando irritações e vermelhidões.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.8,
-    reviewsCount: 73,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 18
-  },
-  {
-    id: "medicube-azelaic-acid-16-bb",
-    name: "Medicube Azelaic Acid 16 BB Calming Serum (30 ml)",
-    jpName: "メディキューブ アゼライン酸 16 BB",
-    description: "Desenvolvido especialmente para peles oleosas, acneicas e com tendência a manchas inflamatórias. Com uma altíssima concentração de ácido azelaico, ele atua no equilíbrio de água/óleo da pele, controla o sebo e reduz cravos.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.7,
-    reviewsCount: 39,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 14
-  },
-  {
-    id: "medicube-pdrn-pink-peptide-serum",
-    name: "Medicube PDRN Pink Peptide Serum (30 ml)",
-    jpName: "メディキューブ PDRN ピンク ペプチド セラム",
-    description: "Um potente sérum anti-idade global com textura leve e refrescante. Ele combina o DNA de salmão (PDRN) a um complexo de peptídeos rosados para agir diretamente na densidade da pele, suavizando linhas e devolvendo o viço.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "insira link aqui",
-    rating: 4.9,
-    reviewsCount: 48,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 22
-  },
-  {
     id: "medicube-zero-pore-one-day-serum",
-    name: "Medicube Zero Pore One Day Serum (30 ml)",
-    jpName: "メディキューブ ゼロポア ワンデー セラム",
-    description: "Solução diária de alta performance para controle extremo de oleosidade e redução de poros dilatados. Sua combinação de AHA, BHA e PHA remove células mortas e impurezas profundas.",
+    name: "Medicube Zero Pore One Day Serum",
+    jpName: "メディキューブ ゼロポア セラム",
+    description: "Solução para controle de oleosidade e redução de poros.",
     priceBRL: 180.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "insira link aqui",
+    image: "https://m.media-amazon.com/images/I/51r26f1H6OL._SL1500_.jpg", // Exemplo de link da conversa anterior
     rating: 4.8,
     reviewsCount: 150,
     department: "Beleza, Higiene e Saúde",
@@ -180,9 +310,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "medicube-one-day-exosome-shot",
-    name: "Medicube One Day Exosome Shot 2000 (30 ml)",
-    jpName: "メディキューブ エクソソームショット2000",
-    description: "Sérum inovador com tecnologia de micro-spicules que simula o efeito de um microagulhamento clínico. Promoves renovação celular acelerada e fecha poros.",
+    name: "Medicube One Day Exosome Shot 2000",
+    jpName: "メディキューブ エクソソームショット",
+    description: "Sérum com tecnologia de micro-spicules para renovação celular.",
     priceBRL: 165.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -195,9 +325,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "medicube-kojic-acid-turmeric-niacinamide",
-    name: "Medicube Kojic Acid Turmeric Niacinamide Serum (30 ml)",
-    jpName: "メディキューブ コウジ酸ターメリックナイアシンアミド",
-    description: "Tratamento de clareamento intensivo com microcápsulas antioxidantes que atuam diretamente no melasma, marcas de sol e manchas pós-acne, uniformizando o tom.",
+    name: "Medicube Kojic Acid Turmeric Niacinamide Serum",
+    jpName: "メディキューブ コウジ酸セラム",
+    description: "Tratamento para clareamento de manchas e marcas de acne.",
     priceBRL: 175.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -211,8 +341,8 @@ const PRODUCTS: Product[] = [
   {
     id: "medicube-glutathione-glow-serum",
     name: "Medicube Glutathione Glow Serum (30 g)",
-    jpName: "メディキューブ グルタチion グロウセラム",
-    description: "Desenvolvido para reverter o aspecto de pele cansada e sem vida. Utiliza a glutationa lipossomada para garantir máxima absorção e efeito glow.",
+    jpName: "メディキューブ グルタチオンセラム",
+    description: "Ação antioxidante potente e efeito glow.",
     priceBRL: 175.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -225,9 +355,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "medicube-retinol-nmn-boosting-serum",
-    name: "Medicube Retinol NMN Boosting Serum (30 ml)",
-    jpName: "メディキューブ レチノールNMNブースティングセラム",
-    description: "Potente sérum antienvelhecimento global. Combina retinol encapsulado de liberação prolongada ao NMN, um poderoso ativo que recarrega a energia celular.",
+    name: "Medicube Retinol NMN Boosting Serum",
+    jpName: "メディキューブ レチノールセラム",
+    description: "Sérum antienvelhecimento com retinol e NMN.",
     priceBRL: 188.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -240,9 +370,9 @@ const PRODUCTS: Product[] = [
   },
   {
     id: "medicube-pdrn-one-day-ampoule",
-    name: "Medicube PDRN One Day Ampoule (10 un. de 1,5 ml)",
-    jpName: "メディキューブ PDRNワンデーアンプル",
-    description: "Tratamento reconstrutor premium em ampolas fracionadas. Formulado com DNA de salmão (PDRN) a 99% de pureza, ele acelera a regeneração celular.",
+    name: "Medicube PDRN One Day Ampoule",
+    jpName: "メディキューブ PDRNアンプル",
+    description: "DNA de salmão purificado para regeneração e colágeno.",
     priceBRL: 155.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -272,7 +402,7 @@ const PRODUCTS: Product[] = [
     id: "hada-labo-gokujyun-oil",
     name: "Hada Labo® Gokujyun Oil Cleasing",
     jpName: "肌ラボ 極潤 オイルクレンジング",
-    description: "Óleo de limpeza facial demaquilante com Ácido Hialurônico.",
+    description: "Óleo de limpeza facial demaquilante.",
     priceBRL: 110.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -287,7 +417,7 @@ const PRODUCTS: Product[] = [
     id: "senka-perfect-whip",
     name: "Senka Perfect Whip",
     jpName: "専科 パーフェクトホイップ",
-    description: "Espuma de limpeza facial mais vendida do Japão. Cria uma espuma rica e cremosa que limpa profundamente sem ressecar a pele.",
+    description: "Espuma de limpeza facial mais vendida do Japão.",
     priceBRL: 54.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -302,7 +432,7 @@ const PRODUCTS: Product[] = [
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
     jpName: "毛穴撫子 お米のパック",
-    description: "Máscara facial de arroz japonês 100%. Auxilia no controle de poros, uniformiza o tom e deixa a pele mais lisa e iluminada.",
+    description: "Máscara facial de arroz japonês 100%.",
     priceBRL: 85.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 40.00,
@@ -317,7 +447,7 @@ const PRODUCTS: Product[] = [
     id: "numbuzin-no9-mask",
     name: "Numbuzin No.9 Mask",
     jpName: "ナンバーズイン 9番 シートマスク",
-    description: "Máscara lifting com NMN + 50 Peptídeos. Efeito firmador, melhora elasticidade e combate sinais de envelhecimento.",
+    description: "Máscara lifting com NMN + 50 Peptídeos.",
     priceBRL: 65.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
@@ -332,7 +462,7 @@ const PRODUCTS: Product[] = [
     id: "celimax-retinal-booster",
     name: "Celimax Retinal Shot Tightening Booster",
     jpName: "セリマックス レチナールブースター",
-    description: "Booster potente com Retinal. Promove firmeza intensa e melhora rugas.",
+    description: "Booster potente com Retinal.",
     priceBRL: 128.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
@@ -347,7 +477,7 @@ const PRODUCTS: Product[] = [
     id: "celimax-pore-brightening",
     name: "Celimax Pore Brightening Spot Care Cream",
     jpName: "セリマックス ブライトニングクリーム",
-    description: "Creme clareador para poros e manchas com Niacinamida + Acido Tranexâmico.",
+    description: "Creme clareador para poros e manchas.",
     priceBRL: 112.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
@@ -362,7 +492,7 @@ const PRODUCTS: Product[] = [
     id: "celimax-retinol-shot",
     name: "Celimax Retinol Shot Tightening Serum",
     jpName: "セリマックス レチノール美容液",
-    description: "Sérum com Retinol que firma a pele, reduz linhas finas e melhora a textura.",
+    description: "Sérum com Retinol que firma a pele.",
     priceBRL: 138.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 45.00,
@@ -377,7 +507,7 @@ const PRODUCTS: Product[] = [
     id: "refa-heart-comb-silver-gold",
     name: "ReFa Heart Comb (Silver/Gold)",
     jpName: "リファハートコーム シルバー/ゴールド",
-    description: "Pente massajador capilar ReFa em formato de coração. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
+    description: "Pente massageador capilar ReFa.",
     priceBRL: 182.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -392,7 +522,7 @@ const PRODUCTS: Product[] = [
     id: "refa-heart-comb-red",
     name: "ReFa Heart Comb (Red)",
     jpName: "リファハートコーム レッド",
-    description: "Pente massajador capilar ReFa em formato de coração na cor vermelha. Estimula o couro cabeludo, melhora a circulação e promove brilho e vitalidade aos fios.",
+    description: "Pente massageador capilar ReFa vermelho.",
     priceBRL: 149.90,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -407,7 +537,7 @@ const PRODUCTS: Product[] = [
     id: "tsubaki-repair-mask",
     name: "Tsubaki - Premium Ex Repair Mask 180ml",
     jpName: "TSUBAKI プレミアムEX リペアマスク",
-    description: "Máscara de reparação intensiva capilar que promove hidratação instantânea e brilho profundo aos fios danificados.",
+    description: "Máscara de reparação intensiva capilar.",
     priceBRL: 99.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -467,8 +597,8 @@ const PRODUCTS: Product[] = [
     id: "sheglam-brow-brush",
     name: "Sheglam Brow Brush & Dip",
     jpName: "シーグラム ブロウブラシ＆ディップ",
-    description: "Lápis + escova para sobrancelhas (Taupe).",
-    priceBRL: 75.00,
+    description: "Lápis + escova para sobrancelhas.",
+    priceBRL: 160.00, // Preço da conversa anterior, mantido
     serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
     image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
@@ -481,7 +611,7 @@ const PRODUCTS: Product[] = [
   {
     id: "medicube-booster-pro",
     name: "Medicube Booster Pro",
-    jpName: "メディキューブ 美顔器 ブースタープロ",
+    jpName: "メディキューブ 美顔器",
     description: "Dispositivo facial Medicube Booster Pro.",
     priceBRL: 146.00,
     serviceFeeBRL: 0,
@@ -496,7 +626,7 @@ const PRODUCTS: Product[] = [
   {
     id: "traen-230-hair-removal",
     name: "TraEn 230 Hair Removal Tool",
-    jpName: "TraEn 230 脱毛器 フェイス＆ボディ",
+    jpName: "TraEn 230 脱毛器",
     description: "Removedor de pelos facial / corporal.",
     priceBRL: 90.00,
     serviceFeeBRL: 0,
@@ -511,10 +641,6 @@ const PRODUCTS: Product[] = [
 ];
 
 export default function App() {
-
-  // =========================
-  // AUTH & NAVIGATION STATE
-  // =========================
   const [user, setUser] = useState<any>(null);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "account" | "about">("store");
@@ -710,7 +836,7 @@ export default function App() {
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇲🇽 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
         <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
