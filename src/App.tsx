@@ -23,7 +23,7 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "f
 
 // ==========================================
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
-// COMPILADO FINAL (Produtos Anteriores + Inéditos de Hoje)
+// COMPILADO FINAL (Produtos Anteriores + Inéditos com descrições corretas)
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
@@ -59,9 +59,9 @@ const PRODUCTS: Product[] = [
   },
 
   // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
-  // (Iniciando com os Inéditos de hoje e depois os anteriores)
+  // (Iniciando com os Inéditos e depois os anteriores)
 
-  // -- Novos Cosméticos/Maquiagem (Inéditos hoje) --
+  // -- Novos Cosméticos/Maquiagem --
   {
     id: "aztk-mousse-cream-cheek",
     name: "AZTK Mousse Cream Cheek (jc06)",
@@ -153,7 +153,7 @@ const PRODUCTS: Product[] = [
     stock: 12
   },
 
-  // -- Novos Skincare/Máscaras (Inéditos hoje) --
+  // -- Novos Skincare/Máscaras --
   {
     id: "medicube-collagen-milk-wrapping-mask",
     name: "Medicube Collagen Milk Toning Wrapping Mask (75 ml)",
@@ -236,7 +236,7 @@ const PRODUCTS: Product[] = [
     description: "A loção hidratante nº 1 do Japão. Tamanho mega econômico, acalma, equilibra e hidrata sem pesar.",
     priceBRL: 40.00,
     serviceFeeBRL: 0,
-    shippingEstBRL: 50.00, // Mais pesado
+    shippingEstBRL: 50.00,
     image: "https://i.postimg.cc/SjFhq2sg/sg-11134207-7qvdb-lhr9tm8ltk8o14.jpg",
     rating: 5.0,
     reviewsCount: 412,
@@ -245,7 +245,7 @@ const PRODUCTS: Product[] = [
     stock: 50
   },
 
-  // -- Novos Cuidados Capilares (Inéditos hoje) --
+  // -- Novos Cuidados Capilares --
   {
     id: "ululis-water-conch-black-serum",
     name: "Ululis Premium Water Conch Black Serum Hair Oil",
@@ -301,7 +301,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 180.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/jdhr7jkn/51m-Us3LO2n-L-AC-UF1000-1000-QL80.jpg", // Exemplo de link da conversa anterior
+    image: "https://i.postimg.cc/jdhr7jkn/51m-Us3LO2n-L-AC-UF1000-1000-QL80.jpg",
     rating: 4.8,
     reviewsCount: 150,
     department: "Beleza, Higiene e Saúde",
@@ -598,7 +598,7 @@ const PRODUCTS: Product[] = [
     name: "Sheglam Brow Brush & Dip",
     jpName: "シーグラム ブロウブラシ＆ディップ",
     description: "Lápis + escova para sobrancelhas.",
-    priceBRL: 160.00, // Preço da conversa anterior, mantido
+    priceBRL: 75.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 30.00,
     image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
@@ -966,7 +966,7 @@ export default function App() {
             {/* FOTO PAULA TAKASHIRO */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
-                src="https://iili.io/CJpV5fj.md.jpg" 
+                src="https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=500&q=80" 
                 alt="Paula Takashiro" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
@@ -980,8 +980,8 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
-                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, directly do Japão e da Coreia para você.</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
               </div>
@@ -990,7 +990,7 @@ export default function App() {
                 <div className="flex items-center gap-3 text-left">
                   <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
                     <img 
-                      src="https://iili.io/CJbmWhP.md.jpg" 
+                      src="https://images.unsplash.com/photo-1516257984-b1b4d707412e?auto=format&fit=crop&w=150&q=80" 
                       alt="Japão Box Brasil Logo" 
                       className="w-full h-full object-cover"
                     />
@@ -1047,14 +1047,9 @@ export default function App() {
         {/* BANNER DE MEIOS DE PAGAMENTO */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
           <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
-          <div className="w-full max-w-2xl">
-            <img 
-              src="https://iili.io/CdLPwBa.md.jpg" 
-              alt="Meios de Pagamento" 
-              className="w-full h-auto object-contain select-none pointer-events-none"
-            />
+          <div className="w-full max-w-2xl text-center font-bold bg-slate-50 text-slate-700 py-3 rounded-2xl border border-slate-200">
+            💳 Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.
           </div>
-          <p className="text-[11px] font-semibold text-slate-400">Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.</p>
         </div>
 
         {/* CRÉDITOS E DIREITOS AUTORAIS */}
