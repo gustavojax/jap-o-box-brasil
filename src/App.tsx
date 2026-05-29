@@ -283,7 +283,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 125.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/51b9E-W6xYL._SL1080_.jpg",
+    image: "https://i.postimg.cc/wM5Wy7Fp/D-NQ-NP-656895-MLB108492557752-032026-O.webp",
     rating: 4.9,
     reviewsCount: 77,
     department: "Beleza, Higiene e Saúde",
