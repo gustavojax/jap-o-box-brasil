@@ -23,7 +23,7 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "f
 
 // ==========================================
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
-// COMPILADO FINAL (Produtos Anteriores + Inéditos com descrições corretas)
+// COMPILADO FINAL (Todos os produtos + Novos Aparelhos Medicube)
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- 🛁 CATEGORIA: HIGIENE, CUIDADOS BUCAIS E PRODUTOS PARA BANHO ---
@@ -59,9 +59,40 @@ const PRODUCTS: Product[] = [
   },
 
   // --- 💇‍♀️ CATEGORIA: MAQUIAGEM E CUIDADOS COM O CABELO ---
-  // (Iniciando com os Inéditos e depois os anteriores)
+  
+  // ⚙️ NOVO GRUPO: APARELHOS DE BELEZA MEDICUBE (Substitutos oficiais do Booster Pro antigo)
+  {
+    id: "medicube-age-r-booster-pro",
+    name: "Medicube Age-R Booster Pro",
+    jpName: "メディキューブ 本格美顔器",
+    description: "O dispositivo eletrônico facial inteligente que é um verdadeiro fenômeno na Coreia. Ele combina 4 tecnologias de clínica em um único aparelho (eletroporação, microcorrentes, EMS e LED) para abrir os caminhos da pele, fazendo com que seus sérums e cremes penetrem até 700% mais profundamente.",
+    priceBRL: 1430.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 50.00,
+    image: "insira link aqui",
+    rating: 5.0,
+    reviewsCount: 142,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 10
+  },
+  {
+    id: "medicube-age-r-booster-pro-mini",
+    name: "Medicube Age-R Booster Pro Mini",
+    jpName: "メディキューブ 美顔器 ミニ",
+    description: "A versão compacta, leve e ideal para viagens do famoso aparelho de eletroporação da Medicube. Focado em maximizar o brilho (glow) e a absorção dos seus produtos de skincare diários através de impulsos elétricos suaves e seguros.",
+    priceBRL: 494.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 86,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
 
-  // -- Novos Cosméticos/Maquiagem --
+  // -- Cosméticos e Maquiagem --
   {
     id: "aztk-mousse-cream-cheek",
     name: "AZTK Mousse Cream Cheek (jc06)",
@@ -81,7 +112,7 @@ const PRODUCTS: Product[] = [
     id: "elroel-blanc-cover-cream-stick",
     name: "Elroel Blanc Cover Cream Stick",
     jpName: "エルロエル ブランカバークリームスティック",
-    description: "Base inovadora em bastão que muda de cor para se adaptar ao seu tom. Acompanha um pincel embutido de cerdas ultra macias.",
+    description: "Base inovadora em bastão que muda de col para se adaptar ao seu tom. Acompanha um pincel embutido de cerdas ultra macias.",
     priceBRL: 349.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
@@ -153,7 +184,97 @@ const PRODUCTS: Product[] = [
     stock: 12
   },
 
-  // -- Novos Skincare/Máscaras --
+  // -- Skincare e Máscaras de Tratamento --
+  {
+    id: "medicube-placenta-capsule-serum",
+    name: "Medicube Placenta Capsule Serum (25 ml)",
+    jpName: "メディキューブ プラセンタ カプセル セラム",
+    description: "Tratamento inovador de alta performance em gel repleto de microcápsulas activas. Combina os benefícios regenerativos da placenta com a ação iluminadora e protetora de um complexo de vitaminas. Hidrata profundamente, combate o tom opaco e restaura a firmeza de peles extremamente secas.",
+    priceBRL: 220.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 42,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 15
+  },
+  {
+    id: "medicube-hyaluronic-multi-peptide-serum",
+    name: "Medicube Hyaluronic Multi Peptide Serum (30 ml)",
+    jpName: "メディキューブ ヒアルロン マルチ ペプチド",
+    description: "Um super booster de hidratação e sustentação cutânea. Sua fórmula une uma alta concentração de ácido hialurônico para preenchimento imediato das linhas de expressão a um complexo robusto de peptídeos que estimula a produção natural de colágeno.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 65,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 20
+  },
+  {
+    id: "medicube-pdrn-pink-collagen-exosome-shot",
+    name: "Medicube PDRN Pink Collagen Exosome Shot 7500 (30 ml)",
+    jpName: "メディキューブ PDRN ピンクコラーゲン エクソソーム",
+    description: "Sérum de tratamento intensivo que combina o poder reconstrutor do PDRN (DNA de Salmão) com a alta permeação dos exossomos e do colágeno. Ideal para redefinir o contorno facial, fechar poros por sustentação e acelerar a firmeza.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 54,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 10
+  },
+  {
+    id: "medicube-exosome-cica-ampoule",
+    name: "Medicube Exosome Cica Ampoule (30 ml)",
+    jpName: "メディキューブ エクソソーム シカ アンプル",
+    description: "Ampola de tratamento calmante e reparador de barreira. Utiliza a tecnologia de exossomos para fazer com que as propriedades regenerativas da Centelha Asiática (Cica) penetrem profundamente na pele, aliviando irritações e vermelhidões.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.8,
+    reviewsCount: 73,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 18
+  },
+  {
+    id: "medicube-azelaic-acid-16-bb",
+    name: "Medicube Azelaic Acid 16 BB Calming Serum (30 ml)",
+    jpName: "メディキューブ アゼライン酸 16 BB",
+    description: "Desenvolvido especialmente para peles oleosas, acneicas e com tendência a manchas inflamatórias. Com uma altíssima concentração de ácido azelaico, ele atua no equilíbrio de água/óleo da pele, controla o sebo e reduz cravos.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.7,
+    reviewsCount: 39,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 14
+  },
+  {
+    id: "medicube-pdrn-pink-peptide-serum",
+    name: "Medicube PDRN Pink Peptide Serum (30 ml)",
+    jpName: "メディキューブ PDRN ピンク ペプチド セラム",
+    description: "Um potente sérum anti-idade global com textura leve e refrescante. Ele combina o DNA de salmão (PDRN) a um complexo de peptídeos rosados para agir diretamente na densidade da pele, suavizando linhas e devolvendo o viço.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "insira link aqui",
+    rating: 4.9,
+    reviewsCount: 48,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem e cuidados com o cabelo",
+    stock: 22
+  },
   {
     id: "medicube-collagen-milk-wrapping-mask",
     name: "Medicube Collagen Milk Toning Wrapping Mask (75 ml)",
@@ -162,7 +283,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 125.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/wM5Wy7Fp/D-NQ-NP-656895-MLB108492557752-032026-O.webp",
+    image: "https://m.media-amazon.com/images/I/51b9E-W6xYL._SL1080_.jpg",
     rating: 4.9,
     reviewsCount: 77,
     department: "Beleza, Higiene e Saúde",
@@ -245,7 +366,7 @@ const PRODUCTS: Product[] = [
     stock: 50
   },
 
-  // -- Novos Cuidados Capilares --
+  // -- Cuidados Capilares --
   {
     id: "ululis-water-conch-black-serum",
     name: "Ululis Premium Water Conch Black Serum Hair Oil",
@@ -276,8 +397,6 @@ const PRODUCTS: Product[] = [
     category: "Maquiagem e cuidados com o cabelo",
     stock: 40
   },
-
-  // -- Produtos Anteriores (Mantidos) --
   {
     id: "im-from-rice-toner",
     name: "I'm From Rice Toner (150 ml)",
@@ -431,7 +550,7 @@ const PRODUCTS: Product[] = [
   {
     id: "keana-rice-pack",
     name: "Keana Rice Pack",
-    jpName: "毛穴撫子 お米のパック",
+    jpName: "毛穴撫子 お米 de パック",
     description: "Máscara facial de arroz japonês 100%.",
     priceBRL: 85.90,
     serviceFeeBRL: 0,
@@ -607,21 +726,6 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Maquiagem e cuidados com o cabelo",
     stock: 30
-  },
-  {
-    id: "medicube-booster-pro",
-    name: "Medicube Booster Pro",
-    jpName: "メディキューブ 美顔器",
-    description: "Dispositivo facial Medicube Booster Pro.",
-    priceBRL: 146.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 50.00,
-    image: "https://i.ibb.co/ksMxWzbF/1-bbd45f2b-c684-4b30-ab4d-1e7c3384e254.png",
-    rating: 5.0,
-    reviewsCount: 65,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 8
   },
   {
     id: "traen-230-hair-removal",
@@ -980,7 +1084,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
@@ -1048,7 +1152,7 @@ export default function App() {
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
           <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
           <div className="w-full max-w-2xl text-center font-bold bg-slate-50 text-slate-700 py-3 rounded-2xl border border-slate-200">
-            💳 Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.
+             Adilson, Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.
           </div>
         </div>
 
