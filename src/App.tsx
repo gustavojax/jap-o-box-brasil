@@ -301,7 +301,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 180.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://m.media-amazon.com/images/I/51r26f1H6OL._SL1500_.jpg", // Exemplo de link da conversa anterior
+    image: "https://i.postimg.cc/jdhr7jkn/51m-Us3LO2n-L-AC-UF1000-1000-QL80.jpg", // Exemplo de link da conversa anterior
     rating: 4.8,
     reviewsCount: 150,
     department: "Beleza, Higiene e Saúde",
