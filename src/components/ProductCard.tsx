@@ -1,75 +1,94 @@
-import React from "react";
-import { ShoppingCart, Eye } from "lucide-react";
+import React, { useState } from "react";
+import { ShoppingCart, Eye, Star, X } from "lucide-react";
 import type { Product } from "../types";
 
 interface ProductCardProps {
   product: Product;
-  onAddToCart: (product: Product) => void;
+  onAddToCart: (p: Product) => void;
 }
 
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
-  // O preço exibido junta o item + sua taxa assessoria em um único valor comercial limpo
-  const finalProductPrice = product.priceBRL + product.serviceFeeBRL;
+  const [showDetails, setShowDetails] = useState(false);
 
   return (
-    <div className="bg-white rounded-3xl shadow-sm border border-slate-100 overflow-hidden flex flex-col justify-between group hover:shadow-md transition-all">
+    <div className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-left relative overflow-hidden h-full">
       
-      {/* Imagem e Badge de Origem */}
-      <div className="relative bg-slate-50 aspect-square w-full overflow-hidden flex items-center justify-center">
-        <img 
-          src={product.image || "/placeholder.png"} 
-          alt={product.name} 
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
-        />
-        <span className="absolute top-3 right-3 bg-red-600 text-white text-[9px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
-          🇯🇵 MIE ➔ BR
-        </span>
-        <span className="absolute bottom-3 left-3 bg-slate-900/80 text-white text-[10px] font-bold px-2 py-0.5 rounded-md">
-          ⭐ {product.rating} ({product.reviewsCount || "100+"})
-        </span>
+      {/* FRENTE DO CARD (Oculta quando os detalhes são abertos) */}
+      <div className="relative aspect-square w-full bg-slate-50 p-4 flex items-center justify-center">
+         {/* Tag de Avaliação */}
+         <div className="absolute top-4 left-4 bg-slate-900/80 text-white text-[10px] font-black px-2.5 py-1 rounded-md flex items-center gap-1 backdrop-blur-sm z-10">
+           <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {product.rating} ({product.reviewsCount})
+         </div>
+         <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" loading="lazy" />
       </div>
 
-      {/* Informações Básicas e Preço Único */}
-      <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-        <div className="space-y-1 text-left">
-          <span className="text-[10px] font-black text-rose-500 uppercase tracking-widest block">
-            {product.category || "Importado"}
-          </span>
-          <p className="text-[11px] font-mono font-medium text-slate-400">{product.jpName || "日本製品"}</p>
-          <h3 className="font-black text-slate-900 text-base tracking-tight leading-tight">{product.name}</h3>
-          <p className="text-xs text-slate-500 line-clamp-2 pt-0.5">{product.description}</p>
-        </div>
+      <div className="p-6 flex-1 flex flex-col">
+        <p className="text-[9px] font-black text-[#e60012] uppercase tracking-widest mb-1">{product.category}</p>
+        <p className="text-[10px] text-slate-400 font-medium mb-2">{product.jpName}</p>
+        <h3 className="text-base font-black text-slate-900 leading-snug mb-2">{product.name}</h3>
+        
+        {/* Aqui é onde o texto é cortado visualmente na frente do card */}
+        <p className="text-xs text-slate-500 font-medium line-clamp-2 mb-6 flex-1">
+          {product.description}
+        </p>
 
-        {/* 🏷️ EXIBIÇÃO DO PREÇO: Totalmente limpa e sem planilhas de taxas */}
-        <div className="pt-2 text-left">
-          <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider block">Preço do Produto:</span>
-          <div className="flex items-baseline gap-2 mt-0.5">
-            <span className="text-2xl font-black text-slate-900">R$ {finalProductPrice.toFixed(2)}</span>
+        <div className="mt-auto space-y-4">
+          <div>
+            <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Preço do Produto:</p>
+            <p className="text-3xl font-black text-slate-900">R$ {product.priceBRL.toFixed(2).replace('.', ',')}</p>
+            <p className="text-[9px] text-slate-400 mt-1 font-medium">*Frete internacional e tributos de importação calculados no checkout.</p>
           </div>
-          <span className="text-[10px] text-slate-400 block mt-1 font-medium">
-            *Frete internacional e tributos de importação calculados no checkout.
-          </span>
-        </div>
 
-        {/* Botões de Ação Diretos */}
-        <div className="space-y-2 pt-2">
-          <button
-            onClick={() => onAddToCart(product)}
-            className="w-full bg-red-600 hover:bg-red-700 text-white font-black text-xs py-3 rounded-xl transition-all uppercase tracking-wider flex items-center justify-center gap-2 shadow-sm active:scale-98 cursor-pointer"
-          >
-            <ShoppingCart className="w-4 h-4" />
-            Adicionar ao Carrinho
-          </button>
-          
-          <button
-            onClick={() => alert(`Detalhes do produto vindo direto de Mie.`)}
-            className="w-full bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-bold text-xs py-2.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer"
-          >
-            <Eye className="w-3.5 h-3.5 text-slate-400" />
-            Visualizar Detalhes
-          </button>
+          <div className="space-y-2">
+            <button 
+              onClick={() => onAddToCart(product)}
+              className="w-full bg-[#e60012] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer shadow-md shadow-red-600/10"
+            >
+              <ShoppingCart className="w-4 h-4" /> Adicionar ao Carrinho
+            </button>
+            <button 
+              onClick={() => setShowDetails(true)}
+              className="w-full bg-white border-2 border-slate-100 hover:border-slate-200 text-slate-700 font-black text-xs uppercase tracking-wider py-3 rounded-xl transition-colors flex items-center justify-center gap-2 cursor-pointer"
+            >
+              <Eye className="w-4 h-4" /> Visualizar Detalhes
+            </button>
+          </div>
         </div>
+      </div>
 
+      {/* OVERLAY DE DETALHES (Caixa branca dinâmica que desliza por cima) */}
+      <div 
+        className={`absolute inset-0 bg-white z-20 transition-transform duration-300 ease-in-out flex flex-col ${showDetails ? 'translate-y-0' : 'translate-y-full'}`}
+      >
+         <div className="p-5 border-b border-slate-100 flex items-center justify-between bg-white sticky top-0 shadow-sm z-10">
+           <h4 className="font-black text-slate-900 text-sm uppercase tracking-wider">Descrição Completa</h4>
+           <button 
+             onClick={() => setShowDetails(false)} 
+             className="p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-900 rounded-full transition-colors cursor-pointer"
+           >
+             <X className="w-5 h-5" />
+           </button>
+         </div>
+         
+         <div className="p-6 overflow-y-auto flex-1 bg-slate-50/50">
+           <p className="text-[10px] font-black text-[#e60012] mb-1 tracking-widest uppercase">{product.jpName}</p>
+           <h3 className="text-lg font-black text-slate-900 leading-snug mb-4">{product.name}</h3>
+           <div className="text-slate-600 font-medium text-sm leading-relaxed whitespace-pre-wrap">
+             {product.description}
+           </div>
+         </div>
+         
+         <div className="p-5 border-t border-slate-100 bg-white sticky bottom-0">
+           <button 
+              onClick={() => {
+                onAddToCart(product);
+                setShowDetails(false);
+              }}
+              className="w-full bg-[#e60012] hover:bg-red-700 text-white font-black text-xs uppercase tracking-wider py-3.5 rounded-xl transition-colors flex items-center justify-center gap-2 shadow-lg shadow-red-600/20 cursor-pointer"
+            >
+              <ShoppingCart className="w-4 h-4" /> Adicionar ao Carrinho
+            </button>
+         </div>
       </div>
 
     </div>
