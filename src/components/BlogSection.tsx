@@ -12,8 +12,8 @@ const REAL_GUIDES = [
     category: "Logística & Envios",
     date: "28 Mai, 2026",
     readTime: "6 min de leitura",
-    image: "cole o link aqui", // <-- COLE O LINK DA IMAGEM AQUI
-    link: "cole o link aqui"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
+    image: "https://i.postimg.cc/cCgVnbFM/japan-post.jpg", // <-- COLE O LINK DA IMAGEM AQUI
+    link: "https://www.post.japanpost.jp/service/send/oversea/use/howto/index_pt.html"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
   },
   {
     id: 2,
@@ -22,8 +22,8 @@ const REAL_GUIDES = [
     category: "Skincare Japonês",
     date: "22 Mai, 2026",
     readTime: "4 min de leitura",
-    image: "cole o link aqui", // <-- COLE O LINK DA IMAGEM AQUI
-    link: "cole o link aqui"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
+    image: "https://i.postimg.cc/DyV2crLR/gettyimages-150059694.webp", // <-- COLE O LINK DA IMAGEM AQUI
+    link: "https://www.grupochociai.com/blog/double-cleansing-um-mtodo-revolucionrio-para-sua-rotina-de-skincare"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
   },
   {
     id: 3,
@@ -32,8 +32,8 @@ const REAL_GUIDES = [
     category: "Tecnologia & Inovação",
     date: "15 Mai, 2026",
     readTime: "5 min de leitura",
-    image: "cole o link aqui", // <-- COLE O LINK DA IMAGEM AQUI
-    link: "cole o link aqui"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
+    image: "https://i.postimg.cc/PrkjDtkn/Design-sem-nome-3-4.webp", // <-- COLE O LINK DA IMAGEM AQUI
+    link: "https://zenura.com.br/medicube-o-guia-completo-da-marca-coreana-que-revolucionou-os-cuidados-com-a-pele-e-onde-comprar-no-brasil/"   // <-- COLE O LINK DA PÁGINA DO BLOG AQUI
   }
 ];
 
