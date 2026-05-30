@@ -10,6 +10,7 @@ import CartDrawer from "./components/CartDrawer";
 import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
 import ClubModal from "./components/ClubModal";
+import WhatsAppFloat from "./components/WhatsAppFloat";
 
 import ClientDashboard from "./components/ClientDashboard";
 
@@ -1101,7 +1102,7 @@ export default function App() {
                 <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
               </div>
               <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o world inteiro. 🇯🇵🇰🇷</p>
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
                 <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
                 <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
                 <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
@@ -1195,6 +1196,8 @@ export default function App() {
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
 
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+
+      <WhatsAppFloat />
 
     </div>
   );
