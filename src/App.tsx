@@ -25,8 +25,10 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "f
 
 // ==========================================
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
+// (Categorias de Alto Padrão Aplicadas)
 // ==========================================
 const PRODUCTS: Product[] = [
+  // --- HIGIENE E CUIDADOS PESSOAIS ---
   {
     id: "mofurashi-toothbrush",
     name: "Mofurashi Toothbrush",
@@ -39,7 +41,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho",
+    category: "Higiene e Cuidados Pessoais",
     stock: 50
   },
   {
@@ -54,9 +56,11 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 64,
     department: "Beleza, Higiene e Saúde",
-    category: "Higiene, cuidados bucais e produtos para banho",
+    category: "Higiene e Cuidados Pessoais",
     stock: 20
   },
+
+  // --- APARELHOS ESTÉTICOS E TECNOLOGIA ---
   {
     id: "medicube-age-r-booster-pro",
     name: "Medicube Age-R Booster Pro",
@@ -69,7 +73,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 142,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Aparelhos Estéticos e Tecnologia",
     stock: 10
   },
   {
@@ -84,9 +88,26 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 86,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Aparelhos Estéticos e Tecnologia",
     stock: 15
   },
+  {
+    id: "traen-230-hair-removal",
+    name: "TraEn 230 Hair Removal Tool",
+    jpName: "TraEn 230 脱毛器",
+    description: "Removedor de pelos facial / corporal.",
+    priceBRL: 90.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 40.00,
+    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
+    rating: 4.6,
+    reviewsCount: 39,
+    department: "Beleza, Higiene e Saúde",
+    category: "Aparelhos Estéticos e Tecnologia",
+    stock: 14
+  },
+
+  // --- SKINCARE E TRATAMENTOS FACIAIS ---
   {
     id: "ckd-retino-collagen-guasha-serum",
     name: "CKD Guaranteed Retino Collagen Guasha Lifting Serum (40 ml)",
@@ -99,7 +120,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 45,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 20
   },
   {
@@ -114,7 +135,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 42,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 15
   },
   {
@@ -129,7 +150,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 65,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 20
   },
   {
@@ -144,7 +165,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 54,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 10
   },
   {
@@ -159,7 +180,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 73,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 18
   },
   {
@@ -174,7 +195,7 @@ const PRODUCTS: Product[] = [
     rating: 4.7,
     reviewsCount: 39,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 14
   },
   {
@@ -189,98 +210,8 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 48,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 22
-  },
-  {
-    id: "aztk-mousse-cream-cheek",
-    name: "AZTK Mousse Cream Cheek (jc06)",
-    jpName: "AZTK ムースクリームチーク",
-    description: "Um blush em mousse de alta pigmentação vindo da nova tendência de maquiagem asiática. Possui textura leve que se espalha como nuvem.",
-    priceBRL: 87.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/6QD4kzKz/61WMSNC5Xb-L.jpg",
-    rating: 4.7,
-    reviewsCount: 45,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 25
-  },
-  {
-    id: "elroel-blanc-cover-cream-stick",
-    name: "Elroel Blanc Cover Cream Stick",
-    jpName: "エルロエル ブランカバークリームスティック",
-    description: "Base inovadora em bastão que muda de col para se adaptar ao seu tom. Acompanha um pincel embutido de cerdas ultra macias.",
-    priceBRL: 349.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/QN6hVC9N/71q0ept-Iq-JL.jpg",
-    rating: 4.9,
-    reviewsCount: 67,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 15
-  },
-  {
-    id: "clio-kill-lash-mascara-sleek",
-    name: "Clio Kill Lash Superproof Mascara (Sleek Volume)",
-    jpName: "クリオ キルラッシュ マスカラ (スリーク)",
-    description: "Uma das máscaras de cílios mais vendidas da Coreia. À prova d'água, encorpa e destaca sem empelotar.",
-    priceBRL: 130.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/8PJQ5Hgc/XXL-p0223316886.jpg",
-    rating: 5.0,
-    reviewsCount: 112,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 30
-  },
-  {
-    id: "laneige-neo-finishing-powder",
-    name: "Laneige Neo Essential Finishing Powder",
-    jpName: "ラネージュ ネオフィニッシングパウダー",
-    description: "Pó facial finalizador compacto de textura ultra fina. Controla o brilho e sela a maquiagem com efeito blur óptico.",
-    priceBRL: 175.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/TYWFG3nJ/616s-VXYBJ1L-AC-UF1000-1000-QL80.jpg",
-    rating: 4.8,
-    reviewsCount: 54,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 20
-  },
-  {
-    id: "sheglam-liquid-highlighter-silver",
-    name: "Sheglam Liquid Highlighter / Color Bloom (Prata)",
-    jpName: "シーグラム リキッドハイライター",
-    description: "O iluminador/blush líquido queridinho das redes sociais. Textura leve, acabamento radiante e alta fixação.",
-    priceBRL: 60.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/qRNV3X6b/171694935886e475e54439c155a0a934e94433ea3c.jpg",
-    rating: 4.9,
-    reviewsCount: 230,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 40
-  },
-  {
-    id: "decorte-loose-powder-20g",
-    name: "Decorté Loose Powder (20g)",
-    jpName: "コスメデコルテ フェイスパウダー",
-    description: "Pó facial solto de luxo japonês. Sela a maquiagem com texturas de seda ultra finas, disfarça poros e hidrata.",
-    priceBRL: 214.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/SNp3SpVx/06-1.jpg",
-    rating: 5.0,
-    reviewsCount: 89,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 12
   },
   {
     id: "medicube-collagen-milk-wrapping-mask",
@@ -294,7 +225,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 77,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 18
   },
   {
@@ -309,7 +240,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 61,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 15
   },
   {
@@ -324,7 +255,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 198,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 22
   },
   {
@@ -339,7 +270,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 165,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 35
   },
   {
@@ -354,7 +285,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 143,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 30
   },
   {
@@ -369,38 +300,8 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 412,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 50
-  },
-  {
-    id: "ululis-water-conch-black-serum",
-    name: "Ululis Premium Water Conch Black Serum Hair Oil",
-    jpName: "ウルリス プレミアムヘアオイル",
-    description: "Óleo capilar japonês de altíssimo padrão. Hidratação profunda à base de água, repara danos e elimina frizz.",
-    priceBRL: 110.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/cHvCL3x0/images-(1).jpg",
-    rating: 4.9,
-    reviewsCount: 88,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 20
-  },
-  {
-    id: "utena-matomage-stick-regular-pink",
-    name: "Utena Matomage Hair Styling Stick (Regular - Rosa)",
-    jpName: "ウテナ マトメージュ まとめ髪スティック",
-    description: "O segredo japonês para penteados alinhados. Cera em bastão para assentar baby hairs e frizz.",
-    priceBRL: 56.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 25.00,
-    image: "https://i.postimg.cc/90GWDtvy/a34a1057-169d-4422-809e-0f3af474797e-psdues0kyd.jpg",
-    rating: 4.8,
-    reviewsCount: 121,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 40
   },
   {
     id: "im-from-rice-toner",
@@ -414,7 +315,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 312,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 25
   },
   {
@@ -429,7 +330,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 150,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 20
   },
   {
@@ -444,7 +345,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 120,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 20
   },
   {
@@ -459,7 +360,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 88,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 15
   },
   {
@@ -474,7 +375,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 145,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 18
   },
   {
@@ -489,7 +390,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 92,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 10
   },
   {
@@ -504,7 +405,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 115,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 12
   },
   {
@@ -519,7 +420,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 420,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 35
   },
   {
@@ -534,7 +435,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 195,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 40
   },
   {
@@ -549,7 +450,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 245,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 30
   },
   {
@@ -564,7 +465,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 188,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 20
   },
   {
@@ -579,7 +480,7 @@ const PRODUCTS: Product[] = [
     rating: 4.7,
     reviewsCount: 95,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 15
   },
   {
@@ -594,7 +495,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 130,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 14
   },
   {
@@ -609,7 +510,7 @@ const PRODUCTS: Product[] = [
     rating: 4.6,
     reviewsCount: 74,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 22
   },
   {
@@ -624,8 +525,147 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 112,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Skincare e Tratamentos Faciais",
     stock: 18
+  },
+
+  // --- MAQUIAGEM ---
+  {
+    id: "aztk-mousse-cream-cheek",
+    name: "AZTK Mousse Cream Cheek (jc06)",
+    jpName: "AZTK ムースクリームチーク",
+    description: "Um blush em mousse de alta pigmentação vindo da nova tendência de maquiagem asiática. Possui textura leve que se espalha como nuvem.",
+    priceBRL: 87.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/6QD4kzKz/61WMSNC5Xb-L.jpg",
+    rating: 4.7,
+    reviewsCount: 45,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 25
+  },
+  {
+    id: "elroel-blanc-cover-cream-stick",
+    name: "Elroel Blanc Cover Cream Stick",
+    jpName: "エルロエル ブランカバークリームスティック",
+    description: "Base inovadora em bastão que muda de col para se adaptar ao seu tom. Acompanha um pincel embutido de cerdas ultra macias.",
+    priceBRL: 349.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/QN6hVC9N/71q0ept-Iq-JL.jpg",
+    rating: 4.9,
+    reviewsCount: 67,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 15
+  },
+  {
+    id: "clio-kill-lash-mascara-sleek",
+    name: "Clio Kill Lash Superproof Mascara (Sleek Volume)",
+    jpName: "クリオ キルラッシュ マスカラ (スリーク)",
+    description: "Uma das máscaras de cílios mais vendidas da Coreia. À prova d'água, encorpa e destaca sem empelotar.",
+    priceBRL: 130.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/8PJQ5Hgc/XXL-p0223316886.jpg",
+    rating: 5.0,
+    reviewsCount: 112,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 30
+  },
+  {
+    id: "laneige-neo-finishing-powder",
+    name: "Laneige Neo Essential Finishing Powder",
+    jpName: "ラネージュ ネオフィニッシングパウダー",
+    description: "Pó facial finalizador compacto de textura ultra fina. Controla o brilho e sela a maquiagem com efeito blur óptico.",
+    priceBRL: 175.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/TYWFG3nJ/616s-VXYBJ1L-AC-UF1000-1000-QL80.jpg",
+    rating: 4.8,
+    reviewsCount: 54,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 20
+  },
+  {
+    id: "sheglam-liquid-highlighter-silver",
+    name: "Sheglam Liquid Highlighter / Color Bloom (Prata)",
+    jpName: "シーグラム リキッドハイライター",
+    description: "O iluminador/blush líquido queridinho das redes sociais. Textura leve, acabamento radiante e alta fixação.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/qRNV3X6b/171694935886e475e54439c155a0a934e94433ea3c.jpg",
+    rating: 4.9,
+    reviewsCount: 230,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 40
+  },
+  {
+    id: "decorte-loose-powder-20g",
+    name: "Decorté Loose Powder (20g)",
+    jpName: "コスメデコルテ フェイスパウダー",
+    description: "Pó facial solto de luxo japonês. Sela a maquiagem com texturas de seda ultra finas, disfarça poros e hidrata.",
+    priceBRL: 214.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/SNp3SpVx/06-1.jpg",
+    rating: 5.0,
+    reviewsCount: 89,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 12
+  },
+  {
+    id: "sheglam-brow-brush",
+    name: "Sheglam Brow Brush & Dip",
+    jpName: "シーグラム ブロウブラシ＆ディップ",
+    description: "Lápis + escova para sobrancelhas.",
+    priceBRL: 75.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 30.00,
+    image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
+    rating: 4.5,
+    reviewsCount: 118,
+    department: "Beleza, Higiene e Saúde",
+    category: "Maquiagem",
+    stock: 30
+  },
+
+  // --- CUIDADOS CAPILARES ---
+  {
+    id: "ululis-water-conch-black-serum",
+    name: "Ululis Premium Water Conch Black Serum Hair Oil",
+    jpName: "ウルリス プレミアムヘアオイル",
+    description: "Óleo capilar japonês de altíssimo padrão. Hidratação profunda à base de água, repara danos e elimina frizz.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/cHvCL3x0/images-(1).jpg",
+    rating: 4.9,
+    reviewsCount: 88,
+    department: "Beleza, Higiene e Saúde",
+    category: "Cuidados Capilares",
+    stock: 20
+  },
+  {
+    id: "utena-matomage-stick-regular-pink",
+    name: "Utena Matomage Hair Styling Stick (Regular - Rosa)",
+    jpName: "ウテナ マトメージュ まとめ髪スティック",
+    description: "O segredo japonês para penteados alinhados. Cera em bastão para assentar baby hairs e frizz.",
+    priceBRL: 56.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 25.00,
+    image: "https://i.postimg.cc/90GWDtvy/a34a1057-169d-4422-809e-0f3af474797e-psdues0kyd.jpg",
+    rating: 4.8,
+    reviewsCount: 121,
+    department: "Beleza, Higiene e Saúde",
+    category: "Cuidados Capilares",
+    stock: 40
   },
   {
     id: "refa-heart-comb-silver-gold",
@@ -639,7 +679,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 320,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 40
   },
   {
@@ -654,7 +694,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 215,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 25
   },
   {
@@ -669,7 +709,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 30
   },
   {
@@ -684,7 +724,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 280,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 15
   },
   {
@@ -699,7 +739,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 340,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 25
   },
   {
@@ -714,38 +754,8 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 412,
     department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
+    category: "Cuidados Capilares",
     stock: 20
-  },
-  {
-    id: "sheglam-brow-brush",
-    name: "Sheglam Brow Brush & Dip",
-    jpName: "シーグラム ブロウブラシ＆ディップ",
-    description: "Lápis + escova para sobrancelhas.",
-    priceBRL: 75.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 30.00,
-    image: "https://i.postimg.cc/HW5c3WtJ/Captura-de-tela-2026-05-28-023259.png",
-    rating: 4.5,
-    reviewsCount: 118,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 30
-  },
-  {
-    id: "traen-230-hair-removal",
-    name: "TraEn 230 Hair Removal Tool",
-    jpName: "TraEn 230 脱毛器",
-    description: "Removedor de pelos facial / corporal.",
-    priceBRL: 90.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 40.00,
-    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
-    rating: 4.6,
-    reviewsCount: 39,
-    department: "Beleza, Higiene e Saúde",
-    category: "Maquiagem e cuidados com o cabelo",
-    stock: 14
   }
 ];
 
@@ -859,9 +869,17 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
+  // ==========================================
+  // FILTRO DE CATEGORIAS ATUALIZADO
+  // ==========================================
   const allCategories = useMemo(() => {
     return [
       "Todos",
+      "Aparelhos Estéticos e Tecnologia",
+      "Skincare e Tratamentos Faciais",
+      "Maquiagem",
+      "Cuidados Capilares",
+      "Higiene e Cuidados Pessoais",
       "Consumíveis de cozinha e necessidades diárias",
       "Utensílios de mesa (Tableware)",
       "Utensílios de cozinha (Kitchenware)",
@@ -874,9 +892,6 @@ export default function App() {
       "Eletricidade",
       "Ferramentas, carros e bicicletas",
       "Reforma e renovação (Renovation)",
-      "Maquiagem e cuidados com o cabelo",
-      "Saúde, cuidados infantis e cuidados com idosos",
-      "Higiene, cuidados bucais e produtos para banho",
       "Bolsas e acessórios de moda",
       "Calçados, viagem e impermeáveis",
       "Roupas (Clothing)",
