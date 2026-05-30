@@ -1166,20 +1166,20 @@ export default function App() {
           </div>
         </div>
 
-        {/* BANNER DE MEIOS DE PAGAMENTO */}
+      {/* BANNER DE MEIOS DE PAGAMENTO */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-6 border-t border-slate-100 flex flex-col items-center justify-center space-y-3">
           <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
-          <div className="w-full max-w-2xl text-center font-bold bg-slate-50 text-slate-700 py-3 rounded-2xl border border-slate-200">
-             Adilson, Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.
+          
+          {/* AQUI ESTÁ A IMAGEM QUE HAVIA SUMIDO */}
+          <div className="w-full max-w-2xl">
+            <img 
+              src="https://iili.io/CdLPwBa.md.jpg" 
+              alt="Meios de Pagamento" 
+              className="w-full h-auto object-contain select-none pointer-events-none"
+            />
           </div>
-        </div>
-
-        {/* CRÉDITOS E DIREITOS AUTORAIS */}
-        <div className="max-w-7xl mx-auto px-4 mt-6 text-center text-xs text-slate-400 space-y-2">
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-          </p>
+          
+          <p className="text-[11px] font-semibold text-slate-400">Visa, Mastercard, American Express, Discover, Diners Club, JCB e Pix.</p>
         </div>
       </footer>
 
