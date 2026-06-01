@@ -10,15 +10,15 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [showDetails, setShowDetails] = useState(false);
 
-  // 1. ESCUDO MÁXIMO: Se o produto não carregar por algum motivo, não quebra o site
+  // 1. ESCUDO: Se o produto não existir, não quebra o site
   if (!product) return null;
 
-  // 2. ESCUDO DE IMAGEM: Verifica com segurança absoluta se é uma string válida
-  const imageUrl = typeof product.image === "string" && product.image.trim() !== "" 
+  // 2. ESCUDO DA IMAGEM
+  const imageUrl = product.image && typeof product.image === "string" && product.image.trim() !== "" 
     ? product.image 
     : "https://placehold.co/400x400/f1f5f9/94a3b8?text=Imagem+em+Breve";
 
-  // 3. ESCUDO DE PREÇO: Garante que o preço é um número antes de formatar com .toFixed()
+  // 3. ESCUDO DO PREÇO: Garante que é um número antes de formatar
   const price = typeof product.priceBRL === "number" ? product.priceBRL : 0;
 
   return (
