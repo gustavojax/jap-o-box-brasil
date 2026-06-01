@@ -10,6 +10,11 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [showDetails, setShowDetails] = useState(false);
 
+  // Sistema inteligente: se o produto não tiver imagem, exibe um placeholder elegante
+  const imageUrl = product.image && product.image.trim() !== "" 
+    ? product.image 
+    : "https://placehold.co/400x400/f1f5f9/94a3b8?text=Imagem+em+Breve";
+
   return (
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-left relative overflow-hidden h-full">
       
@@ -19,7 +24,12 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
          <div className="absolute top-4 left-4 bg-slate-900/80 text-white text-[10px] font-black px-2.5 py-1 rounded-md flex items-center gap-1 backdrop-blur-sm z-10">
            <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {product.rating} ({product.reviewsCount})
          </div>
-         <img src={product.image} alt={product.name} className="w-full h-full object-contain mix-blend-multiply" loading="lazy" />
+         <img 
+            src={imageUrl} 
+            alt={product.name} 
+            className="w-full h-full object-contain mix-blend-multiply" 
+            loading="lazy" 
+         />
       </div>
 
       <div className="p-6 flex-1 flex flex-col">
