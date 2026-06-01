@@ -21,7 +21,7 @@ import { ArrowUpDown, CheckCircle2, Clock, Truck, CheckCircle, Heart } from "luc
 
 import { auth, db } from "./firebase"; 
 import { onAuthStateChanged, signOut } from "firebase/auth";
-import { collection, query, where, onSnapshot, addDoc, serverTimestamp } from "firebase/firestore";
+import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, getDoc } from "firebase/firestore";
 
 // ==========================================
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
@@ -761,6 +761,7 @@ const PRODUCTS: Product[] = [
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "account" | "about" | "admin">("store");
   
@@ -768,12 +769,22 @@ export default function App() {
   const [loadingOrders, setLoadingOrders] = useState(true);
 
   useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, (u) => {
+    const unsubAuth = onAuthStateChanged(auth, async (u) => {
       if (u) {
         setUser({ ...u });
         setIsAuthOpen(false); 
+
+        // NOVO: Verifica se o usuário é administrador
+        if (u.email) {
+          const adminRef = doc(db, "admins", u.email);
+          const adminSnap = await getDoc(adminRef);
+          setIsAdmin(adminSnap.exists());
+        } else {
+          setIsAdmin(false);
+        }
       } else {
         setUser(null);
+        setIsAdmin(false);
         setOrders([]);
         if (activeTab === "account" || activeTab === "admin") setActiveTab("store");
       }
@@ -848,6 +859,7 @@ export default function App() {
   const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
+    setIsAdmin(false);
     setActiveTab("store");
   };
 
@@ -1028,14 +1040,16 @@ export default function App() {
             Minha Suíte & Painel 📦
           </button>
           
-          <button
-            onClick={() => setActiveTab("admin")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"
-            }`}
-          >
-            Painel Armazém 🏢
-          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setActiveTab("admin")}
+              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"
+              }`}
+            >
+              Painel Armazém 🏢
+            </button>
+          )}
         </div>
       </div>
 
@@ -1141,7 +1155,21 @@ export default function App() {
         </main>
       ) : activeTab === "admin" ? (
         <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-          <AdminDashboard />
+          {isAdmin ? (
+            <AdminDashboard />
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20">
+              <span className="text-4xl mb-4">🔒</span>
+              <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
+              <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
+              <button 
+                onClick={handleReturnToStore}
+                className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold"
+              >
+                Voltar para a Loja
+              </button>
+            </div>
+          )}
         </main>
       ) : (
         <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
