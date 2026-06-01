@@ -10,8 +10,8 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [showDetails, setShowDetails] = useState(false);
 
-  // Sistema inteligente: se o produto não tiver imagem, exibe um placeholder elegante
-  const imageUrl = product.image && product.image.trim() !== "" 
+  // Versão ultra segura: se a imagem for nula, indefinida ou não for texto, não quebra o site
+  const imageUrl = product && product.image && typeof product.image === "string" && product.image.trim() !== "" 
     ? product.image 
     : "https://placehold.co/400x400/f1f5f9/94a3b8?text=Imagem+em+Breve";
 
