@@ -10,42 +10,46 @@ interface ProductCardProps {
 export default function ProductCard({ product, onAddToCart }: ProductCardProps) {
   const [showDetails, setShowDetails] = useState(false);
 
-  // Versão ultra segura: se a imagem for nula, indefinida ou não for texto, não quebra o site
-  const imageUrl = product && product.image && typeof product.image === "string" && product.image.trim() !== "" 
+  // 1. ESCUDO MÁXIMO: Se o produto não carregar por algum motivo, não quebra o site
+  if (!product) return null;
+
+  // 2. ESCUDO DE IMAGEM: Verifica com segurança absoluta se é uma string válida
+  const imageUrl = typeof product.image === "string" && product.image.trim() !== "" 
     ? product.image 
     : "https://placehold.co/400x400/f1f5f9/94a3b8?text=Imagem+em+Breve";
+
+  // 3. ESCUDO DE PREÇO: Garante que o preço é um número antes de formatar com .toFixed()
+  const price = typeof product.priceBRL === "number" ? product.priceBRL : 0;
 
   return (
     <div className="bg-white rounded-3xl border border-slate-200 shadow-sm hover:shadow-lg transition-all flex flex-col justify-between text-left relative overflow-hidden h-full">
       
-      {/* FRENTE DO CARD (Oculta quando os detalhes são abertos) */}
+      {/* FRENTE DO CARD */}
       <div className="relative aspect-square w-full bg-slate-50 p-4 flex items-center justify-center">
-         {/* Tag de Avaliação */}
          <div className="absolute top-4 left-4 bg-slate-900/80 text-white text-[10px] font-black px-2.5 py-1 rounded-md flex items-center gap-1 backdrop-blur-sm z-10">
-           <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {product.rating} ({product.reviewsCount})
+           <Star className="w-3.5 h-3.5 text-amber-400 fill-amber-400" /> {product.rating || "5.0"} ({product.reviewsCount || 0})
          </div>
          <img 
             src={imageUrl} 
-            alt={product.name} 
+            alt={product.name || "Produto"} 
             className="w-full h-full object-contain mix-blend-multiply" 
             loading="lazy" 
          />
       </div>
 
       <div className="p-6 flex-1 flex flex-col">
-        <p className="text-[9px] font-black text-[#e60012] uppercase tracking-widest mb-1">{product.category}</p>
-        <p className="text-[10px] text-slate-400 font-medium mb-2">{product.jpName}</p>
-        <h3 className="text-base font-black text-slate-900 leading-snug mb-2">{product.name}</h3>
+        <p className="text-[9px] font-black text-[#e60012] uppercase tracking-widest mb-1">{product.category || "Categoria"}</p>
+        <p className="text-[10px] text-slate-400 font-medium mb-2">{product.jpName || ""}</p>
+        <h3 className="text-base font-black text-slate-900 leading-snug mb-2">{product.name || "Sem Nome"}</h3>
         
-        {/* Aqui é onde o texto é cortado visualmente na frente do card */}
         <p className="text-xs text-slate-500 font-medium line-clamp-2 mb-6 flex-1">
-          {product.description}
+          {product.description || ""}
         </p>
 
         <div className="mt-auto space-y-4">
           <div>
             <p className="text-[10px] font-black uppercase tracking-wider text-slate-400 mb-1">Preço do Produto:</p>
-            <p className="text-3xl font-black text-slate-900">R$ {product.priceBRL.toFixed(2).replace('.', ',')}</p>
+            <p className="text-3xl font-black text-slate-900">R$ {price.toFixed(2).replace('.', ',')}</p>
             <p className="text-[9px] text-slate-400 mt-1 font-medium">*Frete internacional e tributos de importação calculados no checkout.</p>
           </div>
 
@@ -66,7 +70,7 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
         </div>
       </div>
 
-      {/* OVERLAY DE DETALHES (Caixa branca dinâmica que desliza por cima) */}
+      {/* OVERLAY DE DETALHES */}
       <div 
         className={`absolute inset-0 bg-white z-20 transition-transform duration-300 ease-in-out flex flex-col ${showDetails ? 'translate-y-0' : 'translate-y-full'}`}
       >
@@ -81,10 +85,10 @@ export default function ProductCard({ product, onAddToCart }: ProductCardProps) 
          </div>
          
          <div className="p-6 overflow-y-auto flex-1 bg-slate-50/50">
-           <p className="text-[10px] font-black text-[#e60012] mb-1 tracking-widest uppercase">{product.jpName}</p>
-           <h3 className="text-lg font-black text-slate-900 leading-snug mb-4">{product.name}</h3>
+           <p className="text-[10px] font-black text-[#e60012] mb-1 tracking-widest uppercase">{product.jpName || ""}</p>
+           <h3 className="text-lg font-black text-slate-900 leading-snug mb-4">{product.name || "Produto"}</h3>
            <div className="text-slate-600 font-medium text-sm leading-relaxed whitespace-pre-wrap">
-             {product.description}
+             {product.description || ""}
            </div>
          </div>
          
