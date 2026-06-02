@@ -27,9 +27,6 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
 // ==========================================
 const PRODUCTS: Product[] = [
-  // ==========================================
-  // 🌟 OS PRODUTOS NOVOS ESTÃO AQUI NO TOPO! 🌟
-  // ==========================================
   {
     id: "anessa-perfect-uv-milk-sachet",
     name: "Anessa Perfect UV Sunscreen Skincare Milk (Sachet - 60ml)",
@@ -857,7 +854,6 @@ export default function App() {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   
-  // NOVO: Adicionado "redirect" como uma aba válida
   const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
   
   const [orders, setOrders] = useState<any[]>([]);
@@ -869,6 +865,7 @@ export default function App() {
         setUser({ ...u });
         setIsAuthOpen(false); 
 
+        // Verifica se o usuário é administrador
         if (u.email) {
           const adminRef = doc(db, "admins", u.email);
           const adminSnap = await getDoc(adminRef);
@@ -1107,7 +1104,6 @@ export default function App() {
             Loja
           </button>
 
-          {/* NOVO BOTÃO DE REDIRECIONAMENTO */}
           <button
             onClick={() => setActiveTab("redirect")}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
@@ -1210,7 +1206,7 @@ export default function App() {
 
       ) : activeTab === "redirect" ? (
         // ========================================================
-        // 📦 NOVA PÁGINA DE REDIRECIONAMENTO (PERSONAL SHOPPER)
+        // 📦 PÁGINA DE REDIRECIONAMENTO (C/ BOTÃO PARA WHATSAPP)
         // ========================================================
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <section className="max-w-6xl mx-auto">
@@ -1231,7 +1227,7 @@ export default function App() {
                     
                     <div className="bg-blue-900/30 border border-blue-500/30 p-4 rounded-xl flex gap-3 text-blue-200 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <p className="text-xs leading-relaxed"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão vermelho para nos avisar que a sua encomenda está a caminho!</p>
+                      <p className="text-xs leading-relaxed"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão abaixo para nos enviar o comprovante pelo WhatsApp e avisar que a encomenda está a caminho!</p>
                     </div>
                   </div>
 
@@ -1244,11 +1240,12 @@ export default function App() {
                     <p className="text-slate-800 font-black mt-2">(Japão)</p>
                   </div>
 
+                  {/* BOTÃO DO WHATSAPP (+817014074971) */}
                   <button
-                    onClick={() => setIsBudgetModalOpen(true)}
-                    className="mt-8 bg-[#e60012] hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
+                    onClick={() => window.open('https://api.whatsapp.com/send?phone=SEUNUMEROAQUI&text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21', '_blank')}
+                    className="mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
-                    Avisar Envio de Compra <ExternalLink className="w-4 h-4" />
+                    Avisar Envio no WhatsApp <ExternalLink className="w-4 h-4" />
                   </button>
                 </div>
 
