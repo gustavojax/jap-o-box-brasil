@@ -17,7 +17,6 @@ import AdminDashboard from "./components/AdminDashboard";
 
 import type { Product, CartItem } from "./types";
 
-// Ícones atualizados para a nova seção de redirecionamento
 import { ArrowUpDown, CheckCircle2, Clock, Truck, CheckCircle, Heart, MapPin, ExternalLink, Info } from "lucide-react";
 
 import { auth, db } from "./firebase"; 
@@ -29,7 +28,7 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 // ==========================================
 const PRODUCTS: Product[] = [
   // ==========================================
-  // 🌟 OS PRODUTOS NOVOS DE HOJE ESTÃO AQUI NO TOPO! 🌟
+  // 🌟 OS PRODUTOS NOVOS ESTÃO AQUI NO TOPO! 🌟
   // ==========================================
   {
     id: "anessa-perfect-uv-milk-sachet",
@@ -857,7 +856,9 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState<"store" | "account" | "about" | "admin">("store");
+  
+  // NOVO: Adicionado "redirect" como uma aba válida
+  const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
   
   const [orders, setOrders] = useState<any[]>([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
@@ -868,7 +869,6 @@ export default function App() {
         setUser({ ...u });
         setIsAuthOpen(false); 
 
-        // Verifica se o usuário é administrador
         if (u.email) {
           const adminRef = doc(db, "admins", u.email);
           const adminSnap = await getDoc(adminRef);
@@ -975,9 +975,6 @@ export default function App() {
     setTimeout(() => setNotification(null), 3500);
   };
 
-  // ==========================================
-  // FILTRO DE CATEGORIAS ATUALIZADO
-  // ==========================================
   const allCategories = useMemo(() => {
     return [
       "Todos",
@@ -1109,6 +1106,16 @@ export default function App() {
           >
             Loja
           </button>
+
+          {/* NOVO BOTÃO DE REDIRECIONAMENTO */}
+          <button
+            onClick={() => setActiveTab("redirect")}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "redirect" ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+            }`}
+          >
+            Redirecionamento ✈️
+          </button>
           
           <button
             onClick={() => setActiveTab("about")}
@@ -1196,111 +1203,114 @@ export default function App() {
               )}
             </section>
 
-            {/* ======================================================== */}
-            {/* 📦 NOVA SEÇÃO DE REDIRECIONAMENTO (PERSONAL SHOPPER)     */}
-            {/* ======================================================== */}
-            <section className="max-w-7xl mx-auto px-4 py-16">
-              <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-                {/* Ícone de fundo decorativo */}
-                <div className="absolute top-0 right-0 p-8 opacity-10">
-                  <MapPin className="w-48 h-48" />
-                </div>
-
-                <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
-                  
-                  {/* Explicação e Endereço */}
-                  <div>
-                    <h2 className="text-2xl md:text-3xl font-black mb-4 tracking-tight">📦 Compre em Qualquer Loja do Japão</h2>
-                    <div className="text-slate-300 space-y-4 text-sm font-medium mb-8">
-                      <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                      <p>Com o nosso serviço de <strong className="text-white">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço como destino. Nós recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
-                      
-                      <div className="bg-blue-900/30 border border-blue-500/30 p-4 rounded-xl flex gap-3 text-blue-200">
-                        <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                        <p className="text-xs leading-relaxed"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão abaixo e preencha o formulário para nos avisar que a sua encomenda está a caminho!</p>
-                      </div>
-                    </div>
-
-                    {/* Cartão do Endereço */}
-                    <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-lg border-l-4 border-[#e60012]">
-                      <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Seu Endereço no Japão</p>
-                      <p className="font-bold text-lg leading-snug">The Tomorrow</p>
-                      <p className="text-slate-600">2-chōme-3-15 Matsutera, Yokkaichi</p>
-                      <p className="text-slate-600">Mie 510-8021</p>
-                      <p className="text-slate-600 font-bold mt-1">(Japão)</p>
-                    </div>
-
-                    <button
-                      onClick={() => setIsBudgetModalOpen(true)}
-                      className="mt-8 bg-[#e60012] hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-red-600/20"
-                    >
-                      Preencher Formulário de Envio
-                    </button>
-                  </div>
-
-                  {/* Links das Lojas */}
-                  <div className="space-y-6">
-                    <h3 className="text-xl font-black mb-4">🔗 Lojas Recomendadas</h3>
-                    
-                    {/* Roupas */}
-                    <div className="bg-slate-800/50 p-5 rounded-2xl border border-slate-700">
-                      <h4 className="text-sm font-bold text-rose-400 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
-                      <ul className="space-y-2 text-sm text-slate-300">
-                        <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Adidas Japan</a></li>
-                        <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> GU</a></li>
-                        <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Onitsuka Tiger</a></li>
-                        <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Uniqlo Japan</a></li>
-                        <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Nike Japan</a></li>
-                      </ul>
-                    </div>
-
-                    {/* Marketplaces & Joias */}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                      <div className="bg-slate-800/50 p-5 rounded-2xl border border-slate-700">
-                        <h4 className="text-sm font-bold text-emerald-400 mb-3 uppercase tracking-wider">Marketplaces</h4>
-                        <ul className="space-y-2 text-sm text-slate-300">
-                          <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Rakuten JP</a></li>
-                          <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Amazon Japan</a></li>
-                          <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Mercari</a></li>
-                        </ul>
-                      </div>
-                      <div className="bg-slate-800/50 p-5 rounded-2xl border border-slate-700">
-                        <h4 className="text-sm font-bold text-amber-400 mb-3 uppercase tracking-wider">Joias & Moda</h4>
-                        <ul className="space-y-2 text-sm text-slate-300">
-                          <li><a href="https://www.zara.com/jp/ja/woman-mkt1000.html" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3" /> Zara Japan</a></li>
-                        </ul>
-                      </div>
-                    </div>
-
-                    {/* Artigos de Pesca */}
-                    <div className="bg-slate-800/50 p-5 rounded-2xl border border-slate-700">
-                      <h4 className="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wider">Artigos de Pesca</h4>
-                      <ul className="space-y-4 text-sm text-slate-300">
-                        <li>
-                          <a href="https://www.digitaka.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3" /> DIGITAKA</a>
-                          <p className="text-[11px] text-slate-400">Maior variedade. Uma das mais populares no mundo.</p>
-                        </li>
-                        <li>
-                          <a href="https://www.plat.co.jp" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3" /> PLAT</a>
-                          <p className="text-[11px] text-slate-400">Focada em varas, molinetes (JDM) e peças originais.</p>
-                        </li>
-                        <li>
-                          <a href="https://www.ichibantackle.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3" /> Ichiban Tackle</a>
-                          <p className="text-[11px] text-slate-400">Excelente para Iscas JDM (Megabass, Deps, etc).</p>
-                        </li>
-                      </ul>
-                    </div>
-
-                  </div>
-                </div>
-              </div>
-            </section>
-            {/* ======================================================== */}
-
             <Testimonials />
             <BlogSection />
           </main>
         </>
+
+      ) : activeTab === "redirect" ? (
+        // ========================================================
+        // 📦 NOVA PÁGINA DE REDIRECIONAMENTO (PERSONAL SHOPPER)
+        // ========================================================
+        <main className="flex-1 bg-slate-50 py-12 px-4">
+          <section className="max-w-6xl mx-auto">
+            <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
+              {/* Ícone de fundo decorativo */}
+              <div className="absolute top-0 right-0 p-8 opacity-10">
+                <MapPin className="w-48 h-48" />
+              </div>
+
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                
+                {/* Explicação e Endereço */}
+                <div>
+                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight">📦 Compre em Qualquer Loja do Japão</h2>
+                  <div className="text-slate-300 space-y-4 text-sm font-medium mb-8">
+                    <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
+                    <p>Com o nosso serviço de <strong className="text-white">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço como destino. Nós recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
+                    
+                    <div className="bg-blue-900/30 border border-blue-500/30 p-4 rounded-xl flex gap-3 text-blue-200 mt-6">
+                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs leading-relaxed"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão vermelho para nos avisar que a sua encomenda está a caminho!</p>
+                    </div>
+                  </div>
+
+                  {/* Cartão do Endereço */}
+                  <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-lg border-l-4 border-blue-600 relative">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Seu Endereço no Japão</p>
+                    <p className="font-black text-xl leading-snug mb-1">The Tomorrow</p>
+                    <p className="text-slate-600 font-medium">2-chōme-3-15 Matsutera, Yokkaichi</p>
+                    <p className="text-slate-600 font-medium">Mie 510-8021</p>
+                    <p className="text-slate-800 font-black mt-2">(Japão)</p>
+                  </div>
+
+                  <button
+                    onClick={() => setIsBudgetModalOpen(true)}
+                    className="mt-8 bg-[#e60012] hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-red-600/20 flex items-center justify-center gap-2"
+                  >
+                    Avisar Envio de Compra <ExternalLink className="w-4 h-4" />
+                  </button>
+                </div>
+
+                {/* Links das Lojas */}
+                <div className="space-y-6">
+                  <h3 className="text-xl font-black mb-4">🔗 Lojas Recomendadas</h3>
+                  
+                  {/* Roupas */}
+                  <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
+                    <h4 className="text-sm font-bold text-rose-400 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
+                    <ul className="space-y-2 text-sm text-slate-300">
+                      <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Adidas Japan</a></li>
+                      <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> GU</a></li>
+                      <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Onitsuka Tiger</a></li>
+                      <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Uniqlo Japan</a></li>
+                      <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Nike Japan</a></li>
+                    </ul>
+                  </div>
+
+                  {/* Marketplaces & Joias */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
+                      <h4 className="text-sm font-bold text-emerald-400 mb-3 uppercase tracking-wider">Marketplaces</h4>
+                      <ul className="space-y-2 text-sm text-slate-300">
+                        <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Rakuten JP</a></li>
+                        <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Amazon Japan</a></li>
+                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Mercari</a></li>
+                      </ul>
+                    </div>
+                    <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
+                      <h4 className="text-sm font-bold text-amber-400 mb-3 uppercase tracking-wider">Joias & Moda</h4>
+                      <ul className="space-y-2 text-sm text-slate-300">
+                        <li><a href="https://www.zara.com/jp/ja/woman-mkt1000.html" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Zara Japan</a></li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  {/* Artigos de Pesca */}
+                  <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
+                    <h4 className="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wider">Artigos de Pesca</h4>
+                    <ul className="space-y-4 text-sm text-slate-300">
+                      <li>
+                        <a href="https://www.digitaka.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> DIGITAKA</a>
+                        <p className="text-[11px] text-slate-400 leading-snug">Maior variedade. Uma das mais populares no mundo.</p>
+                      </li>
+                      <li>
+                        <a href="https://www.plat.co.jp" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> PLAT</a>
+                        <p className="text-[11px] text-slate-400 leading-snug">Focada em varas, molinetes (JDM) e peças originais.</p>
+                      </li>
+                      <li>
+                        <a href="https://www.ichibantackle.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Ichiban Tackle</a>
+                        <p className="text-[11px] text-slate-400 leading-snug">Excelente para Iscas JDM (Megabass, Deps, etc).</p>
+                      </li>
+                    </ul>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+
       ) : activeTab === "about" ? (
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
@@ -1398,6 +1408,7 @@ export default function App() {
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
               <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+              <li><button onClick={() => setActiveTab("redirect")} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento</button></li>
               <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
             </ul>
