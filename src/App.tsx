@@ -28,8 +28,38 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 // ==========================================
 const PRODUCTS: Product[] = [
   // ==========================================
-  // 🌟 OS 4 PRODUTOS NOVOS DE HOJE ESTÃO AQUI NO TOPO! 🌟
+  // 🌟 OS PRODUTOS NOVOS DE HOJE ESTÃO AQUI NO TOPO! 🌟
   // ==========================================
+  {
+    id: "anessa-perfect-uv-milk-sachet",
+    name: "Anessa Perfect UV Sunscreen Skincare Milk (Sachet - 60ml)",
+    jpName: "アネッサ パーフェクトUV スキンケアミルク",
+    description: "Protetor solar facial/corporal em leite (milk). Fator de Proteção: SPF 50+ PA++++. Muito resistente à água e suor, textura leve, acaba seco e não deixa branco. Um dos protetores solares mais vendidos no Japão.",
+    priceBRL: 189.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/QtwJjnp6/images-(3).jpg",
+    rating: 4.9,
+    reviewsCount: 345,
+    department: "Beleza, Higiene e Saúde",
+    category: "Skincare e Tratamentos Faciais",
+    stock: 30
+  },
+  {
+    id: "anessa-perfect-uv-milk-normal",
+    name: "Anessa Perfect UV Sunscreen Skincare Milk (60ml)",
+    jpName: "アネッサ パーフェクトUV スキンケアミルク",
+    description: "Protetor solar facial/corporal em leite (milk). Fator de Proteção: SPF 50+ PA++++. Mesma linha premium da Anessa, com alta proteção, skincare integrado (hidrata enquanto protege) e excelente performance em dias quentes/molhados.",
+    priceBRL: 199.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/1XDwsRR9/images-(4).jpg",
+    rating: 5.0,
+    reviewsCount: 412,
+    department: "Beleza, Higiene e Saúde",
+    category: "Skincare e Tratamentos Faciais",
+    stock: 25
+  },
   {
     id: "dr-althea-345-relief-cream",
     name: "Dr. Althea 345 Relief Cream",
@@ -38,7 +68,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 199.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/9QJVh8F0/altea.jpg",
+    image: "cole o link aqui",
     rating: 4.9,
     reviewsCount: 112,
     department: "Beleza, Higiene e Saúde",
@@ -53,7 +83,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 176.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/jd1QFKyV/vt.jpg",
+    image: "cole o link aqui",
     rating: 4.8,
     reviewsCount: 85,
     department: "Beleza, Higiene e Saúde",
@@ -68,7 +98,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 176.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/W3VBKCQz/17.avif",
+    image: "cole o link aqui",
     rating: 4.9,
     reviewsCount: 98,
     department: "Beleza, Higiene e Saúde",
@@ -83,7 +113,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 99.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/W1rfvSmR/617gfej-Jkc-L-AC-UF1000-1000-QL80.jpg",
+    image: "cole o link aqui",
     rating: 4.7,
     reviewsCount: 64,
     department: "Beleza, Higiene e Saúde",
