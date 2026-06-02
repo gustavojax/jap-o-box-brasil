@@ -27,6 +27,9 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 // BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
 // ==========================================
 const PRODUCTS: Product[] = [
+  // ==========================================
+  // 🌟 OS PRODUTOS NOVOS DE HOJE ESTÃO AQUI NO TOPO! 🌟
+  // ==========================================
   {
     id: "anessa-perfect-uv-milk-sachet",
     name: "Anessa Perfect UV Sunscreen Skincare Milk (Sachet - 60ml)",
@@ -865,7 +868,6 @@ export default function App() {
         setUser({ ...u });
         setIsAuthOpen(false); 
 
-        // Verifica se o usuário é administrador
         if (u.email) {
           const adminRef = doc(db, "admins", u.email);
           const adminSnap = await getDoc(adminRef);
@@ -1206,7 +1208,7 @@ export default function App() {
 
       ) : activeTab === "redirect" ? (
         // ========================================================
-        // 📦 PÁGINA DE REDIRECIONAMENTO (C/ BOTÃO PARA WHATSAPP)
+        // 📦 PÁGINA DE REDIRECIONAMENTO (C/ BOTÃO PARA WHATSAPP CORRIGIDO)
         // ========================================================
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <section className="max-w-6xl mx-auto">
@@ -1240,9 +1242,9 @@ export default function App() {
                     <p className="text-slate-800 font-black mt-2">(Japão)</p>
                   </div>
 
-                  {/* BOTÃO DO WHATSAPP (+817014074971) */}
+                  {/* BOTÃO DO WHATSAPP (AGORA COM O NÚMERO JAPONÊS FORMATADO) */}
                   <button
-                    onClick={() => window.open('https://api.whatsapp.com/send?phone=SEUNUMEROAQUI&text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21', '_blank')}
+                    onClick={() => window.open('https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21', '_blank')}
                     className="mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
                   >
                     Avisar Envio no WhatsApp <ExternalLink className="w-4 h-4" />
