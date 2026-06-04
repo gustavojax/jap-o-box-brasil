@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Trash2, ShoppingBag, CreditCard, ShieldCheck } from "lucide-react";
+import { X, Trash2, ShoppingBag, CreditCard, ShieldCheck, Truck, Clock } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -9,11 +9,44 @@ interface CartDrawerProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
+// ==========================================
+// CONFIGURAÇÃO DOS MÉTODOS DE ENVIO (JP POST)
+// Altere os preços e prazos aqui se necessário!
+// ==========================================
+const SHIPPING_OPTIONS = [
+  { 
+    id: "epacket", 
+    name: "JP Post E-Packet", 
+    price: 85.00, 
+    time: "15 a 20 dias úteis", 
+    tag: "Mais Popular" 
+  },
+  { 
+    id: "ems", 
+    name: "EMS Express", 
+    price: 180.00, 
+    time: "7 a 10 dias úteis", 
+    tag: "Rápido" 
+  },
+  { 
+    id: "parcel", 
+    name: "Post Parcel", 
+    price: 55.00, 
+    time: "45 a 60 dias (Marítimo)", 
+    tag: "Econômico" 
+  }
+];
+
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [selectedShipping, setSelectedShipping] = useState<string>("epacket"); // E-Packet vem marcado por padrão
 
+  // Lógica de cálculo atualizada
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
-  const shippingEst = cartItems.length > 0 ? 35.00 : 0;
+  
+  const currentShippingOption = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
+  const shippingEst = cartItems.length > 0 ? (currentShippingOption?.price || 0) : 0;
+  
   const total = subtotal + shippingEst;
 
   const handleRemoveItem = (productId: string) => {
@@ -42,14 +75,16 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setIsProcessing(true);
 
     try {
-      // Chamada para a rota que criamos na Vercel
+      // Chamada para a rota que criamos na Vercel (Agora enviando o frete escolhido)
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           cartItems: cartItems,
           orderId: "PEDIDO_" + Date.now(), 
-          userEmail: auth.currentUser.email
+          userEmail: auth.currentUser.email,
+          shippingMethod: currentShippingOption?.name,
+          shippingCost: currentShippingOption?.price
         }),
       });
 
@@ -71,42 +106,139 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     <>
       <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100]" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white z-[101] shadow-2xl flex flex-col">
-        <div className="flex items-center justify-between p-6 border-b border-slate-100">
-          <h2 className="text-lg font-black text-slate-900">Seu Carrinho</h2>
-          <button onClick={onClose}><X className="w-5 h-5 text-slate-400" /></button>
-        </div>
-
-        <div className="flex-1 overflow-y-auto p-6 space-y-6">
-          {cartItems.map((item) => (
-            <div key={item.product.id} className="flex gap-4 items-start">
-              <div className="w-20 h-20 bg-slate-50 rounded-2xl p-2"><img src={item.product.image} className="w-full h-full object-contain" /></div>
-              <div className="flex-1">
-                <h3 className="text-sm font-bold text-slate-900 line-clamp-2">{item.product.name}</h3>
-                <p className="text-sm font-black text-emerald-600">R$ {item.product.priceBRL.toFixed(2)}</p>
-                <div className="flex items-center gap-3 pt-2">
-                   <button onClick={() => handleUpdateQuantity(item.product.id, -1)}>-</button>
-                   <span className="text-xs font-bold">{item.quantity}</span>
-                   <button onClick={() => handleUpdateQuantity(item.product.id, 1)}>+</button>
-                   <button onClick={() => handleRemoveItem(item.product.id)} className="ml-auto text-red-500"><Trash2 className="w-4 h-4"/></button>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        <div className="p-6 bg-slate-50 border-t">
-          <div className="flex justify-between font-black text-xl mb-4">
-            <span>TOTAL</span>
-            <span>R$ {total.toFixed(2)}</span>
-          </div>
-          <button 
-            onClick={handleCheckoutStripe}
-            disabled={isProcessing}
-            className="w-full bg-[#635BFF] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2"
-          >
-            {isProcessing ? "Processando..." : <><CreditCard /> Pagar via Stripe</>}
+        
+        {/* CABEÇALHO DO CARRINHO */}
+        <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-white">
+          <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
+            <ShoppingBag className="w-5 h-5" /> Seu Carrinho
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-slate-100 rounded-full transition-colors">
+            <X className="w-5 h-5 text-slate-400" />
           </button>
         </div>
+
+        {/* LISTA DE PRODUTOS */}
+        <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50">
+          {cartItems.length === 0 ? (
+            <div className="text-center py-10 text-slate-400 font-medium">
+              Seu carrinho está vazio.
+            </div>
+          ) : (
+            cartItems.map((item) => (
+              <div key={item.product.id} className="flex gap-4 items-start bg-white p-3 rounded-2xl border border-slate-100 shadow-sm">
+                <div className="w-20 h-20 bg-slate-50 rounded-xl p-2 flex-shrink-0">
+                  <img src={item.product.image} className="w-full h-full object-contain mix-blend-multiply" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="text-xs font-bold text-slate-900 line-clamp-2 mb-1">{item.product.name}</h3>
+                  <p className="text-sm font-black text-slate-900">R$ {item.product.priceBRL.toFixed(2).replace('.', ',')}</p>
+                  <div className="flex items-center gap-3 pt-3">
+                     <div className="flex items-center bg-slate-100 rounded-lg overflow-hidden">
+                       <button onClick={() => handleUpdateQuantity(item.product.id, -1)} className="px-3 py-1 text-slate-600 hover:bg-slate-200 font-black">-</button>
+                       <span className="text-xs font-bold w-4 text-center">{item.quantity}</span>
+                       <button onClick={() => handleUpdateQuantity(item.product.id, 1)} className="px-3 py-1 text-slate-600 hover:bg-slate-200 font-black">+</button>
+                     </div>
+                     <button onClick={() => handleRemoveItem(item.product.id)} className="ml-auto text-rose-500 p-2 hover:bg-rose-50 rounded-lg transition-colors">
+                       <Trash2 className="w-4 h-4"/>
+                     </button>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+
+          {/* ========================================== */}
+          {/* OPÇÕES DE FRETE JAPÃO -> BRASIL */}
+          {/* ========================================== */}
+          {cartItems.length > 0 && (
+            <div className="pt-4 border-t border-slate-200 mt-6">
+              <h3 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wider">
+                <Truck className="w-4 h-4 text-emerald-600" /> Método de Envio
+              </h3>
+              
+              <div className="space-y-3">
+                {SHIPPING_OPTIONS.map(option => (
+                  <label 
+                    key={option.id} 
+                    className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
+                      selectedShipping === option.id 
+                        ? 'border-emerald-500 bg-emerald-50 shadow-md shadow-emerald-500/10' 
+                        : 'border-slate-100 hover:border-slate-200 bg-white shadow-sm'
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <div className="pt-1">
+                        <input 
+                          type="radio" 
+                          name="shipping" 
+                          value={option.id} 
+                          checked={selectedShipping === option.id} 
+                          onChange={() => setSelectedShipping(option.id)} 
+                          className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500" 
+                        />
+                      </div>
+                      <div>
+                        <p className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                          {option.name} 
+                          {option.tag && (
+                            <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${
+                              selectedShipping === option.id ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'
+                            }`}>
+                              {option.tag}
+                            </span>
+                          )}
+                        </p>
+                        <p className="text-xs font-medium text-slate-500 mt-1 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {option.time}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="text-right flex-shrink-0">
+                      <p className="text-sm font-black text-slate-900">R$ {option.price.toFixed(2).replace('.', ',')}</p>
+                    </div>
+                  </label>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* RESUMO E BOTÃO DE PAGAMENTO */}
+        <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+          {cartItems.length > 0 && (
+            <div className="space-y-3 mb-6 text-sm">
+              <div className="flex justify-between font-medium text-slate-500">
+                <span>Subtotal dos produtos</span>
+                <span>R$ {subtotal.toFixed(2).replace('.', ',')}</span>
+              </div>
+              <div className="flex justify-between font-medium text-slate-500">
+                <span>Frete Internacional ({currentShippingOption?.name})</span>
+                <span>R$ {shippingEst.toFixed(2).replace('.', ',')}</span>
+              </div>
+              <div className="pt-3 border-t border-slate-100 flex justify-between font-black text-xl text-slate-900">
+                <span>TOTAL</span>
+                <span>R$ {total.toFixed(2).replace('.', ',')}</span>
+              </div>
+            </div>
+          )}
+
+          <button 
+            onClick={handleCheckoutStripe}
+            disabled={isProcessing || cartItems.length === 0}
+            className="w-full bg-[#635BFF] hover:bg-[#5249e5] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#635BFF]/20"
+          >
+            {isProcessing ? (
+              <span className="flex items-center gap-2"><Clock className="w-5 h-5 animate-spin" /> PROCESSANDO...</span>
+            ) : (
+              <><CreditCard className="w-5 h-5" /> PAGAR VIA STRIPE</>
+            )}
+          </button>
+          
+          <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" /> Pagamento 100% Seguro
+          </div>
+        </div>
+
       </div>
     </>
   );
