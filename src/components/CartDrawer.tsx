@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Trash2, ShoppingBag, CreditCard, ShieldCheck, Truck, Clock } from "lucide-react";
+import { X, Trash2, ShoppingBag, CreditCard, ShieldCheck, Truck, Clock, AlertTriangle } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -11,7 +11,6 @@ interface CartDrawerProps {
 
 // ==========================================
 // CONFIGURAÇÃO DOS MÉTODOS DE ENVIO (JP POST)
-// Altere os preços e prazos aqui se necessário!
 // ==========================================
 const SHIPPING_OPTIONS = [
   { 
@@ -39,15 +38,27 @@ const SHIPPING_OPTIONS = [
 
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [isProcessing, setIsProcessing] = useState(false);
-  const [selectedShipping, setSelectedShipping] = useState<string>("epacket"); // E-Packet vem marcado por padrão
+  const [selectedShipping, setSelectedShipping] = useState<string>("epacket");
 
-  // Lógica de cálculo atualizada
-  const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
+  // ==========================================
+  // LÓGICA FINANCEIRA E TRIBUTÁRIA
+  // ==========================================
   
+  // 1. Valores pagos AGORA (Loja + Frete)
+  const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
   const currentShippingOption = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
   const shippingEst = cartItems.length > 0 ? (currentShippingOption?.price || 0) : 0;
+  const total = subtotal + shippingEst; // Valor enviado para o Stripe
+
+  // 2. Estimativa de Impostos (Pagos no BRASIL)
+  const valorAduaneiro = subtotal + shippingEst; 
+  const impostoImportacao = valorAduaneiro * 0.60; // 60% II
+  const aliquotaICMS = 0.17; // 17% ICMS
   
-  const total = subtotal + shippingEst;
+  // Fórmula ICMS "por dentro": [(Valor Compra + I.I.) / (1 - Alíquota)] * Alíquota
+  const baseCalculoICMS = (valorAduaneiro + impostoImportacao) / (1 - aliquotaICMS);
+  const icms = baseCalculoICMS * aliquotaICMS;
+  const totalImpostosEstimativa = impostoImportacao + icms;
 
   const handleRemoveItem = (productId: string) => {
     setCartItems(prev => prev.filter(item => item.product.id !== productId));
@@ -75,7 +86,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setIsProcessing(true);
 
     try {
-      // Chamada para a rota que criamos na Vercel (Agora enviando o frete escolhido)
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -91,8 +101,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error);
-
-      // Redireciona para o Stripe
       window.location.href = data.url;
 
     } catch (error) {
@@ -147,9 +155,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             ))
           )}
 
-          {/* ========================================== */}
-          {/* OPÇÕES DE FRETE JAPÃO -> BRASIL */}
-          {/* ========================================== */}
+          {/* OPÇÕES DE FRETE */}
           {cartItems.length > 0 && (
             <div className="pt-4 border-t border-slate-200 mt-6">
               <h3 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wider">
@@ -204,22 +210,49 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         </div>
 
         {/* RESUMO E BOTÃO DE PAGAMENTO */}
-        <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)]">
+        <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] overflow-y-auto">
           {cartItems.length > 0 && (
-            <div className="space-y-3 mb-6 text-sm">
-              <div className="flex justify-between font-medium text-slate-500">
-                <span>Subtotal dos produtos</span>
-                <span>R$ {subtotal.toFixed(2).replace('.', ',')}</span>
+            <>
+              {/* QUADRO DE COBRANÇA IMEDIATA */}
+              <div className="space-y-3 mb-4 text-sm">
+                <div className="flex justify-between font-medium text-slate-500">
+                  <span>Subtotal</span>
+                  <span>R$ {subtotal.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div className="flex justify-between font-medium text-slate-500">
+                  <span>Frete ({currentShippingOption?.name})</span>
+                  <span>R$ {shippingEst.toFixed(2).replace('.', ',')}</span>
+                </div>
+                <div className="pt-3 border-t border-slate-100 flex justify-between font-black text-xl text-slate-900">
+                  <span>TOTAL A PAGAR AGORA</span>
+                  <span>R$ {total.toFixed(2).replace('.', ',')}</span>
+                </div>
               </div>
-              <div className="flex justify-between font-medium text-slate-500">
-                <span>Frete Internacional ({currentShippingOption?.name})</span>
-                <span>R$ {shippingEst.toFixed(2).replace('.', ',')}</span>
+
+              {/* QUADRO DE ESTIMATIVA DE IMPOSTOS NO BRASIL */}
+              <div className="bg-amber-50/50 border border-amber-200/60 p-4 rounded-xl mb-6">
+                <p className="text-[10px] font-black uppercase tracking-widest text-amber-800 mb-3 flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5" /> Impostos no Brasil (Estimativa)
+                </p>
+                <div className="space-y-2 text-[11px] text-amber-900/80 font-medium">
+                  <div className="flex justify-between">
+                    <span>Imposto de Importação (60%)</span>
+                    <span>R$ {impostoImportacao.toFixed(2).replace('.', ',')}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span>ICMS (17% Estadual)</span>
+                    <span>R$ {icms.toFixed(2).replace('.', ',')}</span>
+                  </div>
+                  <div className="flex justify-between font-bold pt-2 border-t border-amber-200/50 text-amber-900">
+                    <span>Total estimado nos Correios</span>
+                    <span>R$ {totalImpostosEstimativa.toFixed(2).replace('.', ',')}</span>
+                  </div>
+                </div>
+                <p className="text-[9px] text-amber-700/70 mt-3 leading-relaxed">
+                  *Os impostos não são cobrados agora. Esta é apenas uma simulação conforme as regras da Receita Federal. O valor oficial será cobrado pelos Correios quando a caixa chegar ao Brasil.
+                </p>
               </div>
-              <div className="pt-3 border-t border-slate-100 flex justify-between font-black text-xl text-slate-900">
-                <span>TOTAL</span>
-                <span>R$ {total.toFixed(2).replace('.', ',')}</span>
-              </div>
-            </div>
+            </>
           )}
 
           <button 
@@ -235,7 +268,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           </button>
           
           <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" /> Pagamento 100% Seguro
+            <ShieldCheck className="w-4 h-4 text-emerald-500" /> Pagamento Seguro
           </div>
         </div>
 
