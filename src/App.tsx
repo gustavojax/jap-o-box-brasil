@@ -1402,7 +1402,7 @@ export default function App() {
 
         {/* BANNER DE MEIOS DE PAGAMENTO (ATUALIZADO BANDEIRAS GERAIS) */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
-          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento globais e locais</p>
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento via Pagbank/ Pagseguro </p>
           <div className="flex items-center justify-center px-8 py-2">
             <img 
               src="https://i.postimg.cc/YL0NwQVf/3.png" 
