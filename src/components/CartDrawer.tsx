@@ -15,23 +15,23 @@ interface CartDrawerProps {
 const SHIPPING_OPTIONS = [
   { 
     id: "epacket", 
-    name: "JP Post E-Packet", 
-    price: 85.00, 
-    time: "15 a 20 dias úteis", 
+    name: "E-Packet Light (Até 2kg)", 
+    price: 64.00, 
+    time: "40 dias úteis", 
     tag: "Mais Popular" 
   },
   { 
     id: "ems", 
-    name: "EMS Express", 
-    price: 180.00, 
-    time: "7 a 10 dias úteis", 
+    name: "EMS Express (Até 30kg)", 
+    price: 141.00, 
+    time: "15 dias úteis", 
     tag: "Rápido" 
   },
   { 
     id: "parcel", 
-    name: "Post Parcel", 
-    price: 55.00, 
-    time: "45 a 60 dias (Marítimo)", 
+    name: "Post Parcel (Até 30kg)", 
+    price: 178.00, 
+    time: "30 dias úteis", 
     tag: "Econômico" 
   }
 ];
@@ -48,14 +48,14 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
   const currentShippingOption = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
   const shippingEst = cartItems.length > 0 ? (currentShippingOption?.price || 0) : 0;
-  const total = subtotal + shippingEst; // Valor enviado para o Stripe
+  const total = subtotal + shippingEst; // Valor enviado para o PagBank
 
   // 2. Estimativa de Impostos (Pagos no BRASIL)
   const valorAduaneiro = subtotal + shippingEst; 
   const impostoImportacao = valorAduaneiro * 0.60; // 60% II
   const aliquotaICMS = 0.17; // 17% ICMS
   
-  // Fórmula ICMS "por dentro": [(Valor Compra + I.I.) / (1 - Alíquota)] * Alíquota
+  // Fórmula ICMS "por dentro"
   const baseCalculoICMS = (valorAduaneiro + impostoImportacao) / (1 - aliquotaICMS);
   const icms = baseCalculoICMS * aliquotaICMS;
   const totalImpostosEstimativa = impostoImportacao + icms;
@@ -74,7 +74,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     }));
   };
 
-  const handleCheckoutStripe = async () => {
+  // MUDANÇA AQUI: Nova função focada no PagBank
+  const handleCheckoutPagBank = async () => {
     if (cartItems.length === 0) return;
 
     if (!auth.currentUser) {
@@ -86,6 +87,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setIsProcessing(true);
 
     try {
+      // Vamos usar a mesma rota, mas o backend será atualizado para o PagBank
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -101,11 +103,13 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       const data = await response.json();
 
       if (!response.ok) throw new Error(data.error);
+      
+      // Redireciona para o link de pagamento do PagBank gerado pelo backend
       window.location.href = data.url;
 
     } catch (error) {
-      console.error("Erro no checkout:", error);
-      alert("Erro ao conectar com o banco. Tente novamente.");
+      console.error("Erro no checkout do PagBank:", error);
+      alert("Erro ao gerar pagamento. Tente novamente.");
       setIsProcessing(false);
     }
   };
@@ -255,20 +259,21 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </>
           )}
 
+          {/* MUDANÇA AQUI: Botão com estilo focado no PagBank */}
           <button 
-            onClick={handleCheckoutStripe}
+            onClick={handleCheckoutPagBank}
             disabled={isProcessing || cartItems.length === 0}
-            className="w-full bg-[#635BFF] hover:bg-[#5249e5] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#635BFF]/20"
+            className="w-full bg-[#1db76e] hover:bg-[#159a5a] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#1db76e]/20"
           >
             {isProcessing ? (
-              <span className="flex items-center gap-2"><Clock className="w-5 h-5 animate-spin" /> PROCESSANDO...</span>
+              <span className="flex items-center gap-2"><Clock className="w-5 h-5 animate-spin" /> GERANDO PAGAMENTO...</span>
             ) : (
-              <><CreditCard className="w-5 h-5" /> PAGAR VIA STRIPE</>
+              <><ShieldCheck className="w-5 h-5" /> IR PARA PAGAMENTO SEGURo</>
             )}
           </button>
           
           <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            <ShieldCheck className="w-4 h-4 text-emerald-500" /> Pagamento Seguro
+            Aceita Pix, Boleto e Cartão de Crédito
           </div>
         </div>
 
