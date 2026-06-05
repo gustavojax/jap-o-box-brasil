@@ -256,7 +256,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </>
           )}
 
-          {/* MUDANÇA AQUI: Botão com o Novo Logo do PagBank inserido */}
+          {/* MUDANÇA AQUI: Imagem exata solicitada para o botão */}
           <button 
             onClick={handleCheckoutPagBank}
             disabled={isProcessing || cartItems.length === 0}
@@ -266,7 +266,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               <span className="flex items-center gap-2 uppercase"><Clock className="w-5 h-5 animate-spin" /> GERANDO PAGAMENTO...</span>
             ) : (
               <span className="flex items-center gap-2">
-                 PAGAR COM <img src="https://i.postimg.cc/BnGhZt2L/logo-Pag-Bank-1024x288.png" alt="PagBank" className="h-5 object-contain ml-1" />
+                 PAGAR COM <img src="https://i.postimg.cc/rKQGQVnM/logo-Pag-Bank-1024x288.png" alt="PagBank" className="h-5 object-contain ml-1" />
               </span>
             )}
           </button>
