@@ -74,7 +74,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     }));
   };
 
-  // MUDANÇA AQUI: Nova função focada no PagBank
   const handleCheckoutPagBank = async () => {
     if (cartItems.length === 0) return;
 
@@ -87,7 +86,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setIsProcessing(true);
 
     try {
-      // Vamos usar a mesma rota, mas o backend será atualizado para o PagBank
       const response = await fetch('/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -104,7 +102,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
       if (!response.ok) throw new Error(data.error);
       
-      // Redireciona para o link de pagamento do PagBank gerado pelo backend
       window.location.href = data.url;
 
     } catch (error) {
@@ -228,7 +225,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                   <span>R$ {shippingEst.toFixed(2).replace('.', ',')}</span>
                 </div>
                 <div className="pt-3 border-t border-slate-100 flex justify-between font-black text-xl text-slate-900">
-                  <span>TOTAL A PAGAR AGORA</span>
+                  <span>TOTAL A PAGAR</span>
                   <span>R$ {total.toFixed(2).replace('.', ',')}</span>
                 </div>
               </div>
@@ -259,16 +256,18 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </>
           )}
 
-          {/* MUDANÇA AQUI: Botão com estilo focado no PagBank */}
+          {/* MUDANÇA AQUI: Botão com o Logo do PagBank inserido */}
           <button 
             onClick={handleCheckoutPagBank}
             disabled={isProcessing || cartItems.length === 0}
-            className="w-full bg-[#1db76e] hover:bg-[#159a5a] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm uppercase tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#1db76e]/20"
+            className="w-full bg-[#1db76e] hover:bg-[#159a5a] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm tracking-wider py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#1db76e]/20"
           >
             {isProcessing ? (
-              <span className="flex items-center gap-2"><Clock className="w-5 h-5 animate-spin" /> GERANDO PAGAMENTO...</span>
+              <span className="flex items-center gap-2 uppercase"><Clock className="w-5 h-5 animate-spin" /> GERANDO PAGAMENTO...</span>
             ) : (
-              <><ShieldCheck className="w-5 h-5" /> IR PARA PAGAMENTO SEGURo</>
+              <span className="flex items-center gap-2">
+                 PAGAR COM <img src="https://i.postimg.cc/8cBZMHm3/3.png" alt="PagBank" className="h-6 object-contain" />
+              </span>
             )}
           </button>
           
