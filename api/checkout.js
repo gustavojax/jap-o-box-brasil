@@ -1,55 +1,72 @@
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
-
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Método não permitido' });
   }
 
   try {
-    const { cartItems, orderId, userEmail } = req.body;
+    // Recebe os dados do carrinho enviados pela nossa nova gaveta
+    const { cartItems, orderId, userEmail, shippingMethod, shippingCost } = req.body;
 
-    // Converte os itens para o formato do Stripe (em centavos)
-    const lineItems = cartItems.map((item) => ({
-      price_data: {
-        currency: 'brl',
-        product_data: {
-          name: item.product.name,
-          images: [item.product.image],
-        },
-        unit_amount: Math.round(item.product.priceBRL * 100),
-      },
+    // 1. Converte os itens da loja para o formato exigido pelo PagBank (valores em centavos)
+    const items = cartItems.map((item) => ({
+      reference_id: item.product.id,
+      name: item.product.name.substring(0, 100), // PagBank limita o nome do item a 100 caracteres
       quantity: item.quantity,
+      unit_amount: Math.round(item.product.priceBRL * 100),
     }));
 
-    // Adiciona o Frete fixo
-    lineItems.push({
-      price_data: {
-        currency: 'brl',
-        product_data: { name: 'Frete Fixo (Mie → Brasil)' },
-        unit_amount: 3500, // R$ 35,00
-      },
+    // 2. Adiciona o Frete dinâmico escolhido pelo cliente como um item da cobrança
+    const valorFrete = shippingCost ? Number(shippingCost) : 64.00;
+    const nomeFrete = shippingMethod || "JP Post E-Packet";
+
+    items.push({
+      reference_id: "FRETE_INT",
+      name: `Frete Internacional (${nomeFrete})`,
       quantity: 1,
+      unit_amount: Math.round(valorFrete * 100),
     });
 
-    // Pega o domínio atual do site automaticamente (para redirecionar certo)
-    const baseUrl = req.headers.origin || 'http://localhost:3000';
+    // Descobre o link oficial do seu site para redirecionar o cliente de volta após pagar
+    const baseUrl = req.headers.origin || 'https://www.japaoboxbrasil.com';
 
-    // Gera a tela de pagamento
-    const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card', 'pix'],
-      line_items: lineItems,
-      mode: 'payment',
-      customer_email: userEmail,
-      client_reference_id: orderId, // Crucial para darmos baixa depois no painel
-      success_url: `${baseUrl}/?status=success`,
-      cancel_url: `${baseUrl}/?status=cancel`,
+    // 3. Cria a sessão de pagamento direto na API do PagBank
+    const response = await fetch('https://api.pagseguro.com/checkouts', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${process.env.PAGBANK_TOKEN}` 
+      },
+      body: JSON.stringify({
+        reference_id: orderId,
+        customer: {
+          email: userEmail,
+          // Enviamos um nome base genérico. Na tela de pagamento, o cliente preencherá o CPF, Telefone e Endereço completos.
+          name: "Cliente Japão Box Brasil" 
+        },
+        items: items,
+        redirect_url: `${baseUrl}/?status=success`
+      })
     });
 
-    res.status(200).json({ url: session.url });
+    const data = await response.json();
+
+    // Se o PagBank recusar a criação da cobrança, pegamos o motivo exato
+    if (!response.ok) {
+      console.error("Detalhes do Erro PagBank:", data);
+      throw new Error(data.error_messages?.[0]?.description || 'Falha ao gerar o link de pagamento do PagBank.');
+    }
+
+    // 4. Captura o link gerado e envia de volta para o site abrir
+    const paymentLink = data.links.find((link) => link.rel === 'PAY');
+
+    if (!paymentLink) {
+      throw new Error('Link de pagamento não retornado pela instituição bancária.');
+    }
+
+    res.status(200).json({ url: paymentLink.href });
+
   } catch (error) {
-    console.error("Erro no Stripe:", error);
+    console.error("Erro no Checkout PagBank:", error);
     res.status(500).json({ error: error.message });
   }
 }
