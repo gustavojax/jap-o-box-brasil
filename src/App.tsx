@@ -1380,7 +1380,7 @@ export default function App() {
         </main>
       )}
 
-      {/* RODAPÉ DO ECOSSISTEMA */}
+   {/* RODAPÉ DO ECOSSISTEMA */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="text-left">
@@ -1400,14 +1400,14 @@ export default function App() {
           </div>
         </div>
 
-        {/* BANNER DE MEIOS DE PAGAMENTO (ATUALIZADO BANDEIRAS GERAIS) */}
+        {/* BANNER DE MEIOS DE PAGAMENTO (ATUALIZADO BANDEIRAS GERAIS - TAMANHO CORRIGIDO) */}
         <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
-          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Aceitamos os principais meios de pagamento via Pagbank/ Pagseguro </p>
-          <div className="flex items-center justify-center px-8 py-2">
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">ACEITAMOS OS PRINCIPAIS MEIOS DE PAGAMENTO VIA PAGBANK/ PAGSEGURO</p>
+          <div className="w-full max-w-sm md:max-w-md flex items-center justify-center py-2">
             <img 
               src="https://i.postimg.cc/YL0NwQVf/3.png" 
               alt="Meios de Pagamento" 
-              className="h-8 md:h-10 object-contain select-none pointer-events-none"
+              className="w-full h-auto object-contain select-none pointer-events-none"
             />
           </div>
           <p className="text-[11px] font-semibold text-slate-400 text-center max-w-lg mt-2">
