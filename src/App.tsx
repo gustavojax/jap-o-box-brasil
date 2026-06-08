@@ -538,8 +538,6 @@ const PRODUCTS: Product[] = [
     category: "Skincare e Tratamentos Faciais",
     stock: 18
   },
-
-  // --- NOVOS SKINCARE & TRATAMENTOS (LOTES 1, 2, 3) ---
   {
     id: "medicube-zero-pore-pad",
     name: "Medicube Zero Pore Pad 2.0",
@@ -899,100 +897,6 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Skincare e Tratamentos Faciais",
     stock: 18
-  },
-
-  // --- HIGIENE E CUIDADOS PESSOAIS ---
-  {
-    id: "mofurashi-toothbrush",
-    name: "Mofurashi Toothbrush",
-    jpName: "モフラシ 歯ブラシ 特殊設計",
-    description: "Escova de dentes especial ergonômica.",
-    priceBRL: 120.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 25.00,
-    image: "https://iili.io/C2KS5Cb.png",
-    rating: 4.9,
-    reviewsCount: 154,
-    department: "Beleza, Higiene e Saúde",
-    category: "Higiene e Cuidados Pessoais",
-    stock: 50
-  },
-  {
-    id: "femimore-glutathione-soap",
-    name: "Femimore Glutathione Bubble Soap",
-    jpName: "フェミモア グルタチオン バブルソープ",
-    description: "Sabonete íntimo e corporal em espuma com Glutathione. Limpeza suave, controle de odor, oleosidade e clareamento leve.",
-    priceBRL: 110.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
-    rating: 4.8,
-    reviewsCount: 64,
-    department: "Beleza, Higiene e Saúde",
-    category: "Higiene e Cuidados Pessoais",
-    stock: 20
-  },
-
-  // --- APARELHOS ESTÉTICOS E TECNOLOGIA ---
-  {
-    id: "medicube-age-r-booster-pro",
-    name: "Medicube Age-R Booster Pro",
-    jpName: "メディキューブ 本格美顔器",
-    description: "O dispositivo eletrônico facial inteligente que é um verdadeiro fenômeno na Coreia. Ele combina 4 tecnologias de clínica em um único aparelho (eletroporação, microcorrentes, EMS e LED) para abrir os caminhos da pele, fazendo com que seus sérums e cremes penetrem até 700% mais profundamente.",
-    priceBRL: 1430.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 50.00,
-    image: "https://i.postimg.cc/s2DtFdyK/medicube-age-r-booster-pro-device-pink.jpg",
-    rating: 5.0,
-    reviewsCount: 142,
-    department: "Beleza, Higiene e Saúde",
-    category: "Aparelhos Estéticos e Tecnologia",
-    stock: 10
-  },
-  {
-    id: "medicube-age-r-booster-pro-mini",
-    name: "Medicube Age-R Booster Pro Mini",
-    jpName: "メディキューブ 美顔器 ミニ",
-    description: "A versão compacta, leve e ideal para viagens do famoso aparelho de eletroporação da Medicube. Focado em maximizar o brilho (glow) e a absorção dos seus produtos de skincare diários através de impulsos elétricos suaves e seguros.",
-    priceBRL: 494.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/qq0sY0Hn/d-nq-np-2x-881547-mlb83207883971-032025-f-medicube-age-r-booster-pro-mini-rosa-yloktw1oig.webp",
-    rating: 4.9,
-    reviewsCount: 86,
-    department: "Beleza, Higiene e Saúde",
-    category: "Aparelhos Estéticos e Tecnologia",
-    stock: 15
-  },
-  {
-    id: "traen-230-hair-removal",
-    name: "TraEn 230 Hair Removal Tool",
-    jpName: "TraEn 230 脱毛器",
-    description: "Removedor de pelos corporal indolor. Remove queratina e pelos sem dor através de fricção.",
-    priceBRL: 60.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 40.00,
-    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
-    rating: 4.6,
-    reviewsCount: 39,
-    department: "Beleza, Higiene e Saúde",
-    category: "Aparelhos Estéticos e Tecnologia",
-    stock: 14
-  },
-  {
-    id: "portable-home-led-beauty-device",
-    name: "Portable Home LED Beauty Device",
-    jpName: "携帯用 LED 美顔器",
-    description: "Aparelho estético portátil com terapia LED e massagem para uso doméstico (Compatível com PDRN e séruns).",
-    priceBRL: 980.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 45.00,
-    image: "cole o link da foto aqui",
-    rating: 4.9,
-    reviewsCount: 52,
-    department: "Beleza, Higiene e Saúde",
-    category: "Aparelhos Estéticos e Tecnologia",
-    stock: 10
   },
 
   // --- MAQUIAGEM ---
@@ -1537,6 +1441,100 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Cuidados Capilares",
     stock: 20
+  },
+
+  // --- HIGIENE E CUIDADOS PESSOAIS ---
+  {
+    id: "mofurashi-toothbrush",
+    name: "Mofurashi Toothbrush",
+    jpName: "モフラシ 歯ブラシ 特殊設計",
+    description: "Escova de dentes especial ergonômica.",
+    priceBRL: 120.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 25.00,
+    image: "https://iili.io/C2KS5Cb.png",
+    rating: 4.9,
+    reviewsCount: 154,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene e Cuidados Pessoais",
+    stock: 50
+  },
+  {
+    id: "femimore-glutathione-soap",
+    name: "Femimore Glutathione Bubble Soap",
+    jpName: "フェミモア グルタチオン バブルソープ",
+    description: "Sabonete íntimo e corporal em espuma com Glutathione. Limpeza suave, controle de odor, oleosidade e clareamento leve.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/spChCy9L/50621-60-7f7bb7dbd3cd39bf13b37bcd7b35754b-1536x1024.jpg",
+    rating: 4.8,
+    reviewsCount: 64,
+    department: "Beleza, Higiene e Saúde",
+    category: "Higiene e Cuidados Pessoais",
+    stock: 20
+  },
+
+  // --- APARELHOS ESTÉTICOS E TECNOLOGIA ---
+  {
+    id: "medicube-age-r-booster-pro",
+    name: "Medicube Age-R Booster Pro",
+    jpName: "メディキューブ 本格美顔器",
+    description: "O dispositivo eletrônico facial inteligente que é um verdadeiro fenômeno na Coreia. Ele combina 4 tecnologias de clínica em um único aparelho (eletroporação, microcorrentes, EMS e LED) para abrir os caminhos da pele, fazendo com que seus sérums e cremes penetrem até 700% mais profundamente.",
+    priceBRL: 1430.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 50.00,
+    image: "https://i.postimg.cc/s2DtFdyK/medicube-age-r-booster-pro-device-pink.jpg",
+    rating: 5.0,
+    reviewsCount: 142,
+    department: "Beleza, Higiene e Saúde",
+    category: "Aparelhos Estéticos e Tecnologia",
+    stock: 10
+  },
+  {
+    id: "medicube-age-r-booster-pro-mini",
+    name: "Medicube Age-R Booster Pro Mini",
+    jpName: "メディキューブ 美顔器 ミニ",
+    description: "A versão compacta, leve e ideal para viagens do famoso aparelho de eletroporação da Medicube. Focado em maximizar o brilho (glow) e a absorção dos seus produtos de skincare diários através de impulsos elétricos suaves e seguros.",
+    priceBRL: 494.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/qq0sY0Hn/d-nq-np-2x-881547-mlb83207883971-032025-f-medicube-age-r-booster-pro-mini-rosa-yloktw1oig.webp",
+    rating: 4.9,
+    reviewsCount: 86,
+    department: "Beleza, Higiene e Saúde",
+    category: "Aparelhos Estéticos e Tecnologia",
+    stock: 15
+  },
+  {
+    id: "traen-230-hair-removal",
+    name: "TraEn 230 Hair Removal Tool",
+    jpName: "TraEn 230 脱毛器",
+    description: "Removedor de pelos corporal indolor. Remove queratina e pelos sem dor através de fricção.",
+    priceBRL: 60.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 40.00,
+    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
+    rating: 4.6,
+    reviewsCount: 39,
+    department: "Beleza, Higiene e Saúde",
+    category: "Aparelhos Estéticos e Tecnologia",
+    stock: 14
+  },
+  {
+    id: "portable-home-led-beauty-device",
+    name: "Portable Home LED Beauty Device",
+    jpName: "携帯用 LED 美顔器",
+    description: "Aparelho estético portátil com terapia LED e massagem para uso doméstico (Compatível com PDRN e séruns).",
+    priceBRL: 980.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 45.00,
+    image: "cole o link da foto aqui",
+    rating: 4.9,
+    reviewsCount: 52,
+    department: "Beleza, Higiene e Saúde",
+    category: "Aparelhos Estéticos e Tecnologia",
+    stock: 10
   }
 ];
 
@@ -1646,7 +1644,7 @@ export default function App() {
   };
 
   // =========================
-  // UI & FILTERS STATES
+  // UI & FILTERS STATES (CATEGORIAS LIMPAS)
   // =========================
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
@@ -1666,31 +1664,11 @@ export default function App() {
   const allCategories = useMemo(() => {
     return [
       "Todos",
-      "Aparelhos Estéticos e Tecnologia",
       "Skincare e Tratamentos Faciais",
-      "Maquiagem",
       "Cuidados Capilares",
-      "Higiene e Cuidados Pessoais",
-      "Consumíveis de cozinha e necessidades diárias",
-      "Utensílios de mesa (Tableware)",
-      "Utensílios de cozinha (Kitchenware)",
-      "Armazenamento (Storage)",
-      "Interior",
-      "Sala de estar (Living)",
-      "Alimentos (Food)",
-      "Limpeza (Cleaning)",
-      "Lavanderia (Laundry)",
-      "Eletricidade",
-      "Ferramentas, carros e bicicletas",
-      "Reforma e renovação (Renovation)",
-      "Bolsas e acessórios de moda",
-      "Calçados, viagem e impermeáveis",
-      "Roupas (Clothing)",
-      "Papelaria (Stationery)",
-      "Presentes (Gift)",
-      "Feito à mão / Artesanal (Handmade)",
-      "Brinquedos, festas e esportes",
-      "THREEPPY"
+      "Maquiagem",
+      "Aparelhos Estéticos e Tecnologia",
+      "Higiene e Cuidados Pessoais"
     ];
   }, []);
 
