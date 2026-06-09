@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { X, Trash2, ShoppingBag, CreditCard, ShieldCheck, Truck, Clock, AlertTriangle } from "lucide-react";
+import { X, Trash2, ShoppingBag, Truck, Clock, AlertTriangle } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -43,19 +43,15 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   // ==========================================
   // LÓGICA FINANCEIRA E TRIBUTÁRIA
   // ==========================================
-  
-  // 1. Valores pagos AGORA (Loja + Frete)
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
   const currentShippingOption = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
   const shippingEst = cartItems.length > 0 ? (currentShippingOption?.price || 0) : 0;
-  const total = subtotal + shippingEst; // Valor enviado para o PagBank
+  const total = subtotal + shippingEst; 
 
-  // 2. Estimativa de Impostos (Pagos no BRASIL)
   const valorAduaneiro = subtotal + shippingEst; 
-  const impostoImportacao = valorAduaneiro * 0.60; // 60% II
-  const aliquotaICMS = 0.17; // 17% ICMS
+  const impostoImportacao = valorAduaneiro * 0.60; 
+  const aliquotaICMS = 0.17; 
   
-  // Fórmula ICMS "por dentro"
   const baseCalculoICMS = (valorAduaneiro + impostoImportacao) / (1 - aliquotaICMS);
   const icms = baseCalculoICMS * aliquotaICMS;
   const totalImpostosEstimativa = impostoImportacao + icms;
@@ -74,7 +70,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     }));
   };
 
-  const handleCheckoutPagBank = async () => {
+  const handleCheckoutPayPal = async () => {
     if (cartItems.length === 0) return;
 
     if (!auth.currentUser) {
@@ -102,11 +98,12 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
       if (!response.ok) throw new Error(data.error);
       
+      // O PayPal retorna um link de aprovação para o cliente
       window.location.href = data.url;
 
     } catch (error) {
-      console.error("Erro no checkout do PagBank:", error);
-      alert("Erro ao gerar pagamento. Tente novamente.");
+      console.error("Erro no checkout do PayPal:", error);
+      alert("Erro ao conectar com o PayPal. Tente novamente.");
       setIsProcessing(false);
     }
   };
@@ -116,7 +113,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-[100]" onClick={onClose} />
       <div className="fixed inset-y-0 right-0 w-full max-w-md bg-white z-[101] shadow-2xl flex flex-col">
         
-        {/* CABEÇALHO DO CARRINHO */}
         <div className="flex items-center justify-between p-6 border-b border-slate-100 bg-white">
           <h2 className="text-lg font-black text-slate-900 flex items-center gap-2">
             <ShoppingBag className="w-5 h-5" /> Seu Carrinho
@@ -126,7 +122,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           </button>
         </div>
 
-        {/* LISTA DE PRODUTOS */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6 bg-slate-50/50">
           {cartItems.length === 0 ? (
             <div className="text-center py-10 text-slate-400 font-medium">
@@ -156,11 +151,10 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             ))
           )}
 
-          {/* OPÇÕES DE FRETE */}
           {cartItems.length > 0 && (
             <div className="pt-4 border-t border-slate-200 mt-6">
               <h3 className="text-sm font-black text-slate-900 mb-4 flex items-center gap-2 uppercase tracking-wider">
-                <Truck className="w-4 h-4 text-emerald-600" /> Método de Envio
+                <Truck className="w-4 h-4 text-blue-600" /> Método de Envio
               </h3>
               
               <div className="space-y-3">
@@ -169,7 +163,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                     key={option.id} 
                     className={`flex items-center justify-between p-4 rounded-2xl border-2 cursor-pointer transition-all ${
                       selectedShipping === option.id 
-                        ? 'border-emerald-500 bg-emerald-50 shadow-md shadow-emerald-500/10' 
+                        ? 'border-blue-500 bg-blue-50 shadow-md shadow-blue-500/10' 
                         : 'border-slate-100 hover:border-slate-200 bg-white shadow-sm'
                     }`}
                   >
@@ -181,7 +175,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                           value={option.id} 
                           checked={selectedShipping === option.id} 
                           onChange={() => setSelectedShipping(option.id)} 
-                          className="w-4 h-4 text-emerald-600 border-slate-300 focus:ring-emerald-500" 
+                          className="w-4 h-4 text-blue-600 border-slate-300 focus:ring-blue-500" 
                         />
                       </div>
                       <div>
@@ -189,7 +183,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                           {option.name} 
                           {option.tag && (
                             <span className={`px-2 py-0.5 rounded-md text-[9px] font-black uppercase tracking-wider ${
-                              selectedShipping === option.id ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-white'
+                              selectedShipping === option.id ? 'bg-blue-600 text-white' : 'bg-slate-800 text-white'
                             }`}>
                               {option.tag}
                             </span>
@@ -210,11 +204,9 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           )}
         </div>
 
-        {/* RESUMO E BOTÃO DE PAGAMENTO */}
         <div className="p-6 bg-white border-t border-slate-100 shadow-[0_-10px_20px_-10px_rgba(0,0,0,0.05)] overflow-y-auto">
           {cartItems.length > 0 && (
             <>
-              {/* QUADRO DE COBRANÇA IMEDIATA */}
               <div className="space-y-3 mb-4 text-sm">
                 <div className="flex justify-between font-medium text-slate-500">
                   <span>Subtotal</span>
@@ -230,7 +222,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                 </div>
               </div>
 
-              {/* QUADRO DE ESTIMATIVA DE IMPOSTOS NO BRASIL */}
               <div className="bg-amber-50/50 border border-amber-200/60 p-4 rounded-xl mb-6">
                 <p className="text-[10px] font-black uppercase tracking-widest text-amber-800 mb-3 flex items-center gap-1.5">
                   <AlertTriangle className="w-3.5 h-3.5" /> Impostos no Brasil (Estimativa)
@@ -256,23 +247,22 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </>
           )}
 
-          {/* MUDANÇA AQUI: Imagem exata solicitada para o botão */}
           <button 
-            onClick={handleCheckoutPagBank}
+            onClick={handleCheckoutPayPal}
             disabled={isProcessing || cartItems.length === 0}
-            className="w-full bg-[#1db76e] hover:bg-[#159a5a] disabled:bg-slate-300 disabled:cursor-not-allowed text-white font-black text-sm tracking-wider py-3.5 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#1db76e]/20"
+            className="w-full bg-[#FFC439] hover:bg-[#F4BB33] disabled:bg-slate-200 disabled:text-slate-400 text-[#003087] font-black text-sm tracking-wider py-4 rounded-2xl flex items-center justify-center gap-2 transition-colors shadow-xl shadow-[#FFC439]/20"
           >
             {isProcessing ? (
-              <span className="flex items-center gap-2 uppercase"><Clock className="w-5 h-5 animate-spin" /> GERANDO PAGAMENTO...</span>
+              <span className="flex items-center gap-2 uppercase"><Clock className="w-5 h-5 animate-spin" /> PROCESSANDO...</span>
             ) : (
               <span className="flex items-center gap-2">
-                 PAGAR COM <img src="https://i.postimg.cc/rKQGQVnM/logo-Pag-Bank-1024x288.png" alt="PagBank" className="h-5 object-contain ml-1" />
+                 PAGAR COM <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="PayPal" className="h-5 object-contain ml-1" />
               </span>
             )}
           </button>
           
           <div className="mt-4 flex items-center justify-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
-            Aceita Pix, Boleto e Cartão de Crédito
+            Cartões de Crédito e Saldo
           </div>
         </div>
 
