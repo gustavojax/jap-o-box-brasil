@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { X, ShoppingBag, Truck, Clock, MessageCircle, AlertTriangle, CreditCard } from "lucide-react";
+import React, { useState } from "react";
+import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -20,14 +20,15 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const [wantsInstallments, setWantsInstallments] = useState<boolean>(false);
   const [installments, setInstallments] = useState<number>(2);
 
-  // PROTEÇÃO: Garante que os cálculos só rodam se houver itens
   const subtotal = cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 0), 0) || 0;
   const currentShipping = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
   const totalBase = subtotal + (currentShipping?.price || 0);
 
+  // Lógica de cálculo conforme as taxas do seu PagBank
   const calculateInstallmentPreview = () => {
     try {
       if (totalBase <= 0) return "0,00";
+      // Taxa fixa 5.04% + acréscimo de 2.99% a.m. (Juros Simples)
       const taxaFixa = totalBase * 0.0504;
       const valorComTaxaFixa = totalBase + taxaFixa;
       const jurosMensal = 0.0299;
@@ -46,10 +47,10 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product?.name || "Produto"}`).join("\n");
     const installmentMsg = wantsInstallments 
-      ? `SIM, desejo parcelar em ${installments}x.` 
+      ? `SIM, desejo parcelar em ${installments}x (Prévia: R$ ${calculateInstallmentPreview()} por parcela).` 
       : "Não, prefiro Pix.";
     
-    const message = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nTOTAL: R$ ${totalBase.toFixed(2)}\n\n*Parcelamento:* ${installmentMsg}`;
+    const message = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nTOTAL: R$ ${totalBase.toFixed(2)}\n\n*Parcelamento:* ${installmentMsg}\n\n(Ciente de que impostos de importação são por minha conta e pagos na chegada ao Brasil).`;
     const url = `https://wa.me/817014074971?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
@@ -84,23 +85,37 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             <div className="space-y-3 p-4 bg-slate-50 rounded-xl border border-slate-100">
               <label className="flex items-center gap-3 cursor-pointer">
                  <input type="checkbox" checked={wantsInstallments} onChange={(e) => setWantsInstallments(e.target.checked)} />
-                 <span className="text-sm font-bold flex items-center gap-2"><CreditCard className="w-4 h-4" /> Parcelar</span>
+                 <span className="text-sm font-bold flex items-center gap-2"><CreditCard className="w-4 h-4" /> Parcelar no cartão</span>
               </label>
+              
               {wantsInstallments && (
-                <select className="w-full p-2 border rounded-lg text-sm font-bold" value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
-                  {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => <option key={num} value={num}>{num}x</option>)}
-                </select>
+                <div className="space-y-2">
+                  <select className="w-full p-2 border rounded-lg text-sm font-bold" value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
+                    {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(num => <option key={num} value={num}>{num}x</option>)}
+                  </select>
+                  <div className="bg-white p-2 rounded border border-blue-100 text-[10px] text-blue-800 text-center font-bold shadow-sm">
+                    Prévia: {installments}x de R$ {calculateInstallmentPreview()}<br/>
+                    <span className="font-normal opacity-80">(Valor final sujeito a confirmação)</span>
+                  </div>
+                </div>
               )}
             </div>
           )}
+
+          <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
+            <div className="flex items-start gap-2 text-amber-900">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <p className="text-[11px] leading-tight">Impostos da Receita Federal são pagos na chegada ao Brasil.</p>
+            </div>
+          </div>
 
           <div className="flex justify-between font-black text-lg">
             <span>Total:</span>
             <span>R$ {totalBase.toFixed(2)}</span>
           </div>
           
-          <button onClick={handleWhatsAppCheckout} className="w-full bg-[#25D366] text-white font-black py-4 rounded-2xl">
-            Finalizar no WhatsApp
+          <button onClick={handleWhatsAppCheckout} className="w-full bg-[#25D366] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2">
+            <MessageCircle className="w-5 h-5" /> Finalizar Pedido no WhatsApp
           </button>
         </div>
       </div>
