@@ -4,69 +4,118 @@ export default async function handler(req, res) {
   }
 
   try {
-    // Recebe os dados do carrinho enviados pela nossa nova gaveta
-    const { cartItems, orderId, userEmail, shippingMethod, shippingCost } = req.body;
+    const { cartItems, orderId, shippingMethod, shippingCost } = req.body;
 
-    // 1. Converte os itens da loja para o formato exigido pelo PagBank (valores em centavos)
-    const items = cartItems.map((item) => ({
-      reference_id: item.product.id,
-      name: item.product.name.substring(0, 100), // PagBank limita o nome do item a 100 caracteres
-      quantity: item.quantity,
-      unit_amount: Math.round(item.product.priceBRL * 100),
-    }));
+    // 1. Configurações e Chaves do PayPal
+    // O PayPal possui ambientes separados para testes (sandbox) e oficial (live)
+    const clientId = process.env.PAYPAL_CLIENT_ID;
+    const secret = process.env.PAYPAL_SECRET;
+    const isLive = process.env.PAYPAL_ENVIRONMENT === 'live';
+    const baseUrl = isLive ? 'https://api-m.paypal.com' : 'https://api-m.sandbox.paypal.com';
 
-    // 2. Adiciona o Frete dinâmico escolhido pelo cliente como um item da cobrança
-    const valorFrete = shippingCost ? Number(shippingCost) : 64.00;
-    const nomeFrete = shippingMethod || "JP Post E-Packet";
+    if (!clientId || !secret) {
+      throw new Error('As chaves do PayPal não estão configuradas na Vercel.');
+    }
 
-    items.push({
-      reference_id: "FRETE_INT",
-      name: `Frete Internacional (${nomeFrete})`,
-      quantity: 1,
-      unit_amount: Math.round(valorFrete * 100),
+    // 2. Gera o Token de Autenticação (OAuth2) do PayPal
+    const auth = Buffer.from(`${clientId}:${secret}`).toString('base64');
+    const tokenResponse = await fetch(`${baseUrl}/v1/oauth2/token`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Basic ${auth}`,
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: 'grant_type=client_credentials'
     });
 
-    // Descobre o link oficial do seu site para redirecionar o cliente de volta após pagar
-    const baseUrl = req.headers.origin || 'https://www.japaoboxbrasil.com';
+    const tokenData = await tokenResponse.json();
+    
+    if (!tokenResponse.ok) {
+      console.error("Erro Auth PayPal:", tokenData);
+      throw new Error('Falha ao autenticar com a API do PayPal.');
+    }
 
-    // 3. Cria a sessão de pagamento direto na API do PagBank
-    const response = await fetch('https://api.pagseguro.com/checkouts', {
+    const accessToken = tokenData.access_token;
+
+    // 3. Formata os valores. O PayPal exige decimais exatos (ex: "199.00")
+    const formatAmount = (num) => Number(num).toFixed(2);
+
+    // Monta a lista de produtos
+    const paypalItems = cartItems.map((item) => ({
+      name: item.product.name.substring(0, 120),
+      sku: item.product.id,
+      unit_amount: {
+        currency_code: 'BRL',
+        value: formatAmount(item.product.priceBRL)
+      },
+      quantity: item.quantity.toString()
+    }));
+
+    // Calcula os totais exatos para o fechamento
+    const itemTotal = cartItems.reduce((acc, item) => acc + (item.product.priceBRL * item.quantity), 0);
+    const shippingTotal = shippingCost ? Number(shippingCost) : 64.00;
+    const orderTotal = itemTotal + shippingTotal;
+
+    const siteUrl = req.headers.origin || 'https://www.japaoboxbrasil.com';
+
+    // 4. Cria a ordem de cobrança (Checkout)
+    const orderResponse = await fetch(`${baseUrl}/v2/checkout/orders`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.PAGBANK_TOKEN}` 
+        'Authorization': `Bearer ${accessToken}`
       },
       body: JSON.stringify({
-        reference_id: orderId,
-        customer: {
-          email: userEmail,
-          // Enviamos um nome base genérico. Na tela de pagamento, o cliente preencherá o CPF, Telefone e Endereço completos.
-          name: "Cliente Japão Box Brasil" 
-        },
-        items: items,
-        redirect_url: `${baseUrl}/?status=success`
+        intent: 'CAPTURE',
+        purchase_units: [{
+          reference_id: orderId,
+          description: `Pedido Japão Box Brasil - ${shippingMethod || 'E-Packet'}`,
+          amount: {
+            currency_code: 'BRL',
+            value: formatAmount(orderTotal),
+            breakdown: {
+              item_total: {
+                currency_code: 'BRL',
+                value: formatAmount(itemTotal)
+              },
+              shipping: {
+                currency_code: 'BRL',
+                value: formatAmount(shippingTotal)
+              }
+            }
+          },
+          items: paypalItems
+        }],
+        application_context: {
+          brand_name: "Japão Box Brasil",
+          landing_page: "BILLING",
+          user_action: "PAY_NOW",
+          return_url: `${siteUrl}/?status=success`,
+          cancel_url: `${siteUrl}/?status=cancel`,
+          shipping_preference: "GET_FROM_FILE" // Pega o endereço de entrega do cliente no próprio PayPal
+        }
       })
     });
 
-    const data = await response.json();
+    const orderData = await orderResponse.json();
 
-    // Se o PagBank recusar a criação da cobrança, pegamos o motivo exato
-    if (!response.ok) {
-      console.error("Detalhes do Erro PagBank:", data);
-      throw new Error(data.error_messages?.[0]?.description || 'Falha ao gerar o link de pagamento do PagBank.');
+    if (!orderResponse.ok) {
+      console.error("Detalhes do Erro Criação PayPal:", orderData);
+      throw new Error(orderData.message || 'Falha ao criar pedido no PayPal.');
     }
 
-    // 4. Captura o link gerado e envia de volta para o site abrir
-    const paymentLink = data.links.find((link) => link.rel === 'PAY');
+    // 5. Captura o link de aprovação para redirecionar o cliente
+    const approveLink = orderData.links.find(link => link.rel === 'approve');
 
-    if (!paymentLink) {
-      throw new Error('Link de pagamento não retornado pela instituição bancária.');
+    if (!approveLink) {
+      throw new Error('Link de pagamento não retornado pelo PayPal.');
     }
 
-    res.status(200).json({ url: paymentLink.href });
+    // Envia o link oficial do PayPal para o site abrir
+    res.status(200).json({ url: approveLink.href });
 
   } catch (error) {
-    console.error("Erro no Checkout PagBank:", error);
+    console.error("Erro no Checkout PayPal:", error);
     res.status(500).json({ error: error.message });
   }
 }
