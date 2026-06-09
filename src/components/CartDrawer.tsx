@@ -1,5 +1,5 @@
 import React from "react";
-import { X, ShoppingBag, Truck, Clock, MessageCircle, AlertTriangle } from "lucide-react";
+import { X, ShoppingBag, Truck, Clock, MessageCircle, AlertTriangle, CreditCard } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -17,6 +17,7 @@ const SHIPPING_OPTIONS = [
 
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [selectedShipping, setSelectedShipping] = React.useState<string>("epacket");
+  const [wantsInstallments, setWantsInstallments] = React.useState<boolean>(false); // Novo estado
 
   const subtotal = cartItems.reduce((acc, item) => acc + item.product.priceBRL * item.quantity, 0);
   const currentShipping = SHIPPING_OPTIONS.find(s => s.id === selectedShipping);
@@ -28,8 +29,11 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       return;
     }
 
+    // Incluímos a preferência de parcelamento na mensagem
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product.name}`).join("\n");
-    const message = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nEnvio: ${currentShipping?.name}\nSubtotal: R$ ${subtotal.toFixed(2)}\nFrete: R$ ${currentShipping?.price.toFixed(2)}\nTOTAL: R$ ${total.toFixed(2)}\n\n(Ciente de que impostos de importação são por minha conta e pagos na chegada ao Brasil).`;
+    const installmentMsg = wantsInstallments ? "SIM, gostaria de parcelar no cartão." : "Não, prefiro Pix.";
+    
+    const message = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nEnvio: ${currentShipping?.name}\nSubtotal: R$ ${subtotal.toFixed(2)}\nFrete: R$ ${currentShipping?.price.toFixed(2)}\nTOTAL: R$ ${total.toFixed(2)}\n\n*Parcelamento:* ${installmentMsg}\n\n(Ciente de que impostos de importação são por minha conta).`;
     
     const url = `https://wa.me/817014074971?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
@@ -57,19 +61,30 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         </div>
 
         <div className="p-6 border-t border-slate-100 space-y-4">
-          {/* Box de Alerta de Impostos */}
+          
+          {/* Opção de Parcelamento */}
+          <label className="flex items-center gap-3 p-4 bg-slate-50 rounded-xl cursor-pointer hover:bg-slate-100 transition-colors">
+            <div className={`w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${wantsInstallments ? 'bg-blue-600 border-blue-600' : 'border-slate-300'}`}>
+               <input type="checkbox" className="hidden" checked={wantsInstallments} onChange={(e) => setWantsInstallments(e.target.checked)} />
+               {wantsInstallments && <span className="text-white text-xs">✓</span>}
+            </div>
+            <div className="flex items-center gap-2 text-sm font-bold text-slate-700">
+              <CreditCard className="w-4 h-4" /> Desejo parcelar no cartão
+            </div>
+          </label>
+
           <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
             <div className="flex items-start gap-2 text-amber-900">
               <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
               <div className="text-[11px] leading-tight">
                 <p className="font-black uppercase mb-1">Atenção: Importação</p>
-                <p>O valor total aqui pago refere-se apenas ao produto e frete. Impostos de importação (Receita Federal) são de responsabilidade do comprador e pagos na chegada ao Brasil.</p>
+                <p>O valor total aqui pago refere-se ao produto e frete. Impostos (Receita Federal) são pagos na chegada ao Brasil.</p>
               </div>
             </div>
           </div>
 
           <div className="flex justify-between font-black text-lg">
-            <span>Total (Prod + Frete):</span>
+            <span>Total:</span>
             <span>R$ {total.toFixed(2)}</span>
           </div>
           
