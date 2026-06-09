@@ -1492,21 +1492,6 @@ const PRODUCTS: Product[] = [
     stock: 15
   },
   {
-    id: "traen-230-hair-removal",
-    name: "TraEn 230 Hair Removal Tool",
-    jpName: "TraEn 230 脱毛器",
-    description: "Removedor de pelos corporal indolor. Remove queratina e pelos sem dor através de fricção.",
-    priceBRL: 60.00,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 40.00,
-    image: "https://i.postimg.cc/gJ3hwGSK/trae.png",
-    rating: 4.6,
-    reviewsCount: 39,
-    department: "Beleza, Higiene e Saúde",
-    category: "Aparelhos Estéticos e Tecnologia",
-    stock: 14
-  },
-  {
     id: "portable-home-led-beauty-device",
     name: "Portable Home LED Beauty Device",
     jpName: "携帯用 LED 美顔器",
