@@ -1,5 +1,5 @@
 import React from "react";
-import { X, Trash2, ShoppingBag, Truck, Clock, MessageCircle } from "lucide-react";
+import { X, ShoppingBag, Truck, Clock, MessageCircle, AlertTriangle } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -28,11 +28,9 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       return;
     }
 
-    // Monta a mensagem para você
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product.name}`).join("\n");
-    const message = `Olá! Gostaria de finalizar meu pedido na Japão Box Brasil:\n\n${itemsList}\n\nEnvio: ${currentShipping?.name}\nSubtotal: R$ ${subtotal.toFixed(2)}\nFrete: R$ ${currentShipping?.price.toFixed(2)}\nTOTAL: R$ ${total.toFixed(2)}\n\nComo faço o pagamento via PIX ou Link para parcelar?`;
+    const message = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nEnvio: ${currentShipping?.name}\nSubtotal: R$ ${subtotal.toFixed(2)}\nFrete: R$ ${currentShipping?.price.toFixed(2)}\nTOTAL: R$ ${total.toFixed(2)}\n\n(Ciente de que impostos de importação são por minha conta e pagos na chegada ao Brasil).`;
     
-    // Abre o WhatsApp
     const url = `https://wa.me/817014074971?text=${encodeURIComponent(message)}`;
     window.open(url, '_blank');
   };
@@ -59,8 +57,19 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         </div>
 
         <div className="p-6 border-t border-slate-100 space-y-4">
+          {/* Box de Alerta de Impostos */}
+          <div className="bg-amber-50 p-4 rounded-xl border border-amber-200">
+            <div className="flex items-start gap-2 text-amber-900">
+              <AlertTriangle className="w-5 h-5 flex-shrink-0 mt-0.5" />
+              <div className="text-[11px] leading-tight">
+                <p className="font-black uppercase mb-1">Atenção: Importação</p>
+                <p>O valor total aqui pago refere-se apenas ao produto e frete. Impostos de importação (Receita Federal) são de responsabilidade do comprador e pagos na chegada ao Brasil.</p>
+              </div>
+            </div>
+          </div>
+
           <div className="flex justify-between font-black text-lg">
-            <span>Total:</span>
+            <span>Total (Prod + Frete):</span>
             <span>R$ {total.toFixed(2)}</span>
           </div>
           
@@ -70,9 +79,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           >
             <MessageCircle className="w-5 h-5" /> Finalizar Pedido no WhatsApp
           </button>
-          <p className="text-[10px] text-center text-slate-400">
-            Pagamentos via Pix ou Link de Crédito solicitado via mensagem.
-          </p>
         </div>
       </div>
     </>
