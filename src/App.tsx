@@ -561,7 +561,7 @@ const PRODUCTS: Product[] = [
     priceBRL: 119.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
-    image: "https://i.postimg.cc/Kv60RNH4/mask.jpg",
+    image: "https://i.postimg.cc/52JcGLMC/sg-11134207-7rdyf-lzzc5w8pci8yd5.jpg",
     rating: 4.8,
     reviewsCount: 95,
     department: "Beleza, Higiene e Saúde",
