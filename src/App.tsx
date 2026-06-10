@@ -1,9 +1,9 @@
 import React, { useState, useMemo, useEffect } from "react";
+
 import Header from "./components/Header";
-import SearchBar from "./components/SearchBar";
-import RedirectBanner from "./components/RedirectBanner"; // Adicione esta linha
-// ... (mantenha os outros imports como estão)
 import Hero from "./components/Hero";
+import SearchBar from "./components/SearchBar";
+import RedirectBanner from "./components/RedirectBanner";
 import TrustBadges from "./components/TrustBadges";
 import ProductCard from "./components/ProductCard";
 import Testimonials from "./components/Testimonials";
@@ -1569,8 +1569,6 @@ export default function App() {
         const timeB = b.createdAt?.seconds || 0;
         return timeB - timeA;
       });
-// ... (mantenha todos os seus imports originais aqui)
-import RedirectBanner from './components/RedirectBanner'; 
 
 // ... (mantenha toda a lógica de constantes PRODUCTS, estados, useEffects, etc.)
 
