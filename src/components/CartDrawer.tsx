@@ -28,18 +28,30 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         </div>
 
         {/* Lista de Produtos */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {cartItems?.map((item) => (
-            <div key={item.product?.id} className="flex gap-4 border-b pb-4">
-              <img src={item.product?.image} className="w-20 h-20 object-cover rounded border" />
-              <div className="flex-1">
-                <h4 className="text-sm font-medium text-gray-800">{item.product?.name}</h4>
-                <p className="text-sm font-bold text-gray-900">R$ {item.product?.priceBRL?.toFixed(2)}</p>
-                <span className="text-xs text-gray-500">Qtd: {item.quantity}</span>
+                <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {cartItems && cartItems.length > 0 ? (
+            cartItems.map((item) => (
+              <div key={item?.product?.id || Math.random()} className="flex gap-4 border-b pb-4">
+                <img 
+                  src={item?.product?.image || "https://placehold.co/80x80?text=Sem+foto"} 
+                  className="w-20 h-20 object-cover rounded border" 
+                />
+                <div className="flex-1">
+                  <h4 className="text-sm font-medium text-gray-800">
+                    {item?.product?.name || "Produto sem nome"}
+                  </h4>
+                  <p className="text-sm font-bold text-gray-900">
+                    R$ {typeof item?.product?.priceBRL === 'number' ? item.product.priceBRL.toFixed(2) : "0,00"}
+                  </p>
+                  <span className="text-xs text-gray-500">Qtd: {item?.quantity || 1}</span>
+                </div>
               </div>
-            </div>
-          ))}
+            ))
+          ) : (
+            <p className="text-center text-gray-400 p-4">Seu carrinho está vazio.</p>
+          )}
         </div>
+        
 
         {/* Resumo e Checkout estilo Nuvemshop */}
         <div className="p-4 border-t bg-gray-50 space-y-4">
