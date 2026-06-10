@@ -1569,33 +1569,18 @@ export default function App() {
         const timeB = b.createdAt?.seconds || 0;
         return timeB - timeA;
       });
-
-
-
-      <Header
-        onSearchChange={setSearchQuery}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={allCategories}
-        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenAuth={() => user ? setActiveTab("account") : setIsAuthOpen(true)}
-        user={user}
-        onLogout={handleLogout}
-        onLogoClick={handleReturnToStore}
-      />
-
-      {/* Componentes inseridos CORRETAMENTE dentro do return */}
-      <SearchBar />
-      <RedirectBanner />
-
-      {/* ... continue com o restante do seu código (abas, vitrine, etc) a partir daqui ... */}
-      
-      {/* ... finalize com os modais e o footer ... */}
-    </div>
-  );
-} // <--- Apenas UM fechamento de função aqui
-
+        <Header
+  onSearchChange={setSearchQuery}
+  selectedCategory={selectedCategory}
+  onSelectCategory={setSelectedCategory}
+  categories={allCategories}
+  cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+  onOpenCart={() => setIsCartOpen(true)}
+  onOpenAuth={() => user ? setActiveTab("account") : setIsAuthOpen(true)}
+  user={user}
+  onLogout={handleLogout}
+  onLogoClick={handleReturnToStore}
+/>
       setOrders(ordersList);
       setLoadingOrders(false);
     }, (error) => {
@@ -1758,6 +1743,8 @@ export default function App() {
         onLogout={handleLogout}
         onLogoClick={handleReturnToStore}
       />
+      <SearchBar />
+<RedirectBanner />
 
       {/* MENU DE ABAS SUPERIORES */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
