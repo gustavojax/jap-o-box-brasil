@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, ChevronDown } from "lucide-react";
+import React from "react";
+import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth } from "../firebase";
 
@@ -9,85 +9,77 @@ interface CartDrawerProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
-// ... (SHIPPING_OPTIONS e calculateInstallmentPreview mantêm-se os mesmos)
-
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
-  const [wantsInstallments, setWantsInstallments] = useState<boolean>(false);
-  const [installments, setInstallments] = useState<number>(2);
+  const [wantsInstallments, setWantsInstallments] = React.useState(false);
+  const [installments, setInstallments] = React.useState(2);
 
-  // ... (cálculos mantidos)
+  const subtotal = cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
+
+  const calculatePreview = () => {
+    try {
+      const taxaFixa = subtotal * 0.0504;
+      const valorComTaxa = subtotal + taxaFixa;
+      const juros = 0.0299;
+      const totalParcelado = valorComTaxa * (1 + (juros * installments));
+      return (totalParcelado / installments).toFixed(2).replace('.', ',');
+    } catch { return "0,00"; }
+  };
+
+  const handleWhatsApp = () => {
+    const itemsList = cartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
+    const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nTotal: R$ ${subtotal.toFixed(2)}\nParcelamento: ${wantsInstallments ? installments + 'x' : 'Pix'}`;
+    window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
+  };
 
   return (
-    <>
-      <div className="fixed inset-0 bg-black/40 z-[100]" onClick={onClose} />
-      <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-white z-[101] shadow-2xl flex flex-col">
-        {/* Cabeçalho */}
+    <div className="fixed inset-0 z-[200] flex justify-end">
+      <div className="absolute inset-0 bg-black/50" onClick={onClose} />
+      <div className="relative w-full max-w-sm bg-white h-full shadow-xl flex flex-col">
         <div className="p-4 border-b flex justify-between items-center bg-gray-50">
           <h2 className="font-bold text-gray-700">Meu Carrinho</h2>
-          <button onClick={onClose} className="p-1 hover:bg-gray-200 rounded-full"><X className="w-5 h-5" /></button>
-        </div>
-
-        {/* Lista de Produtos */}
-                <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {cartItems && cartItems.length > 0 ? (
-            cartItems.map((item) => (
-              <div key={item?.product?.id || Math.random()} className="flex gap-4 border-b pb-4">
-                <img 
-                  src={item?.product?.image || "https://placehold.co/80x80?text=Sem+foto"} 
-                  className="w-20 h-20 object-cover rounded border" 
-                />
-                <div className="flex-1">
-                  <h4 className="text-sm font-medium text-gray-800">
-                    {item?.product?.name || "Produto sem nome"}
-                  </h4>
-                  <p className="text-sm font-bold text-gray-900">
-                    R$ {typeof item?.product?.priceBRL === 'number' ? item.product.priceBRL.toFixed(2) : "0,00"}
-                  </p>
-                  <span className="text-xs text-gray-500">Qtd: {item?.quantity || 1}</span>
-                </div>
-              </div>
-            ))
-          ) : (
-            <p className="text-center text-gray-400 p-4">Seu carrinho está vazio.</p>
-          )}
+          <button onClick={onClose} className="p-2"><X className="w-5 h-5" /></button>
         </div>
         
+        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+          {cartItems?.map((item, idx) => (
+            <div key={idx} className="flex gap-4 border-b pb-4">
+              <img src={item.product?.image} className="w-16 h-16 object-cover rounded" />
+              <div>
+                <h4 className="text-sm font-medium">{item.product?.name}</h4>
+                <p className="font-bold">R$ {item.product?.priceBRL?.toFixed(2)}</p>
+              </div>
+            </div>
+          ))}
+        </div>
 
-        {/* Resumo e Checkout estilo Nuvemshop */}
         <div className="p-4 border-t bg-gray-50 space-y-4">
-          <div className="space-y-2">
-            <div className="flex justify-between text-sm">
-              <span className="text-gray-600">Subtotal</span>
-              <span className="font-bold">R$ {subtotal.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-lg font-bold text-gray-900 border-t pt-2">
-              <span>Total</span>
-              <span>R$ {totalBase.toFixed(2)}</span>
-            </div>
+          <div className="flex justify-between font-bold text-lg">
+            <span>Total</span>
+            <span>R$ {subtotal.toFixed(2)}</span>
           </div>
-
-          {/* Opção de Parcelamento */}
-          <div className="bg-white p-3 rounded border shadow-sm">
-            <label className="flex items-center gap-2 cursor-pointer mb-2">
-               <input type="checkbox" className="accent-blue-600" checked={wantsInstallments} onChange={(e) => setWantsInstallments(e.target.checked)} />
-               <span className="text-xs font-bold text-gray-700 uppercase">Parcelar no cartão</span>
+          
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-bold">
+              <input type="checkbox" checked={wantsInstallments} onChange={(e) => setWantsInstallments(e.target.checked)} />
+              Parcelar no cartão
             </label>
             {wantsInstallments && (
-              <select className="w-full text-sm border-gray-300 rounded p-2" value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
-                {[2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map(n => <option key={n} value={n}>{n}x com juros</option>)}
-              </select>
+              <div className="space-y-2">
+                <select className="w-full p-2 border rounded" value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
+                  {[2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n}x com juros</option>)}
+                </select>
+                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded text-center">
+                  Prévia: {installments}x de R$ {calculatePreview()}
+                </div>
+              </div>
             )}
           </div>
 
-          <button onClick={handleWhatsAppCheckout} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded uppercase text-sm tracking-wide transition-all">
+          <button onClick={handleWhatsApp} className="w-full bg-blue-600 text-white py-3 rounded font-bold uppercase text-sm">
             Finalizar Pedido
           </button>
-          
-          <div className="flex items-center justify-center gap-1 text-[10px] text-gray-400">
-             <CreditCard className="w-3 h-3" /> Pagamento seguro via WhatsApp
-          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
