@@ -1,9 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
-import RedirectBanner from './components/RedirectBanner';
-<SearchBar />
-<RedirectBanner />
-<main className="max-w-7xl mx-auto px-4 py-8">
 import Header from "./components/Header";
+import SearchBar from "./components/SearchBar";
+import RedirectBanner from "./components/RedirectBanner"; // Adicione esta linha
+// ... (mantenha os outros imports como estão)
 import Hero from "./components/Hero";
 import TrustBadges from "./components/TrustBadges";
 import ProductCard from "./components/ProductCard";
@@ -1570,6 +1569,43 @@ export default function App() {
         const timeB = b.createdAt?.seconds || 0;
         return timeB - timeA;
       });
+// ... (mantenha todos os seus imports originais aqui)
+import RedirectBanner from './components/RedirectBanner'; 
+
+// ... (mantenha toda a lógica de constantes PRODUCTS, estados, useEffects, etc.)
+
+export default function App() {
+  // ... (toda a sua lógica de estado e funções permanece aqui)
+
+  return (
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+      </div>
+
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={allCategories}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => user ? setActiveTab("account") : setIsAuthOpen(true)}
+        user={user}
+        onLogout={handleLogout}
+        onLogoClick={handleReturnToStore}
+      />
+
+      {/* Componentes inseridos CORRETAMENTE dentro do return */}
+      <SearchBar />
+      <RedirectBanner />
+
+      {/* ... continue com o restante do seu código (abas, vitrine, etc) a partir daqui ... */}
+      
+      {/* ... finalize com os modais e o footer ... */}
+    </div>
+  );
+} // <--- Apenas UM fechamento de função aqui
 
       setOrders(ordersList);
       setLoadingOrders(false);
