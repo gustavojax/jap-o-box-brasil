@@ -1862,7 +1862,7 @@ export default function App() {
         // ========================================================
         // 📦 PÁGINA DE REDIRECIONAMENTO
         // ========================================================
-        <main className="flex-1 bg-slate-50 py-12 px-4">
+        <main className="flex-1 bg-white py-12 px-4">
           <section className="max-w-6xl mx-auto">
             <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-10">
@@ -1935,24 +1935,7 @@ export default function App() {
                     </div>
                   </div>
 
-                  {/* Artigos de Pesca */}
-                  <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
-                    <h4 className="text-sm font-bold text-blue-400 mb-3 uppercase tracking-wider">Artigos de Pesca</h4>
-                    <ul className="space-y-4 text-sm text-slate-300">
-                      <li>
-                        <a href="https://www.digitaka.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> DIGITAKA</a>
-                        <p className="text-[11px] text-slate-400 leading-snug">Maior variedade. Uma das mais populares no mundo.</p>
-                      </li>
-                      <li>
-                        <a href="https://www.plat.co.jp" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> PLAT</a>
-                        <p className="text-[11px] text-slate-400 leading-snug">Focada em varas, molinetes (JDM) e peças originais.</p>
-                      </li>
-                      <li>
-                        <a href="https://www.ichibantackle.com" target="_blank" rel="noopener noreferrer" className="text-white flex items-center gap-2 font-bold mb-1 hover:text-blue-400 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Ichiban Tackle</a>
-                        <p className="text-[11px] text-slate-400 leading-snug">Excelente para Iscas JDM (Megabass, Deps, etc).</p>
-                      </li>
-                    </ul>
-                  </div>
+                  
 
                 </div>
               </div>
