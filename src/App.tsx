@@ -1918,22 +1918,77 @@ export default function App() {
                   </div>
 
                   {/* Marketplaces & Joias */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                    <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
-                      <h4 className="text-sm font-bold text-emerald-400 mb-3 uppercase tracking-wider">Marketplaces</h4>
-                      <ul className="space-y-2 text-sm text-slate-300">
-                        <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Rakuten JP</a></li>
-                        <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Amazon Japan</a></li>
-                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Mercari</a></li>
-                      </ul>
-                    </div>
-                    <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
-                      <h4 className="text-sm font-bold text-amber-400 mb-3 uppercase tracking-wider">Joias & Moda</h4>
-                      <ul className="space-y-2 text-sm text-slate-300">
-                        <li><a href="https://www.zara.com/jp/ja/woman-mkt1000.html" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Zara Japan</a></li>
-                      </ul>
-                    </div>
-                  </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
+      Marketplaces
+    </h4>
+
+    <ul className="space-y-3 text-sm font-bold text-black">
+
+      <li>
+        <a
+          href="https://www.rakuten.co.jp/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-red-600 flex items-center gap-2 transition-colors"
+        >
+          <ExternalLink className="w-4 h-4 text-red-600" />
+          Rakuten JP
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="https://www.amazon.co.jp/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-red-600 flex items-center gap-2 transition-colors"
+        >
+          <ExternalLink className="w-4 h-4 text-red-600" />
+          Amazon Japan
+        </a>
+      </li>
+
+      <li>
+        <a
+          href="https://jp.mercari.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-red-600 flex items-center gap-2 transition-colors"
+        >
+          <ExternalLink className="w-4 h-4 text-red-600" />
+          Mercari
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
+      Joias & Moda
+    </h4>
+
+    <ul className="space-y-3 text-sm font-bold text-black">
+
+      <li>
+        <a
+          href="https://www.zara.com/jp/ja/woman-mkt1000.html"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="hover:text-red-600 flex items-center gap-2 transition-colors"
+        >
+          <ExternalLink className="w-4 h-4 text-red-600" />
+          Zara Japan
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+</div>
 
                   
 
