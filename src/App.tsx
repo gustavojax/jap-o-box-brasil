@@ -1570,16 +1570,7 @@ export default function App() {
         return timeB - timeA;
       });
 
-// ... (mantenha toda a lógica de constantes PRODUCTS, estados, useEffects, etc.)
 
-export default function App() {
-  // ... (toda a sua lógica de estado e funções permanece aqui)
-
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
-      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
-      </div>
 
       <Header
         onSearchChange={setSearchQuery}
