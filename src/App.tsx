@@ -1,5 +1,8 @@
 import React, { useState, useMemo, useEffect } from "react";
-
+import RedirectBanner from './components/RedirectBanner';
+<SearchBar />
+<RedirectBanner />
+<main className="max-w-7xl mx-auto px-4 py-8">
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import TrustBadges from "./components/TrustBadges";
