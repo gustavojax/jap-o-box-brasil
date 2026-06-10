@@ -1742,7 +1742,9 @@ export default function App() {
         onLogout={handleLogout}
         onLogoClick={handleReturnToStore}
       />
-<RedirectBanner />
+<RedirectBanner
+  onRedirectClick={() => setActiveTab("redirect")}
+/>
 
       {/* MENU DE ABAS SUPERIORES */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
