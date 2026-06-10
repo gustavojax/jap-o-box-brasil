@@ -1863,59 +1863,175 @@ export default function App() {
         // 📦 PÁGINA DE REDIRECIONAMENTO
         // ========================================================
         <main className="flex-1 bg-white py-12 px-4">
-          <section className="max-w-6xl mx-auto">
-            <div className="bg-slate-900 rounded-3xl p-8 md:p-12 text-white shadow-2xl relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-8 opacity-10">
-                <MapPin className="w-48 h-48" />
-              </div>
+  <section className="max-w-6xl mx-auto">
 
-              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
-                
-                {/* Explicação e Endereço */}
-                <div>
-                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight">📦 Compre em Qualquer Loja do Japão</h2>
-                  <div className="text-slate-300 space-y-4 text-sm font-medium mb-8">
-                    <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                    <p>Com o nosso serviço de <strong className="text-white">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço como destino. Nós recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
-                    
-                    <div className="bg-blue-900/30 border border-blue-500/30 p-4 rounded-xl flex gap-3 text-blue-200 mt-6">
-                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <p className="text-xs leading-relaxed"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão abaixo para nos enviar o comprovante pelo WhatsApp e avisar que a encomenda está a caminho!</p>
-                    </div>
-                  </div>
+    <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-red-600 relative overflow-hidden">
 
-                  {/* Cartão do Endereço */}
-                  <div className="bg-white text-slate-900 p-6 rounded-2xl shadow-lg border-l-4 border-blue-600 relative">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Seu Endereço no Japão</p>
-                    <p className="font-black text-xl leading-snug mb-1">The Tomorrow</p>
-                    <p className="text-slate-600 font-medium">2-chōme-3-15 Matsutera, Yokkaichi</p>
-                    <p className="text-slate-600 font-medium">Mie 510-8021</p>
-                    <p className="text-slate-800 font-black mt-2">(Japão)</p>
-                  </div>
+      <div className="absolute top-0 right-0 p-8 opacity-5">
+        <MapPin className="w-48 h-48 text-red-600" />
+      </div>
 
-                  <button
-                    onClick={() => window.open('https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21', '_blank')}
-                    className="mt-8 bg-emerald-500 hover:bg-emerald-600 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-colors w-full sm:w-auto shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2"
-                  >
-                    Avisar Envio no WhatsApp <ExternalLink className="w-4 h-4" />
-                  </button>
-                </div>
+      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
 
-                {/* Links das Lojas */}
-                <div className="space-y-6">
-                  <h3 className="text-xl font-black mb-4">🔗 Lojas Recomendadas</h3>
-                  
-                  {/* Roupas */}
-                  <div className="bg-slate-800/80 p-5 rounded-2xl border border-slate-700 hover:border-slate-600 transition-colors">
-                    <h4 className="text-sm font-bold text-rose-400 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
-                    <ul className="space-y-2 text-sm text-slate-300">
-                      <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Adidas Japan</a></li>
-                      <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> GU</a></li>
-                      <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Onitsuka Tiger</a></li>
-                      <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Uniqlo Japan</a></li>
-                      <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-white flex items-center gap-2 transition-colors"><ExternalLink className="w-3 h-3 text-slate-500" /> Nike Japan</a></li>
-                    </ul>
-                  </div>
+        {/* Explicação e Endereço */}
+        <div>
+
+          <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">
+            📦 Compre em Qualquer Loja do Japão
+          </h2>
+
+          <div className="text-black space-y-4 text-sm font-bold mb-8">
+
+            <p>
+              Muitas lojas online japonesas não enviam produtos para o exterior.
+              É para isso que estamos aqui!
+            </p>
+
+            <p>
+              Com o nosso serviço de{" "}
+              <strong className="text-red-600">
+                Redirecionamento
+              </strong>,
+              você faz compras nos seus sites favoritos como se morasse no Japão
+              usando o nosso endereço como destino.
+              Nós recebemos, organizamos suas caixas e enviamos tudo direto
+              para a sua casa no Brasil.
+            </p>
+
+            <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
+
+              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+
+              <p className="text-xs leading-relaxed font-bold">
+                <strong>Como fazer:</strong> Copie o endereço abaixo e cole na
+                hora de finalizar a compra na loja japonesa. Assim que o
+                pagamento for concluído, clique no botão abaixo para nos enviar
+                o comprovante pelo WhatsApp e avisar que a encomenda está a
+                caminho.
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* Cartão do Endereço */}
+          <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
+
+            <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">
+              Seu Endereço no Japão
+            </p>
+
+            <p className="font-black text-xl leading-snug mb-1 text-black">
+              The Tomorrow
+            </p>
+
+            <p className="text-gray-700 font-bold">
+              2-chōme-3-15 Matsutera, Yokkaichi
+            </p>
+
+            <p className="text-gray-700 font-bold">
+              Mie 510-8021
+            </p>
+
+            <p className="text-black font-black mt-2">
+              (Japão)
+            </p>
+
+          </div>
+
+          <button
+            onClick={() =>
+              window.open(
+                "https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21",
+                "_blank"
+              )
+            }
+            className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg"
+          >
+            Avisar Envio no WhatsApp
+          </button>
+
+        </div>
+
+        {/* Links das Lojas */}
+        <div className="space-y-6">
+
+          <h3 className="text-xl font-black mb-4 text-red-600">
+            🔗 Lojas Recomendadas
+          </h3>
+
+          {/* Roupas */}
+          <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+
+            <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
+              Marcas de Roupa e Calçados
+            </h4>
+
+            <ul className="space-y-3 text-sm font-bold text-black">
+
+              <li>
+                <a
+                  href="https://www.adidas.jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-red-600 flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-600" />
+                  Adidas Japan
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://www.gu-global.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-red-600 flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-600" />
+                  GU
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://www.onitsukatiger.com/jp/ja-jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-red-600 flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-600" />
+                  Onitsuka Tiger
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://www.uniqlo.com/jp/ja/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-red-600 flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-600" />
+                  Uniqlo Japan
+                </a>
+              </li>
+
+              <li>
+                <a
+                  href="https://www.nike.com/jp/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-red-600 flex items-center gap-2"
+                >
+                  <ExternalLink className="w-4 h-4 text-red-600" />
+                  Nike Japan
+                </a>
+              </li>
+
+            </ul>
+
+          </div>
 
                   {/* Marketplaces & Joias */}
 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
