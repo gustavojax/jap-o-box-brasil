@@ -2119,45 +2119,37 @@ export default function App() {
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             
             {/* FOTO PAULA TAKASHIRO */}
-            <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
-              <img 
-                src=
-                alt="Paula Takashiro" 
-                className="w-full h-full object-cover absolute inset-0 opacity-90"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent" />
-            </div>
-
-            {/* CONTEÚDO DA HISTÓRIA */}
-            <div className="md:col-span-7 p-8 md:p-12 flex flex-col justify-center space-y-6">
-              <div>
-                <span className="text-xs font-black text-rose-600 uppercase tracking-widest block mb-2">Nossa História</span>
-                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
-              </div>
-              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
-                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
-                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
-                <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
-              </div>
-              
-              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                <div className="flex items-center gap-3 text-left">
-                  <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
-                    <img 
-                      src="https://iili.io/CJbmWhP.md.jpg" 
-                      alt="Japão Box Brasil Logo" 
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div>
-                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
-                    <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
-                  </div>
-                </div>
-                <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
-              </div>
-            </div>
+            {/* CONTEÚDO DA HISTÓRIA - AGORA OCUPA 100% DA LARGURA */}
+<div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
+  <div>
+    <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
+    <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
+  </div>
+  
+  <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
+    <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+    <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+    <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+    <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
+  </div>
+  
+  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+    <div className="flex items-center gap-3 text-left">
+      <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
+        <img 
+          src="https://iili.io/CJbmWhP.md.jpg" 
+          alt="Japão Box Brasil Logo" 
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div>
+        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+        <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+      </div>
+    </div>
+    <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
+  </div>
+</div>
 
           </div>
         </main>
