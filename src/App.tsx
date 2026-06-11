@@ -1752,7 +1752,7 @@ export default function App() {
           <button
             onClick={handleReturnToStore}
             className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "store" ? "bg-slate-900 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+              activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
             }`}
           >
             Loja
