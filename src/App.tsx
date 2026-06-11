@@ -2121,7 +2121,7 @@ export default function App() {
             {/* FOTO PAULA TAKASHIRO */}
             <div className="md:col-span-5 bg-slate-950 relative min-h-[350px] md:min-h-full flex items-center justify-center">
               <img 
-                src="https://iili.io/CJpV5fj.md.jpg" 
+                src=
                 alt="Paula Takashiro" 
                 className="w-full h-full object-cover absolute inset-0 opacity-90"
               />
