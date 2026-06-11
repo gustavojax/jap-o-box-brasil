@@ -11,7 +11,7 @@ interface HeaderProps {
   onOpenAuth: () => void;
   user: any;
   onLogout: () => void;
-  onLogoClick: () => void; // 🛠️ DECLARADO E CONECTADO DE FORMA DEFINITIVA
+  onLogoClick: () => void;
 }
 
 export default function Header({
@@ -24,7 +24,7 @@ export default function Header({
   onOpenAuth,
   user,
   onLogout,
-  onLogoClick, // Recebe a função de retorno à loja do App.tsx
+  onLogoClick,
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -43,8 +43,6 @@ export default function Header({
 
   return (
     <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative">
-      
-      {/* CAMADA DE FUNDO ISOLADA */}
       <div 
         className="absolute inset-0 pointer-events-none bg-cover bg-center bg-no-repeat mix-blend-multiply transition-opacity duration-300 overflow-hidden"
         style={{ 
@@ -53,12 +51,8 @@ export default function Header({
         }}
       />
 
-      {/* CONTEÚDO DO HEADER */}
       <div className="max-w-7xl mx-auto px-4 py-3 space-y-3 md:space-y-0 md:flex md:items-center md:justify-between md:gap-4 relative z-10">
-        
-        {/* LOGO E SEÇÃO DE USUÁRIO (GATILHO DE RETORNO CORRIGIDO) */}
         <div className="flex items-center justify-between gap-2">
-          {/* 🛠️ BINDING DO LOGO: Agora executa a função handleReturnToStore ao clicar em qualquer parte do bloco da marca */}
           <div 
             onClick={onLogoClick}
             className="flex items-center gap-3 cursor-pointer select-none group"
@@ -79,7 +73,6 @@ export default function Header({
             </div>
           </div>
 
-          {/* ÍCONES DE AÇÃO RÁPIDA (MOBILE) */}
           <div className="flex items-center gap-2 md:hidden">
             <button 
               onClick={onOpenCart} 
@@ -110,18 +103,16 @@ export default function Header({
           </div>
         </div>
 
-        {/* BARRA DE PESQUISA */}
         <div className="relative flex-1 max-w-md mx-auto md:mx-0">
           <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
           <input
             type="text"
             placeholder="Buscar produtos no Japão..."
             onChange={(e) => onSearchChange(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all text-left shadow-sm"
+            className="w-full pl-10 pr-4 py-2 bg-white/95 backdrop-blur-sm border border-slate-200 rounded-xl text-xs font-medium focus:outline-none focus:ring-2 focus:ring-red-600 focus:bg-white transition-all text-left shadow-sm"
           />
         </div>
 
-        {/* CONTROLES DE NAVEGAÇÃO DESKTOP */}
         <div className="hidden md:flex items-center gap-3">
           <button 
             onClick={onOpenCart} 
@@ -135,7 +126,6 @@ export default function Header({
               </span>
             )}
           </button>
-
           {user ? (
             <div className="flex items-center gap-2">
               <div className="bg-white/95 backdrop-blur-sm px-3 py-2 rounded-xl text-xs font-bold flex items-center gap-1.5 border shadow-sm">
@@ -145,7 +135,6 @@ export default function Header({
               <button 
                 onClick={onLogout}
                 className="p-2 text-slate-400 hover:text-red-600 bg-white border rounded-xl hover:bg-red-50 hover:border-red-100 transition-all cursor-pointer shadow-sm"
-                title="Sair da Conta"
               >
                 <LogOut className="w-4 h-4" />
               </button>
@@ -153,35 +142,32 @@ export default function Header({
           ) : (
             <button 
               onClick={onOpenAuth}
-              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-slate-900 rounded-xl hover:bg-slate-800 transition-all cursor-pointer shadow-sm"
+              className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold text-white bg-red-600 rounded-xl hover:bg-red-700 transition-all cursor-pointer shadow-sm"
             >
               <User className="w-3.5 h-3.5" />
               Entrar / Registar
             </button>
           )}
         </div>
-
       </div>
 
-      {/* SEÇÃO DA BARRA DE CATEGORIAS */}
       <div className="w-full border-t border-slate-100 bg-white/60 backdrop-blur-xs px-4 py-2 relative z-30">
         <div className="max-w-7xl mx-auto flex flex-col sm:flex-row gap-2 justify-between items-stretch sm:items-center">
-          
           <div className="relative inline-block text-left">
             <button
               onClick={toggleDropdown}
-              className="w-full sm:w-auto flex items-center justify-between gap-4 px-4 py-2 bg-slate-950 border border-slate-900 rounded-xl text-xs font-black text-white shadow-md hover:bg-slate-900 transition-all cursor-pointer"
+              className="w-full sm:w-auto flex items-center justify-between gap-4 px-4 py-2 bg-red-600 border border-red-700 rounded-xl text-xs font-black text-white shadow-md hover:bg-red-700 transition-all cursor-pointer"
             >
-              <Menu className="w-3.5 h-3.5 text-red-500" />
+              <Menu className="w-3.5 h-3.5 text-white" />
               <span>{selectedCategory === "Todos" ? "Categorias Japão" : selectedCategory}</span>
-              <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
+              <ChevronDown className={`w-3.5 h-3.5 text-white/80 transition-transform duration-200 ${isDropdownOpen ? "rotate-180" : ""}`} />
             </button>
 
             {isDropdownOpen && (
               <div className="absolute left-0 mt-2 w-72 bg-white border border-slate-200 rounded-2xl shadow-2xl max-h-80 overflow-y-auto z-50 p-2 text-left block">
                 <button
                   onClick={(e) => handleCategoryClick("Todos", e)}
-                  className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${selectedCategory === "Todos" ? "bg-slate-900 text-white" : "text-slate-700 hover:bg-slate-50"}`}
+                  className={`w-full text-left px-3 py-2.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${selectedCategory === "Todos" ? "bg-red-600 text-white" : "text-slate-700 hover:bg-slate-50"}`}
                 >
                   Ver Todo o Catálogo
                 </button>
@@ -198,17 +184,12 @@ export default function Header({
               </div>
             )}
           </div>
-
           <div className="text-[11px] text-slate-500 font-semibold text-center sm:text-right py-1 sm:py-0">
             Filtro Ativo: <span className="text-slate-900 font-black">{selectedCategory}</span>
           </div>
-
         </div>
       </div>
-
-      {isDropdownOpen && (
-        <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setIsDropdownOpen(false)} />
-      )}
+      {isDropdownOpen && <div className="fixed inset-0 z-20 bg-transparent" onClick={() => setIsDropdownOpen(false)} />}
     </header>
   );
 }
