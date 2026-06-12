@@ -494,21 +494,7 @@ const PRODUCTS: Product[] = [
     category: "Skincare e Tratamentos Faciais",
     stock: 15
   },
-  {
-    id: "celimax-retinal-booster",
-    name: "Celimax Retinal Shot Tightening Booster",
-    jpName: "セリマックス レチナールブースター",
-    description: "Booster potente com Retinal.",
-    priceBRL: 128.90,
-    serviceFeeBRL: 0,
-    shippingEstBRL: 45.00,
-    image: "https://i.ibb.co/99gRf3rD/D-NQ-NP-643899-MLA107452017338-032026-OO.jpg",
-    rating: 4.9,
-    reviewsCount: 130,
-    department: "Beleza, Higiene e Saúde",
-    category: "Skincare e Tratamentos Faciais",
-    stock: 14
-  },
+
   {
     id: "celimax-pore-brightening",
     name: "Celimax Pore Brightening Spot Care Cream",
