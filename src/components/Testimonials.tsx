@@ -15,7 +15,7 @@ export default function Testimonials() {
               <Smile className="w-5 h-5" />
             </div>
             <div className="text-left">
-              <p className="text-xl font-black text-slate-900 tracking-tight">+5.000</p>
+              <p className="text-xl font-black text-slate-900 tracking-tight">142</p>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Clientes Felizes</p>
             </div>
           </div>
@@ -26,7 +26,7 @@ export default function Testimonials() {
               <Box className="w-5 h-5" />
             </div>
             <div className="text-left">
-              <p className="text-xl font-black text-slate-900 tracking-tight">+12.000</p>
+              <p className="text-xl font-black text-slate-900 tracking-tight">318</p>
               <p className="text-xs font-bold text-slate-400 uppercase tracking-wider">Caixas Enviadas</p>
             </div>
           </div>
