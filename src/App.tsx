@@ -75,7 +75,7 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Cuidados com o Cabelo",
     stock: 15
-  }
+  },
 
   {
     id: "anessa-perfect-uv-milk-sachet",
