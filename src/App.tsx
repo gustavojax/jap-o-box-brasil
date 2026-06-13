@@ -30,7 +30,6 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 const PRODUCTS: Product[] = [
   // --- SKINCARE E TRATAMENTOS FACIAIS ---
 
-  [
   {
     id: "medicube-forever-cherry-ager-booster",
     name: "Medicube x Forever Cherry Age-R Booster (Edição Especial)",
