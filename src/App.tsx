@@ -76,7 +76,7 @@ const PRODUCTS: Product[] = [
     category: "Cuidados com o Cabelo",
     stock: 15
   }
-]
+
   {
     id: "anessa-perfect-uv-milk-sachet",
     name: "Anessa Perfect UV Sunscreen Skincare Milk (Sachet - 60ml)",
