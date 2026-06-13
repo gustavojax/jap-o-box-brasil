@@ -35,7 +35,7 @@ const PRODUCTS: Product[] = [
     name: "Medicube x Forever Cherry Age-R Booster (Edição Especial)",
     jpName: "",
     description: "Dispositivo facial multifuncional com escova vibratória rosa em edição especial com laço. Ideal para limpeza profunda, esfoliação e melhor absorção de séruns.",
-    priceBRL: 1699.99,
+    priceBRL: 189.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 35.00,
     image: "https://i.postimg.cc/Hx8b2BgB/IMG-0671.jpg",
@@ -152,8 +152,8 @@ const PRODUCTS: Product[] = [
     stock: 18
   },
   {
-    id: "qoo10-anti-signal-wrinkle-hunter-eye-cream",
-    name: "Qoo10 Anti-Signal Wrinkle Hunter Eye Cream",
+    id: "anti-signal-wrinkle-hunter-eye-cream",
+    name: "Anti-Signal Wrinkle Hunter Eye Cream",
     jpName: "アンチシグナル リンクルハンター アイクリーム",
     description: "Creme japonês anti-rugas para olhos com Retinol e Niacinamida. Focado em reduzir linhas finas e melhorar a firmeza.",
     priceBRL: 99.00,
@@ -1391,7 +1391,7 @@ const PRODUCTS: Product[] = [
     name: "Kit Tsubaki Premium Cool & Repair (Azul)",
     jpName: "TSUBAKI プレミアムクール＆リペア ポンプペアセット",
     description: "Edição limitada refrescante (Cool) ideal para o verão. Limpa o couro cabeludo e repara danos.",
-    priceBRL: 179.90,
+    priceBRL: 89.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 65.00,
     image: "https://i.postimg.cc/XYCx6z41/D-NQ-NP-2X-938804-CBT110708060883-042026-F-conjunto-de-shampoo-e-condicionador-shiseido-tsubaki-prem.webp",
