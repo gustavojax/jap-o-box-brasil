@@ -42,7 +42,7 @@ export default function AdminDashboard() {
         allOrders.push({ id: doc.id, ...doc.data() } as Order);
       });
 
-      // Ordena por data mais recente
+      // Ordena por data mais recente (garante que os novos pedidos do whats apareçam no topo)
       allOrders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       
       setOrders(allOrders);
@@ -213,7 +213,7 @@ export default function AdminDashboard() {
                           ID: {order.id.slice(0, 8)}...
                         </div>
                         <div className="text-[10px] text-slate-400 font-medium flex items-center gap-1">
-                          <User className="w-3 h-3" /> {order.userId.slice(0, 12)}...
+                          <User className="w-3 h-3" /> {order.userId.slice(0, 20)}...
                         </div>
                         <div className="text-[10px] font-bold text-slate-400 font-mono">
                           {order.createdAt ? new Date(order.createdAt.seconds * 1000).toLocaleDateString('pt-BR') : "Sem data"}
@@ -233,7 +233,7 @@ export default function AdminDashboard() {
                               type="text"
                               value={inputTracking}
                               placeholder="Ex: NX123456789JP"
-                              onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                              onChange={(e) => setInputTracking(e.target.value.toUpperCase())} // Corrigido aqui de setCouponInput para setInputTracking
                               className="bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 font-mono text-xs font-bold text-slate-900 uppercase focus:outline-none focus:ring-2 focus:ring-red-500"
                             />
                             <select
