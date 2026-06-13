@@ -29,6 +29,54 @@ import { collection, query, where, onSnapshot, addDoc, serverTimestamp, doc, get
 // ==========================================
 const PRODUCTS: Product[] = [
   // --- SKINCARE E TRATAMENTOS FACIAIS ---
+
+  [
+  {
+    id: "medicube-forever-cherry-ager-booster",
+    name: "Medicube x Forever Cherry Age-R Booster (Edição Especial)",
+    jpName: "",
+    description: "Dispositivo facial multifuncional com escova vibratória rosa em edição especial com laço. Ideal para limpeza profunda, esfoliação e melhor absorção de séruns.",
+    priceBRL: 1699.99,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/Hx8b2BgB/IMG-0671.jpg",
+    rating: 5.0,
+    reviewsCount: 12,
+    department: "Beleza, Higiene e Saúde",
+    category: "Acessórios e Dispositivos Estéticos",
+    stock: 5
+  },
+  {
+    id: "femimore-glutathione-bubble-soap",
+    name: "Femimore Glutathione Bubble Soap",
+    jpName: "",
+    description: "Sabonete em espuma com Glutathione. Proporciona limpeza suave, ajuda no controle de oleosidade, odor e promove clareamento leve da pele.",
+    priceBRL: 110.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/sf9MRtwB/femimore.jpg",
+    rating: 4.7,
+    reviewsCount: 45,
+    department: "Beleza, Higiene e Saúde",
+    category: "Skincare e Tratamentos Faciais",
+    stock: 20
+  },
+  {
+    id: "mise-en-scene-perfect-serum-original",
+    name: "Mise en Scène Perfect Serum Original",
+    jpName: "",
+    description: "Sérum capilar coreano queridinho. Proporciona brilho intenso, hidratação, controle de frizz e proteção térmica aos fios.",
+    priceBRL: 75.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.postimg.cc/XYhJ8378/serun.webp",
+    rating: 4.9,
+    reviewsCount: 182,
+    department: "Beleza, Higiene e Saúde",
+    category: "Cuidados com o Cabelo",
+    stock: 15
+  }
+]
   {
     id: "anessa-perfect-uv-milk-sachet",
     name: "Anessa Perfect UV Sunscreen Skincare Milk (Sachet - 60ml)",
