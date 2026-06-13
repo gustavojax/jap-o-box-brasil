@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { 
   ShieldAlert, Package, Truck, CheckCircle, Clock, 
-  Search, Save, RefreshCw, BarChart3, User, Hash, Clipboard
+  Search, Save, RefreshCw, BarChart3, User, Hash, Clipboard, Trash2 // Importado o Trash2
 } from "lucide-react";
 import { db } from "../firebase";
-import { collection, onSnapshot, doc, updateDoc } from "firebase/firestore";
+import { collection, onSnapshot, doc, updateDoc, deleteDoc } from "firebase/firestore"; // Importado o deleteDoc
 
 interface Order {
   id: string;
@@ -42,7 +42,7 @@ export default function AdminDashboard() {
         allOrders.push({ id: doc.id, ...doc.data() } as Order);
       });
 
-      // Ordena por data mais recente (garante que os novos pedidos do whats apareçam no topo)
+      // Ordena por data mais recente
       allOrders.sort((a, b) => (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0));
       
       setOrders(allOrders);
@@ -100,6 +100,21 @@ export default function AdminDashboard() {
       alert("Falha ao salvar as alterações no banco de dados.");
     } finally {
       setUpdatingId(null);
+    }
+  };
+
+  // Função para deletar o pedido permanentemente do Firestore
+  const handleDeleteOrder = async (orderId: string) => {
+    const confirmDelete = window.confirm("Tem certeza que deseja EXCLUIR permanentemente este pedido do painel do armazém?");
+    if (!confirmDelete) return;
+
+    try {
+      const orderDocRef = doc(db, "orders", orderId);
+      await deleteDoc(orderDocRef);
+      console.log("Pedido excluído do Firestore!");
+    } catch (error) {
+      console.error("Erro ao deletar o pedido:", error);
+      alert("Erro ao tentar excluir o pedido do banco de dados.");
     }
   };
 
@@ -233,7 +248,7 @@ export default function AdminDashboard() {
                               type="text"
                               value={inputTracking}
                               placeholder="Ex: NX123456789JP"
-                              onChange={(e) => setInputTracking(e.target.value.toUpperCase())} // Corrigido aqui de setCouponInput para setInputTracking
+                              onChange={(e) => setInputTracking(e.target.value.toUpperCase())}
                               className="bg-white border border-slate-300 rounded-xl px-2.5 py-1.5 font-mono text-xs font-bold text-slate-900 uppercase focus:outline-none focus:ring-2 focus:ring-red-500"
                             />
                             <select
@@ -265,23 +280,36 @@ export default function AdminDashboard() {
                       </td>
 
                       {/* Botões de Ação */}
-                      <td className="p-4 text-center">
-                        {isEditing ? (
-                          <button
-                            onClick={() => handleUpdateOrder(order.id)}
-                            disabled={updatingId === order.id}
-                            className="bg-slate-900 hover:bg-slate-800 text-white font-black px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center gap-1.5 mx-auto cursor-pointer"
-                          >
-                            <Save className="w-3.5 h-3.5" /> {updatingId === order.id ? "Salvando..." : "Salvar"}
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => startEditing(order)}
-                            className="bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-black px-4 py-2 rounded-xl text-[10px] uppercase tracking-wider transition-all mx-auto cursor-pointer shadow-2xs"
-                          >
-                            Despachar / Editar
-                          </button>
-                        )}
+                      <td className="p-4">
+                        <div className="flex flex-col sm:flex-row justify-center items-center gap-2 max-w-[200px] mx-auto">
+                          {isEditing ? (
+                            <button
+                              onClick={() => handleUpdateOrder(order.id)}
+                              disabled={updatingId === order.id}
+                              className="w-full bg-slate-900 hover:bg-slate-800 text-white font-black px-3 py-2 rounded-xl text-[10px] uppercase tracking-wider transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                            >
+                              <Save className="w-3.5 h-3.5" /> {updatingId === order.id ? "Salvando..." : "Salvar"}
+                            </button>
+                          ) : (
+                            <>
+                              <button
+                                onClick={() => startEditing(order)}
+                                className="w-full bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 text-slate-700 font-black px-3 py-2 rounded-xl text-[10px] uppercase tracking-wider transition-all cursor-pointer shadow-2xs whitespace-nowrap"
+                              >
+                                Despachar / Editar
+                              </button>
+                              
+                              {/* Botão de Excluir adicionado aqui */}
+                              <button
+                                onClick={() => handleDeleteOrder(order.id)}
+                                className="p-2 border border-slate-200 text-gray-400 hover:text-red-600 hover:border-red-200 hover:bg-red-50 rounded-xl transition-colors cursor-pointer shadow-2xs"
+                                title="Excluir pedido permanentemente"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
+                        </div>
                       </td>
                     </tr>
                   );
