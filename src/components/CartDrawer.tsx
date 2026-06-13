@@ -1,8 +1,8 @@
 import React from "react";
-import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, Loader2 } from "lucide-react";
+import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, Loader2, Trash2 } from "lucide-react"; // Importado o Trash2
 import type { CartItem } from "../types";
-import { auth, db } from "../firebase"; // Importado o db do Firebase
-import { collection, addDoc, serverTimestamp } from "firebase/firestore"; // Importadas as funções do Firestore
+import { auth, db } from "../firebase";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 interface CartDrawerProps {
   onClose: () => void;
@@ -13,7 +13,7 @@ interface CartDrawerProps {
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [wantsInstallments, setWantsInstallments] = React.useState(false);
   const [installments, setInstallments] = React.useState(2);
-  const [isSubmitting, setIsSubmitting] = React.useState(false); // Estado para o loading do botão
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
 
   const subtotal = cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
 
@@ -27,38 +27,37 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     } catch { return "0,00"; }
   };
 
+  // Função para excluir o produto do carrinho pelo Index
+  const handleRemoveItem = (indexToRemove: number) => {
+    setCartItems(prevItems => prevItems.filter((_, idx) => idx !== indexToRemove));
+  };
+
   const handleWhatsApp = async () => {
     if (cartItems.length === 0) return;
     
     setIsSubmitting(true);
 
-    // 1. Monta a lista legível para o resumo do armazém e mensagem
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
     const itemsSummary = cartItems.map(i => `${i.product?.name} (x${i.quantity})`).join(", ");
-
-    // 2. Tenta capturar o email do usuário logado (se houver) ou define um padrão descritivo
     const userEmail = auth?.currentUser?.email || "Cliente Web / Sem Login";
 
     try {
-      // 3. Registra a compra na coleção "orders" do Firestore
       if (db) {
         await addDoc(collection(db, "orders"), {
           userId: userEmail,
           itemsSummary: itemsSummary,
-          status: "pending", // Entra como PROCESSANDO no painel armazém
-          trackingCode: "",   // Começa vazio aguardando postagem
-          createdAt: serverTimestamp() // Data e hora do servidor para ordenação exata
+          status: "pending",
+          trackingCode: "",
+          createdAt: serverTimestamp()
         });
         console.log("Pedido registrado com sucesso no painel armazém!");
       }
     } catch (error) {
-      // Mesmo se o banco falhar por algum motivo de rede, o cliente não perde a compra
       console.error("Erro ao registrar pedido no Firestore:", error);
     } finally {
       setIsSubmitting(false);
     }
 
-    // 4. Dispara a mensagem e redireciona para o WhatsApp
     const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\nTotal: R$ ${subtotal.toFixed(2)}\nParcelamento: ${wantsInstallments ? installments + 'x' : 'Pix'}`;
     window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -69,7 +68,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       <div className="relative w-full max-w-sm bg-white h-full shadow-xl flex flex-col text-left">
         <div className="p-4 border-b flex justify-between items-center bg-gray-50">
           <h2 className="font-bold text-gray-700">Meu Carrinho</h2>
-          <button onClick={onClose} className="p-2"><X className="w-5 h-5" /></button>
+          <button onClick={onClose} className="p-2 cursor-pointer hover:text-gray-500"><X className="w-5 h-5" /></button>
         </div>
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -79,13 +78,21 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </div>
           ) : (
             cartItems?.map((item, idx) => (
-              <div key={idx} className="flex gap-4 border-b pb-4">
-                <img src={item.product?.image} className="w-16 h-16 object-cover rounded bg-gray-100" alt={item.product?.name} />
+              <div key={idx} className="flex gap-4 border-b pb-4 items-center">
+                <img src={item.product?.image} className="w-16 h-16 object-cover rounded bg-gray-100 shrink-0" alt={item.product?.name} />
                 <div className="flex-1 min-w-0">
                   <h4 className="text-sm font-medium text-gray-800 truncate">{item.product?.name}</h4>
                   <p className="text-xs text-gray-400 mt-0.5">Quantidade: {item.quantity || 1}</p>
                   <p className="font-bold text-gray-900 mt-1">R$ {item.product?.priceBRL?.toFixed(2)}</p>
                 </div>
+                {/* Botão de Excluir adicionado aqui */}
+                <button 
+                  onClick={() => handleRemoveItem(idx)}
+                  className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer rounded-lg hover:bg-red-50"
+                  title="Remover produto"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
               </div>
             ))
           )}
