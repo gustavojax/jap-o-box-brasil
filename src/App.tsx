@@ -1742,10 +1742,7 @@ export default function App() {
   };
 
 return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
-      
-      {/* POPUP DE AVISO */}
-      {showTaxNotice && (
+  {showTaxNotice && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
             <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
@@ -1764,7 +1761,7 @@ return (
             </button>
           </div>
         </div>
-      )} {/* <--- ESSA CHAVE FECHA O showTaxNotice */}
+      )}
       
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
         <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
@@ -1800,7 +1797,7 @@ return (
       />
 <RedirectBanner onRedirectClick={() => { 
   setActiveTab("redirect"); 
-  setShowTaxNotice(true); // <--- ISSO VAI FORÇAR O POPUP A ABRIR
+  setShowTaxNotice(true); // 
 }} />
 
       {/* MENU DE ABAS SUPERIORES */}
@@ -2298,19 +2295,8 @@ return (
             Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
           </p>
         </div>
-  <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="text-left">
-            <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
-            <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês.
-            </p>
-          </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400">
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-        </div>
+ <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+        {/* ... conteúdo do rodapé ... */}
       </footer>
 
       {isCartOpen && (
