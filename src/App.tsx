@@ -1798,9 +1798,10 @@ return (
         onLogout={handleLogout}
         onLogoClick={handleReturnToStore}
       />
-<RedirectBanner
-  onRedirectClick={() => setActiveTab("redirect")}
-/>
+<RedirectBanner onRedirectClick={() => { 
+  setActiveTab("redirect"); 
+  setShowTaxNotice(true); // <--- ISSO VAI FORÇAR O POPUP A ABRIR
+}} />
 
       {/* MENU DE ABAS SUPERIORES */}
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
@@ -2258,7 +2259,17 @@ return (
             <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
             <ul className="space-y-2 text-sm font-medium">
               <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
-              <li><button onClick={() => setActiveTab("redirect")} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento</button></li>
+              <button
+  onClick={() => {
+    setActiveTab("redirect");
+    setShowTaxNotice(true); // <--- ISSO VAI FORÇAR O POPUP A ABRIR
+  }}
+  className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+    activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
+  }`}
+>
+  Redirecionamento ✈️
+</button>
               <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
               <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
             </ul>
