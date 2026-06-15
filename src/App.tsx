@@ -2295,6 +2295,10 @@ Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil
             </p>
           </div>
         </div>
+
+        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400">
+          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+        </div>
       </footer>
 
       {isCartOpen && (
@@ -2310,6 +2314,6 @@ Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
       <WhatsAppFloat />
 
-    </div> 
+    </div>
   );
 }
