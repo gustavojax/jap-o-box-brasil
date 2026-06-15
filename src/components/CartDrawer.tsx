@@ -1,5 +1,5 @@
 import React from "react";
-import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, Loader2, Trash2 } from "lucide-react";
+import { X, ShoppingBag, AlertTriangle, Loader2, Trash2 } from "lucide-react"; // Ajustei os imports necessários
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -14,7 +14,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const [wantsInstallments, setWantsInstallments] = React.useState(false);
   const [installments, setInstallments] = React.useState(2);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
-  const [acceptedTerms, setAcceptedTerms] = React.useState(false); // Novo estado de aceite
+  const [acceptedTerms, setAcceptedTerms] = React.useState(false);
 
   const subtotal = cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
 
@@ -33,7 +33,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   };
 
   const handleWhatsApp = async () => {
-    if (cartItems.length === 0 || !acceptedTerms) return; // Validação do aceite
+    if (cartItems.length === 0 || !acceptedTerms) return;
     
     setIsSubmitting(true);
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
@@ -51,7 +51,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         });
       }
     } catch (error) {
-      console.error("Erro ao registrar pedido no Firestore:", error);
+      console.error("Erro ao registrar pedido:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -95,13 +95,17 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             <span>R$ {subtotal.toFixed(2)}</span>
           </div>
           
-          {/* AVISO DE TAXAS E ACEITE */}
-          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
-            <div className="flex items-start gap-2 text-amber-800 text-xs font-semibold mb-2">
-              <AlertTriangle className="w-4 h-4 shrink-0" />
-              <p>A Japão Box Brasil não se responsabiliza por taxas alfandegárias. Estes valores são de responsabilidade do cliente na chegada ao Brasil.</p>
-            </div>
-            <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer">
+          {/* AVISO IMPORTANTE COM O SEU TEXTO */}
+          <div className="bg-amber-50 border border-amber-200 p-4 rounded-xl">
+            <h3 className="font-black text-amber-900 text-xs uppercase mb-2 flex items-center gap-2">
+              <AlertTriangle className="w-4 h-4" /> 📦 Aviso Importante
+            </h3>
+            <p className="text-amber-800 text-[11px] leading-relaxed mb-3">
+              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS, que varia conforme o estado de destino.
+              <br/><br/>
+              Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil não possui qualquer responsabilidade sobre cobranças realizadas pela alfândega ou órgãos fiscais brasileiros. Ao comprar, o cliente declara estar ciente dessas condições. 🇯🇵✨📦
+            </p>
+            <label className="flex items-center gap-2 text-[11px] font-bold text-amber-900 cursor-pointer">
               <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="rounded text-red-600 focus:ring-red-500" />
               Li e concordo com os termos.
             </label>
@@ -109,8 +113,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
           <button 
             onClick={handleWhatsApp} 
-            disabled={isSubmitting || cartItems.length === 0 || !acceptedTerms} // Botão bloqueado se não aceitar
-            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3 rounded font-bold uppercase text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+            disabled={isSubmitting || cartItems.length === 0 || !acceptedTerms}
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3 rounded-xl font-bold uppercase text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</>
