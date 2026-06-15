@@ -1743,15 +1743,12 @@ export default function App() {
 
 return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
-      
       {showTaxNotice && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
             <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
             <p className="text-slate-700 text-sm mb-4">
-             Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS, que varia conforme o estado de destino.
-
-Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil não possui qualquer responsabilidade sobre cobranças realizadas pela alfândega ou órgãos fiscais brasileiros. Ao comprar, o cliente declara estar ciente dessas condições. 🇯🇵✨📦
+              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS. Essas taxas são de responsabilidade do comprador.
             </p>
             <label className="flex items-center gap-2 text-xs font-bold mb-4 cursor-pointer">
               <input type="checkbox" onChange={(e) => setAcceptedTerms(e.target.checked)} />
@@ -1767,548 +1764,242 @@ Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil
         </div>
       )}
 
-      {/* HEADER COMPACTO */}
-      <Header
-        onSearchChange={setSearchQuery}
-        selectedCategory={selectedCategory}
-        onSelectCategory={setSelectedCategory}
-        categories={allCategories}
-        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
-        onOpenCart={() => setIsCartOpen(true)}
-        onOpenAuth={() => {
-          if (user) {
-            setActiveTab("account");
-          } else {
-            setIsAuthOpen(true);
-          }
-        }}
-        user={user}
-        onLogout={handleLogout}
-        onLogoClick={handleReturnToStore}
-      />
-<RedirectBanner onRedirectClick={() => { 
-  setActiveTab("redirect"); 
-  setShowTaxNotice(true); // 
-}} />
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span className="hidden md:inline text-slate-400">|</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+      </div>
 
-      {/* MENU DE ABAS SUPERIORES */}
-      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
-        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
-          <button
-            onClick={handleReturnToStore}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Loja
-          </button>
+      {notification && (
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
+          {notification}
+        </div>
+      )}
 
-          <button
-            onClick={() => setActiveTab("redirect")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Redirecionamento ✈️
-          </button>
-          
-          <button
-            onClick={() => setActiveTab("about")}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Sobre Nós
-          </button>
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={allCategories}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => {
+          if (user) {
+            setActiveTab("account");
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+        user={user}
+        onLogout={handleLogout}
+        onLogoClick={handleReturnToStore}
+      />
 
-          <button
-            onClick={() => {
-              if (user) {
-                setActiveTab("account");
-              } else {
-                setIsAuthOpen(true);
-              }
-            }}
-            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-              activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-            }`}
-          >
-            Minha Suíte & Painel 📦
-          </button>
-          
-          {isAdmin && (
-            <button
-              onClick={() => setActiveTab("admin")}
-              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-                activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"
-              }`}
-            >
-              Painel Armazém 🏢
-            </button>
-          )}
-        </div>
-      </div>
+      <RedirectBanner onRedirectClick={() => { 
+        setActiveTab("redirect"); 
+        setShowTaxNotice(true); 
+      }} />
 
-      {/* RENDERIZAÇÃO CONDICIONAL DAS TELAS */}
-      {activeTab === "store" ? (
-        <>
-          <Hero 
-            onScrollToCatalog={() => {
-              setSelectedCategory("Todos");
-              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
-            }}
-            onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
-            onOpenClubModal={() => setIsClubModalOpen(true)}
-          />
-          <main className="flex-1">
-            <TrustBadges />
-            
-            {/* VITRINE DE PRODUTOS */}
-            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
-              <div className="flex items-center justify-between mb-6 border-b pb-4">
-                <div className="text-left">
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
-                </div>
-                <div className="flex items-center gap-2">
-                  <ArrowUpDown className="w-4 h-4 text-slate-400" />
-                  <select
-                    value={sortBy}
-                    onChange={(e) => setSortBy(e.target.value)}
-                    className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900"
-                  >
-                    <option value="popular">Popularidade</option>
-                    <option value="priceAsc">Menor preço</option>
-                    <option value="priceDesc">Maior preço</option>
-                    <option value="name">Nome A-Z</option>
-                  </select>
-                </div>
-              </div>
+      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
+          <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
+          <button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento ✈️</button>
+          <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
+          <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
+          {isAdmin && (
+            <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém 🏢</button>
+          )}
+        </div>
+      </div>
 
-              {filteredProducts.length === 0 ? (
-                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60 p-6">
-                  <p className="text-sm font-bold text-slate-400">Nenhum produto encontrado nesta categoria no momento.</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {filteredProducts.map(p => (
-                    <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
-                  ))}
-                </div>
-              )}
-            </section>
+      {activeTab === "store" ? (
+        <>
+          <Hero onScrollToCatalog={() => { setSelectedCategory("Todos"); document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" }); }} onOpenBudgetModal={() => setIsBudgetModalOpen(true)} onOpenClubModal={() => setIsClubModalOpen(true)} />
+          <main className="flex-1">
+            <TrustBadges />
+            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
+              <div className="flex items-center justify-between mb-6 border-b pb-4">
+                <div className="text-left">
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
+                </div>
+                <div className="flex items-center gap-2">
+                  <ArrowUpDown className="w-4 h-4 text-slate-400" />
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
+                    <option value="popular">Popularidade</option>
+                    <option value="priceAsc">Menor preço</option>
+                    <option value="priceDesc">Maior preço</option>
+                    <option value="name">Nome A-Z</option>
+                  </select>
+                </div>
+              </div>
+              {filteredProducts.length === 0 ? (
+                <div className="text-center py-16 bg-white rounded-2xl border border-slate-200/60 p-6">
+                  <p className="text-sm font-bold text-slate-400">Nenhum produto encontrado nesta categoria no momento.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {filteredProducts.map(p => (
+                    <ProductCard key={p.id} product={p} onAddToCart={handleAddToCart} />
+                  ))}
+                </div>
+              )}
+            </section>
+            <Testimonials />
+            <BlogSection />
+          </main>
+        </>
+      ) : activeTab === "redirect" ? (
+        <main className="flex-1 bg-white py-12 px-4">
+          <section className="max-w-6xl mx-auto">
+            <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-red-600 relative overflow-hidden">
+              <div className="absolute top-0 right-0 p-8 opacity-5">
+                <MapPin className="w-48 h-48 text-red-600" />
+              </div>
+              <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
+                <div>
+                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
+                  <div className="text-black space-y-4 text-sm font-bold mb-8">
+                    <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
+                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço como destino. Nós recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
+                    <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
+                      <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                      <p className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão abaixo para nos enviar o comprovante pelo WhatsApp e avisar que a encomenda está a caminho.</p>
+                    </div>
+                  </div>
+                  <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">Seu Endereço no Japão</p>
+                    <p className="font-black text-xl leading-snug mb-1 text-black">The Tomorrow</p>
+                    <p className="text-gray-700 font-bold">2-chōme-3-15 Matsutera, Yokkaichi</p>
+                    <p className="text-gray-700 font-bold">Mie 510-8021</p>
+                    <p className="text-black font-black mt-2">(Japão)</p>
+                  </div>
+                  <button onClick={() => window.open("https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
+                </div>
+                <div className="space-y-6">
+                  <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
+                  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+                    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
+                    <ul className="space-y-3 text-sm font-bold text-black">
+                      <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2"><ExternalLink className="w-4 h-4 text-red-600" /> Adidas Japan</a></li>
+                      <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2"><ExternalLink className="w-4 h-4 text-red-600" /> GU</a></li>
+                      <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2"><ExternalLink className="w-4 h-4 text-red-600" /> Onitsuka Tiger</a></li>
+                      <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2"><ExternalLink className="w-4 h-4 text-red-600" /> Uniqlo Japan</a></li>
+                      <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2"><ExternalLink className="w-4 h-4 text-red-600" /> Nike Japan</a></li>
+                    </ul>
+                  </div>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
+                      <ul className="space-y-3 text-sm font-bold text-black">
+                        <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2 transition-colors"><ExternalLink className="w-4 h-4 text-red-600" /> Rakuten JP</a></li>
+                        <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2 transition-colors"><ExternalLink className="w-4 h-4 text-red-600" /> Amazon Japan</a></li>
+                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2 transition-colors"><ExternalLink className="w-4 h-4 text-red-600" /> Mercari</a></li>
+                      </ul>
+                    </div>
+                    <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
+                      <ul className="space-y-3 text-sm font-bold text-black">
+                        <li><a href="https://www.zara.com/jp/ja/woman-mkt1000.html" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-2 transition-colors"><ExternalLink className="w-4 h-4 text-red-600" /> Zara Japan</a></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </main>
+      ) : activeTab === "about" ? (
+        <main className="flex-1 bg-slate-50 py-12 px-4">
+          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
+            <div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
+              <div>
+                <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
+                <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
+              </div>
+              <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
+                <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
+                <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+                <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
+              </div>
+              <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                <div className="flex items-center gap-3 text-left">
+                  <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
+                    <img src="https://iili.io/CJbmWhP.md.jpg" alt="Japão Box Brasil Logo" className="w-full h-full object-cover" />
+                  </div>
+                  <div>
+                    <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+                    <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                  </div>
+                </div>
+                <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
+              </div>
+            </div>
+          </div>
+        </main>
+      ) : activeTab === "admin" ? (
+        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+          {isAdmin ? (
+            <AdminDashboard />
+          ) : (
+            <div className="flex flex-col items-center justify-center py-20">
+              <span className="text-4xl mb-4">🔒</span>
+              <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
+              <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
+              <button onClick={handleReturnToStore} className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Voltar para a Loja</button>
+            </div>
+          )}
+        </main>
+      ) : (
+        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+          {user ? (
+            <ClientDashboard user={user} orders={orders} loadingOrders={loadingOrders} onCreateMockOrder={handleCreateMockOrder} onLogout={handleLogout} getStatusBadge={getStatusBadge} />
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
+            </div>
+          )}
+        </main>
+      )}
 
-            <Testimonials />
-            <BlogSection />
-          </main>
-        </>
-
-      ) : activeTab === "redirect" ? (
-        // ========================================================
-        // 📦 PÁGINA DE REDIRECIONAMENTO
-        // ========================================================
-        <main className="flex-1 bg-white py-12 px-4">
-  <section className="max-w-6xl mx-auto">
-
-    <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-red-600 relative overflow-hidden">
-
-      <div className="absolute top-0 right-0 p-8 opacity-5">
-        <MapPin className="w-48 h-48 text-red-600" />
-      </div>
-
-      <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
-
-        {/* Explicação e Endereço */}
-        <div>
-
-          <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">
-            📦 Compre em Qualquer Loja do Japão
-          </h2>
-
-          <div className="text-black space-y-4 text-sm font-bold mb-8">
-
-            <p>
-              Muitas lojas online japonesas não enviam produtos para o exterior.
-              É para isso que estamos aqui!
-            </p>
-
-            <p>
-              Com o nosso serviço de{" "}
-              <strong className="text-red-600">
-                Redirecionamento
-              </strong>,
-              você faz compras nos seus sites favoritos como se morasse no Japão
-              usando o nosso endereço como destino.
-              Nós recebemos, organizamos suas caixas e enviamos tudo direto
-              para a sua casa no Brasil.
-            </p>
-
-            <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
-
-              <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-
-              <p className="text-xs leading-relaxed font-bold">
-                <strong>Como fazer:</strong> Copie o endereço abaixo e cole na
-                hora de finalizar a compra na loja japonesa. Assim que o
-                pagamento for concluído, clique no botão abaixo para nos enviar
-                o comprovante pelo WhatsApp e avisar que a encomenda está a
-                caminho.
-              </p>
-
-            </div>
-
-          </div>
-
-          {/* Cartão do Endereço */}
-          <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
-
-            <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">
-              Seu Endereço no Japão
-            </p>
-
-            <p className="font-black text-xl leading-snug mb-1 text-black">
-              The Tomorrow
-            </p>
-
-            <p className="text-gray-700 font-bold">
-              2-chōme-3-15 Matsutera, Yokkaichi
-            </p>
-
-            <p className="text-gray-700 font-bold">
-              Mie 510-8021
-            </p>
-
-            <p className="text-black font-black mt-2">
-              (Japão)
-            </p>
-
-          </div>
-
-          <button
-            onClick={() =>
-              window.open(
-                "https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21",
-                "_blank"
-              )
-            }
-            className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg"
-          >
-            Avisar Envio no WhatsApp
-          </button>
-
-        </div>
-
-        {/* Links das Lojas */}
-        <div className="space-y-6">
-
-          <h3 className="text-xl font-black mb-4 text-red-600">
-            🔗 Lojas Recomendadas
-          </h3>
-
-          {/* Roupas */}
-          <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-
-            <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
-              Marcas de Roupa e Calçados
-            </h4>
-
-            <ul className="space-y-3 text-sm font-bold text-black">
-
-              <li>
-                <a
-                  href="https://www.adidas.jp/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-red-600 flex items-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4 text-red-600" />
-                  Adidas Japan
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="https://www.gu-global.com/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-red-600 flex items-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4 text-red-600" />
-                  GU
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="https://www.onitsukatiger.com/jp/ja-jp/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-red-600 flex items-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4 text-red-600" />
-                  Onitsuka Tiger
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="https://www.uniqlo.com/jp/ja/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-red-600 flex items-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4 text-red-600" />
-                  Uniqlo Japan
-                </a>
-              </li>
-
-              <li>
-                <a
-                  href="https://www.nike.com/jp/"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-red-600 flex items-center gap-2"
-                >
-                  <ExternalLink className="w-4 h-4 text-red-600" />
-                  Nike Japan
-                </a>
-              </li>
-
-            </ul>
-
-          </div>
-
-                  {/* Marketplaces & Joias */}
-<div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-
-  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
-      Marketplaces
-    </h4>
-
-    <ul className="space-y-3 text-sm font-bold text-black">
-
-      <li>
-        <a
-          href="https://www.rakuten.co.jp/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-red-600 flex items-center gap-2 transition-colors"
-        >
-          <ExternalLink className="w-4 h-4 text-red-600" />
-          Rakuten JP
-        </a>
-      </li>
-
-      <li>
-        <a
-          href="https://www.amazon.co.jp/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-red-600 flex items-center gap-2 transition-colors"
-        >
-          <ExternalLink className="w-4 h-4 text-red-600" />
-          Amazon Japan
-        </a>
-      </li>
-
-      <li>
-        <a
-          href="https://jp.mercari.com/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-red-600 flex items-center gap-2 transition-colors"
-        >
-          <ExternalLink className="w-4 h-4 text-red-600" />
-          Mercari
-        </a>
-      </li>
-
-    </ul>
-  </div>
-
-  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">
-      Joias & Moda
-    </h4>
-
-    <ul className="space-y-3 text-sm font-bold text-black">
-
-      <li>
-        <a
-          href="https://www.zara.com/jp/ja/woman-mkt1000.html"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="hover:text-red-600 flex items-center gap-2 transition-colors"
-        >
-          <ExternalLink className="w-4 h-4 text-red-600" />
-          Zara Japan
-        </a>
-      </li>
-
-    </ul>
-  </div>
-
-</div>
-
-                  
-
-                </div>
-              </div>
-            </div>
-          </section>
-        </main>
-
-      ) : activeTab === "about" ? (
-        <main className="flex-1 bg-slate-50 py-12 px-4">
-          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
-            
-            {/* FOTO PAULA TAKASHIRO */}
-            {/* CONTEÚDO DA HISTÓRIA - AGORA OCUPA 100% DA LARGURA */}
-<div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
-  <div>
-    <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
-    <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
-  </div>
-  
-  <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-    <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇰🇷</p>
-    <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
-    <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
-    <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
-  </div>
-  
-  <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-    <div className="flex items-center gap-3 text-left">
-      <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
-        <img 
-          src="https://iili.io/CJbmWhP.md.jpg" 
-          alt="Japão Box Brasil Logo" 
-          className="w-full h-full object-cover"
-        />
-      </div>
-      <div>
-        <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
-        <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
-      </div>
-    </div>
-    <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
-  </div>
-</div>
-
-          </div>
-        </main>
-      ) : activeTab === "admin" ? (
-        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-          {isAdmin ? (
-            <AdminDashboard />
-          ) : (
-            <div className="flex flex-col items-center justify-center py-20">
-              <span className="text-4xl mb-4">🔒</span>
-              <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
-              <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
-              <button 
-                onClick={handleReturnToStore}
-                className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold"
-              >
-                Voltar para a Loja
-              </button>
-            </div>
-          )}
-        </main>
-      ) : (
-        <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-          {user ? (
-            <ClientDashboard 
-              user={user}
-              orders={orders}
-              loadingOrders={loadingOrders}
-              onCreateMockOrder={handleCreateMockOrder}
-              onLogout={handleLogout}
-              getStatusBadge={getStatusBadge}
-            />
-          ) : (
-            <div className="text-center py-12">
-              <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
-            </div>
-          )}
-        </main>
-      )}
-{/* RODAPÉ DO ECOSSISTEMA */}
-      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-          <div className="text-left">
-            <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
-            <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
-            </p>
-          </div>
-          <div className="text-left">
-            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
-            <ul className="space-y-2 text-sm font-medium">
-              <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
-              <button
-  onClick={() => {
-    setActiveTab("redirect");
-    setShowTaxNotice(true); // <--- ISSO VAI FORÇAR O POPUP A ABRIR
-  }}
-  className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
-    activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"
-  }`}
->
-  Redirecionamento ✈️
-</button>
-              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
-              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
-            </ul>
-          </div>
-        </div>
-
-        {/* BANNER DE MEIOS DE PAGAMENTO (ATUALIZADO PAYPAL) */}
-        <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
-          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Processamento Internacional Seguro via PayPal</p>
-          <div className="flex items-center justify-center px-8 py-2">
-            <img 
-              src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" 
-              alt="Meios de Pagamento PayPal" 
-              className="h-7 md:h-8 object-contain select-none pointer-events-none"
-            />
-          </div>
-          <p className="text-[11px] font-semibold text-slate-400 text-center max-w-lg mt-2">
-            Todas as transações são criptografadas de ponta a ponta. Aceitamos pagamentos à vista ou parcelado nos <strong className="text-slate-500">Cartões de Crédito</strong> e saldo via <strong className="text-slate-500">PayPal</strong>.
-          </p>
-        </div>
-
-        {/* CRÉDITOS E DIREITOS AUTORAIS */}
-        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2">
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-          </p>
-        </div>
- <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="text-left">
             <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
             <p className="text-sm leading-relaxed text-slate-500">
-              Sua ponte definitiva com o mercado japonês.
+              Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
             </p>
           </div>
+          <div className="text-left">
+            <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
+            <ul className="space-y-2 text-sm font-medium">
+              <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+              <li><button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento ✈️</button></li>
+              <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
+              <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
+            </ul>
+          </div>
         </div>
-
-        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400">
+        <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">Processamento Internacional Seguro via PayPal</p>
+          <div className="flex items-center justify-center px-8 py-2">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" alt="Meios de Pagamento PayPal" className="h-7 md:h-8 object-contain select-none pointer-events-none" />
+          </div>
+          <p className="text-[11px] font-semibold text-slate-400 text-center max-w-lg mt-2">
+            Todas as transações são criptografadas de ponta a ponta. Aceitamos pagamentos à vista ou parcelado nos <strong className="text-slate-500">Cartões de Crédito</strong> e saldo via <strong className="text-slate-500">PayPal</strong>.
+          </p>
+        </div>
+        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2">
           <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+          </p>
         </div>
       </footer>
 
-      {isCartOpen && (
-        <CartDrawer 
-          onClose={() => setIsCartOpen(false)} 
-          cartItems={cartItems} 
-          setCartItems={setCartItems} 
-        />
-      )}
-      
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
