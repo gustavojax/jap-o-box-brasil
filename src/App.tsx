@@ -2298,24 +2298,23 @@ return (
             Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
           </p>
         </div>
-      </footer>
+     <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+        {/* ... (conteúdo do footer mantido) */}
+      </footer>
 
-      {isCartOpen && (
-        <CartDrawer 
-          onClose={() => setIsCartOpen(false)} 
-          cartItems={cartItems} 
-          setCartItems={setCartItems} 
-        />
-      )}
-      
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      {isCartOpen && (
+        <CartDrawer 
+          onClose={() => setIsCartOpen(false)} 
+          cartItems={cartItems} 
+          setCartItems={setCartItems} 
+        />
+      )}
+      
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+      <WhatsAppFloat />
 
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-
-      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-
-      <WhatsAppFloat />
-
-    </div>
-  );
-}
+    </div> // <--- FECHAMENTO DA DIV PRINCIPAL (A que começou no return)
+  ); // <--- FECHAMENTO DO RETURN
+} // <--- FECHAMENTO DA FUNCTION APP (AGORA CORRETO, SEM A CHAVE EXTRA)
