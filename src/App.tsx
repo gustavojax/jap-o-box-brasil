@@ -1,7 +1,4 @@
-ok agora este mesmo texto porém na sessão redirecionamento
-
 import React, { useState, useMemo, useEffect } from "react";
-
 import Header from "./components/Header";
 import Hero from "./components/Hero";
 import RedirectBanner from "./components/RedirectBanner";
@@ -1744,6 +1741,12 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+      {/* COLE O BLOCO DO POPUP AQUI, LOGO ABAIXO DESTA LINHA */}
+      
+      {showTaxNotice && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          {/* ... resto do código do modal ... */}
+        </div>
 
       <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
         <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
