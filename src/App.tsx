@@ -1739,27 +1739,43 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  return (
-    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
-      {/* COLE O BLOCO DO POPUP AQUI, LOGO ABAIXO DESTA LINHA */}
+return (
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
       
+      {/* POPUP DE AVISO */}
       {showTaxNotice && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          {/* ... resto do código do modal ... */}
+          <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
+            <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
+            <p className="text-slate-700 text-sm mb-4">
+              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS. Essas taxas são de responsabilidade do comprador.
+            </p>
+            <label className="flex items-center gap-2 text-xs font-bold mb-4 cursor-pointer">
+              <input type="checkbox" onChange={(e) => setAcceptedTerms(e.target.checked)} />
+              Li e concordo.
+            </label>
+            <button 
+              onClick={() => { if(acceptedTerms) setShowTaxNotice(false); }}
+              className="w-full bg-red-600 text-white font-bold py-2 rounded-lg"
+            >
+              ESTOU CIENTE
+            </button>
+          </div>
         </div>
+      )} {/* <--- ESSA CHAVE FECHA O showTaxNotice */}
+      
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span className="hidden md:inline text-slate-400">|</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+      </div>
 
-      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
-        <span className="hidden md:inline text-slate-400">|</span>
-        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
-      </div>
-
-      {notification && (
-        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
-          <CheckCircle2 className="w-5 h-5 text-green-400" />
-          {notification}
-        </div>
-      )}
+      {notification && (
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
+          {notification}
+        </div>
+      )}
 
       {/* HEADER COMPACTO */}
       <Header
