@@ -1,5 +1,5 @@
 import React from "react";
-import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, Loader2, Trash2 } from "lucide-react"; // Importado o Trash2
+import { X, ShoppingBag, MessageCircle, AlertTriangle, CreditCard, Loader2, Trash2 } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -14,6 +14,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const [wantsInstallments, setWantsInstallments] = React.useState(false);
   const [installments, setInstallments] = React.useState(2);
   const [isSubmitting, setIsSubmitting] = React.useState(false);
+  const [acceptedTerms, setAcceptedTerms] = React.useState(false); // Novo estado de aceite
 
   const subtotal = cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
 
@@ -27,16 +28,14 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     } catch { return "0,00"; }
   };
 
-  // Função para excluir o produto do carrinho pelo Index
   const handleRemoveItem = (indexToRemove: number) => {
     setCartItems(prevItems => prevItems.filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleWhatsApp = async () => {
-    if (cartItems.length === 0) return;
+    if (cartItems.length === 0 || !acceptedTerms) return; // Validação do aceite
     
     setIsSubmitting(true);
-
     const itemsList = cartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
     const itemsSummary = cartItems.map(i => `${i.product?.name} (x${i.quantity})`).join(", ");
     const userEmail = auth?.currentUser?.email || "Cliente Web / Sem Login";
@@ -50,7 +49,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           trackingCode: "",
           createdAt: serverTimestamp()
         });
-        console.log("Pedido registrado com sucesso no painel armazém!");
       }
     } catch (error) {
       console.error("Erro ao registrar pedido no Firestore:", error);
@@ -73,9 +71,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         
         <div className="flex-1 overflow-y-auto p-4 space-y-4">
           {cartItems.length === 0 ? (
-            <div className="text-center py-12 text-gray-400 font-medium">
-              Seu carrinho está vazio.
-            </div>
+            <div className="text-center py-12 text-gray-400 font-medium">Seu carrinho está vazio.</div>
           ) : (
             cartItems?.map((item, idx) => (
               <div key={idx} className="flex gap-4 border-b pb-4 items-center">
@@ -85,12 +81,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                   <p className="text-xs text-gray-400 mt-0.5">Quantidade: {item.quantity || 1}</p>
                   <p className="font-bold text-gray-900 mt-1">R$ {item.product?.priceBRL?.toFixed(2)}</p>
                 </div>
-                {/* Botão de Excluir adicionado aqui */}
-                <button 
-                  onClick={() => handleRemoveItem(idx)}
-                  className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer rounded-lg hover:bg-red-50"
-                  title="Remover produto"
-                >
+                <button onClick={() => handleRemoveItem(idx)} className="p-2 text-gray-400 hover:text-red-500 transition-colors cursor-pointer rounded-lg hover:bg-red-50">
                   <Trash2 className="w-4 h-4" />
                 </button>
               </div>
@@ -104,33 +95,25 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             <span>R$ {subtotal.toFixed(2)}</span>
           </div>
           
-          <div className="space-y-2">
-            <label className="flex items-center gap-2 text-sm font-bold text-gray-700 cursor-pointer">
-              <input type="checkbox" checked={wantsInstallments} onChange={(e) => setWantsInstallments(e.target.checked)} className="rounded text-blue-600 focus:ring-blue-500" />
-              Parcelar no cartão
+          {/* AVISO DE TAXAS E ACEITE */}
+          <div className="bg-amber-50 border border-amber-200 p-3 rounded-lg">
+            <div className="flex items-start gap-2 text-amber-800 text-xs font-semibold mb-2">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <p>A Japão Box Brasil não se responsabiliza por taxas alfandegárias. Estes valores são de responsabilidade do cliente na chegada ao Brasil.</p>
+            </div>
+            <label className="flex items-center gap-2 text-xs font-bold text-gray-700 cursor-pointer">
+              <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="rounded text-red-600 focus:ring-red-500" />
+              Li e concordo com os termos.
             </label>
-            {wantsInstallments && (
-              <div className="space-y-2">
-                <select className="w-full p-2 border rounded bg-white text-sm font-medium" value={installments} onChange={(e) => setInstallments(Number(e.target.value))}>
-                  {[2,3,4,5,6,7,8,9,10,11,12].map(n => <option key={n} value={n}>{n}x com juros</option>)}
-                </select>
-                <div className="text-xs text-blue-600 bg-blue-50 p-2 rounded text-center font-semibold">
-                  Prévia: {installments}x de R$ {calculatePreview()}
-                </div>
-              </div>
-            )}
           </div>
 
           <button 
             onClick={handleWhatsApp} 
-            disabled={isSubmitting || cartItems.length === 0}
-            className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white py-3 rounded font-bold uppercase text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
+            disabled={isSubmitting || cartItems.length === 0 || !acceptedTerms} // Botão bloqueado se não aceitar
+            className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3 rounded font-bold uppercase text-sm transition-all flex items-center justify-center gap-2 cursor-pointer"
           >
             {isSubmitting ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Registrando Caixa...
-              </>
+              <><Loader2 className="w-4 h-4 animate-spin" /> Registrando...</>
             ) : (
               "Finalizar Pedido"
             )}
