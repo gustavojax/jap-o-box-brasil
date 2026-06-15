@@ -1545,6 +1545,8 @@ export default function App() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [showTaxNotice, setShowTaxNotice] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   
   const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
   
