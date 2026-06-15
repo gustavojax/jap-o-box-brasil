@@ -2287,7 +2287,14 @@ Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil
           </p>
         </div>
  <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
-        {/* ... conteúdo do rodapé ... */}
+        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+          <div className="text-left">
+            <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
+            <p className="text-sm leading-relaxed text-slate-500">
+              Sua ponte definitiva com o mercado japonês.
+            </p>
+          </div>
+        </div>
       </footer>
 
       {isCartOpen && (
@@ -2303,6 +2310,6 @@ Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
       <WhatsAppFloat />
 
-    </div>
+    </div> 
   );
 }
