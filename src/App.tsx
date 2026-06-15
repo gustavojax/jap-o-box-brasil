@@ -1742,12 +1742,16 @@ export default function App() {
   };
 
 return (
-  {showTaxNotice && (
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+      
+      {showTaxNotice && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
             <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
             <p className="text-slate-700 text-sm mb-4">
-              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS. Essas taxas são de responsabilidade do comprador.
+             Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS, que varia conforme o estado de destino.
+
+Essas taxas são de responsabilidade exclusiva do comprador. A Japão Box Brasil não possui qualquer responsabilidade sobre cobranças realizadas pela alfândega ou órgãos fiscais brasileiros. Ao comprar, o cliente declara estar ciente dessas condições. 🇯🇵✨📦
             </p>
             <label className="flex items-center gap-2 text-xs font-bold mb-4 cursor-pointer">
               <input type="checkbox" onChange={(e) => setAcceptedTerms(e.target.checked)} />
@@ -1760,19 +1764,6 @@ return (
               ESTOU CIENTE
             </button>
           </div>
-        </div>
-      )}
-      
-      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
-        <span className="hidden md:inline text-slate-400">|</span>
-        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
-      </div>
-
-      {notification && (
-        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
-          <CheckCircle2 className="w-5 h-5 text-green-400" />
-          {notification}
         </div>
       )}
 
