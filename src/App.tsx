@@ -2315,6 +2315,6 @@ return (
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
       <WhatsAppFloat />
 
-    </div> // <--- FECHAMENTO DA DIV PRINCIPAL (A que começou no return)
-  ); // <--- FECHAMENTO DO RETURN
-} // <--- FECHAMENTO DA FUNCTION APP (AGORA CORRETO, SEM A CHAVE EXTRA)
+    </div> // 
+  ); // 
+} // 
