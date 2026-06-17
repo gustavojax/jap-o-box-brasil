@@ -1,15 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Truck } from "lucide-react";
+import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-// Opções de frete (mesmas do BudgetModal)
-const SHIPPING_OPTIONS = [
-  { id: "epacket", name: "E-Packet Light (Até 2kg)", price: 64.00, time: "40 dias úteis" },
-  { id: "ems", name: "EMS Express (Até 30kg)", price: 141.00, time: "15 dias úteis" },
-  { id: "parcel", name: "Post Parcel (Até 30kg)", price: 178.00, time: "30 dias úteis" }
-];
+// Taxa de conversão (Ajuste conforme o valor do dia no seu arquivo data.ts)
+const YEN_TO_BRL_RATE = 0.038; // Exemplo: 1 JPY = 0.038 BRL
 
 interface CartDrawerProps {
   onClose: () => void;
@@ -20,21 +16,37 @@ interface CartDrawerProps {
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [isSubmitting, setIsSubmitting] = React.useState(false);
   const [acceptedTerms, setAcceptedTerms] = React.useState(false);
-  const [shippingMethod, setShippingMethod] = useState<string>("epacket");
+  
+  // Peso estimado em gramas (padrão 500g)
+  const [estimatedWeight, setEstimatedWeight] = useState<number>(500);
 
   // Subtotal dos produtos no carrinho
   const subtotalProdutos = useMemo(() => {
     return cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
   }, [cartItems]);
 
-  // Motor de cálculo dinâmico (Mesma lógica do BudgetModal)
+  // Função para calcular o frete em Ienes baseado no peso (proporcional a cada 100g)
+  // Baseado na sua tabela: 500g = 1600~1700 JPY (aprox R$65), 1kg = 2700~2800 JPY (aprox R$105)
+  // Simplificando a lógica de R$ para Ienes:
+  const calculateShippingYen = (weightGrams: number) => {
+    if (weightGrams <= 500) return 1700; // Aprox R$65
+    if (weightGrams <= 1000) return 2750; // Aprox R$105
+    if (weightGrams <= 1500) return 3900; // Aprox R$148
+    if (weightGrams <= 2000) return 5000; // Aprox R$190
+    
+    // Para pesos maiores, segue a lógica de acréscimo proporcional
+    return 5000 + (Math.ceil((weightGrams - 2000) / 100) * 250);
+  };
+
+  // Motor de cálculo dinâmico
   const calculos = useMemo(() => {
     const assessoria = 25.00; // Taxa fixa de assessoria
-    const freteSelecionado = SHIPPING_OPTIONS.find(s => s.id === shippingMethod);
-    const valorFrete = freteSelecionado ? freteSelecionado.price : 64.00;
+    
+    const freteYen = calculateShippingYen(estimatedWeight);
+    const valorFreteBRL = freteYen * YEN_TO_BRL_RATE;
     
     // Base de Cálculo (Valor Aduaneiro = Produtos + Frete + Assessoria)
-    const valorAduaneiro = subtotalProdutos + assessoria + valorFrete;
+    const valorAduaneiro = subtotalProdutos + assessoria + valorFreteBRL;
     
     // Imposto de Importação (60%)
     const impostoImportacao = valorAduaneiro * 0.60;
@@ -49,14 +61,14 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
     return {
       assessoria,
-      valorFrete,
+      freteYen,
+      valorFreteBRL,
       impostoImportacao,
       icms,
       totalImpostos,
-      totalGeral,
-      nomeFrete: freteSelecionado?.name || "Frete Padrão"
+      totalGeral
     };
-  }, [subtotalProdutos, shippingMethod]);
+  }, [subtotalProdutos, estimatedWeight]);
 
   const handleRemoveItem = (indexToRemove: number) => {
     setCartItems(prevItems => prevItems.filter((_, idx) => idx !== indexToRemove));
@@ -75,9 +87,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         await addDoc(collection(db, "orders"), {
           userId: userEmail,
           itemsSummary: itemsSummary,
+          pesoEstimado: `${estimatedWeight}g`,
           totalEstimado: calculos.totalGeral.toFixed(2),
-          freteEscolhido: calculos.nomeFrete,
-          status: "pending",
           createdAt: serverTimestamp()
         });
       }
@@ -89,14 +100,14 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
     const msg = `Olá! Gostaria de finalizar meu pedido:
 \n${itemsList}
-\n--- RESUMO DA ESTIMATIVA ---
-\nProdutos: R$ ${subtotalProdutos.toFixed(2)}
+\n--- ESTIMATIVA DE ENVIO ---
+\nPeso Estimado: ${estimatedWeight}g
+\nFrete Internacional: ¥ ${calculos.freteYen} (R$ ${calculos.valorFreteBRL.toFixed(2)})
 \nAssessoria: R$ ${calculos.assessoria.toFixed(2)}
-\nFrete (${calculos.nomeFrete}): R$ ${calculos.valorFrete.toFixed(2)}
 \nEst. Impostos (II+ICMS): R$ ${calculos.totalImpostos.toFixed(2)}
 \n---
 \nTOTAL ESTIMADO: R$ ${calculos.totalGeral.toFixed(2)}
-\n(Sujeito a conferência de peso)`;
+\n\n*Estou ciente que o valor exato do frete só será confirmado após o fechamento da caixa.*`;
 
     window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -129,22 +140,25 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                 </div>
               ))}
 
-              {/* SELEÇÃO DE FRETE NO CARRINHO */}
-              <div className="pt-2 space-y-2">
-                <label className="text-[10px] font-black text-gray-400 uppercase tracking-wider flex items-center gap-1">
-                  <Truck className="w-3.5 h-3.5" /> Escolha o Frete (JP Post)
+              {/* SELETOR DE PESO ESTIMADO */}
+              <div className="pt-2 space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
+                <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider flex items-center gap-1">
+                  <Scale className="w-3.5 h-3.5" /> Peso Estimado do Pedido
                 </label>
                 <select 
-                  value={shippingMethod}
-                  onChange={(e) => setShippingMethod(e.target.value)}
-                  className="w-full border border-gray-200 bg-white rounded-lg px-3 py-2 text-xs font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  value={estimatedWeight}
+                  onChange={(e) => setEstimatedWeight(Number(e.target.value))}
+                  className="w-full border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  {SHIPPING_OPTIONS.map(opt => (
-                    <option key={opt.id} value={opt.id}>
-                      {opt.name} - R$ {opt.price.toFixed(2)}
-                    </option>
-                  ))}
+                  <option value={500}>Até 500g (Média R$ 65)</option>
+                  <option value={1000}>Até 1kg (Média R$ 105)</option>
+                  <option value={1500}>Até 1.5kg (Média R$ 148)</option>
+                  <option value={2000}>Até 2kg (Média R$ 190)</option>
+                  <option value={3000}>Até 3kg (Consultar)</option>
                 </select>
+                <p className="text-[9px] text-slate-400 leading-tight">
+                  * O frete é calculado a cada 100g. O valor exato depende do peso final da caixa.
+                </p>
               </div>
             </>
           )}
@@ -152,7 +166,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
         <div className="p-4 border-t bg-gray-50 space-y-3">
           {/* RESUMO DE VALORES */}
-          <div className="space-y-1.5 text-xs border-b pb-3">
+          <div className="space-y-1.5 text-[11px] border-b pb-3">
             <div className="flex justify-between text-gray-500">
               <span>Subtotal Produtos</span>
               <span>R$ {subtotalProdutos.toFixed(2)}</span>
@@ -162,8 +176,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               <span>R$ {calculos.assessoria.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-500">
-              <span>Frete Internacional</span>
-              <span>R$ {calculos.valorFrete.toFixed(2)}</span>
+              <span>Frete Internacional (¥ {calculos.freteYen})</span>
+              <span>R$ {calculos.valorFreteBRL.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-blue-600 font-medium">
               <span>Est. Impostos (II + ICMS)</span>
@@ -176,17 +190,17 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             <span>R$ {calculos.totalGeral.toFixed(2)}</span>
           </div>
           
-          {/* AVISO IMPORTANTE */}
+          {/* AVISO IMPORTANTE ATUALIZADO */}
           <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl">
             <h3 className="font-black text-amber-900 text-[10px] uppercase mb-1 flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5" /> Atenção
+              <AlertTriangle className="w-3.5 h-3.5" /> Frete Brasil ✈️
             </h3>
             <p className="text-amber-800 text-[10px] leading-tight mb-2">
-              Valores de frete e impostos são estimativas baseadas no peso padrão. O valor final pode variar após a pesagem real.
+              O frete é calculado por peso real. Só saberemos o valor exato após o fechamento da sua caixa. A cotação do iene é feita no dia.
             </p>
             <label className="flex items-center gap-2 text-[10px] font-bold text-amber-900 cursor-pointer">
               <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="rounded text-red-600 focus:ring-red-500" />
-              Estou ciente das taxas e prazos.
+              Concordo com os termos e taxas.
             </label>
           </div>
 
@@ -198,11 +212,11 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             {isSubmitting ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Processando...</>
             ) : (
-              "Finalizar Pedido via WhatsApp"
+              "Finalizar via WhatsApp"
             )}
           </button>
         </div>
       </div>
     </div>
   );
-    }
+}
