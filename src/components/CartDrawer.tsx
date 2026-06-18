@@ -5,7 +5,7 @@ import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 // Taxa de conversão (Ajuste conforme o valor do dia no seu arquivo data.ts)
-const YEN_TO_BRL_RATE = 0.038; // Exemplo: 1 JPY = 0.038 BRL
+const YEN_TO_BRL_RATE = 0.038; 
 
 interface CartDrawerProps {
   onClose: () => void;
@@ -25,47 +25,24 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     return cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
   }, [cartItems]);
 
-  // Função para calcular o frete em Ienes baseado no peso (proporcional a cada 100g)
-  // Baseado na sua tabela: 500g = 1600~1700 JPY (aprox R$65), 1kg = 2700~2800 JPY (aprox R$105)
-  // Simplificando a lógica de R$ para Ienes:
+  // Função para calcular o frete em Ienes baseado no peso
   const calculateShippingYen = (weightGrams: number) => {
-    if (weightGrams <= 500) return 1700; // Aprox R$65
-    if (weightGrams <= 1000) return 2750; // Aprox R$105
-    if (weightGrams <= 1500) return 3900; // Aprox R$148
-    if (weightGrams <= 2000) return 5000; // Aprox R$190
-    
-    // Para pesos maiores, segue a lógica de acréscimo proporcional
+    if (weightGrams <= 500) return 1700; // R$ 65
+    if (weightGrams <= 1000) return 2750; // R$ 105
+    if (weightGrams <= 1500) return 3900; // R$ 148
+    if (weightGrams <= 2000) return 5000; // R$ 190
     return 5000 + (Math.ceil((weightGrams - 2000) / 100) * 250);
   };
 
-  // Motor de cálculo dinâmico
+  // Motor de cálculo simplificado (Apenas Produto + Frete)
   const calculos = useMemo(() => {
-    const assessoria = 25.00; // Taxa fixa de assessoria
-    
     const freteYen = calculateShippingYen(estimatedWeight);
     const valorFreteBRL = freteYen * YEN_TO_BRL_RATE;
-    
-    // Base de Cálculo (Valor Aduaneiro = Produtos + Frete + Assessoria)
-    const valorAduaneiro = subtotalProdutos + assessoria + valorFreteBRL;
-    
-    // Imposto de Importação (60%)
-    const impostoImportacao = valorAduaneiro * 0.60;
-    
-    // ICMS (17% calculado "por dentro")
-    const aliquotaICMS = 0.17;
-    const baseCalculoICMS = (valorAduaneiro + impostoImportacao) / (1 - aliquotaICMS);
-    const icms = baseCalculoICMS * aliquotaICMS;
-    
-    const totalImpostos = impostoImportacao + icms;
-    const totalGeral = valorAduaneiro + totalImpostos;
+    const totalGeral = subtotalProdutos + valorFreteBRL;
 
     return {
-      assessoria,
       freteYen,
       valorFreteBRL,
-      impostoImportacao,
-      icms,
-      totalImpostos,
       totalGeral
     };
   }, [subtotalProdutos, estimatedWeight]);
@@ -88,7 +65,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           userId: userEmail,
           itemsSummary: itemsSummary,
           pesoEstimado: `${estimatedWeight}g`,
-          totalEstimado: calculos.totalGeral.toFixed(2),
+          totalPedido: calculos.totalGeral.toFixed(2),
           createdAt: serverTimestamp()
         });
       }
@@ -100,14 +77,12 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 
     const msg = `Olá! Gostaria de finalizar meu pedido:
 \n${itemsList}
-\n--- ESTIMATIVA DE ENVIO ---
-\nPeso Estimado: ${estimatedWeight}g
-\nFrete Internacional: ¥ ${calculos.freteYen} (R$ ${calculos.valorFreteBRL.toFixed(2)})
-\nAssessoria: R$ ${calculos.assessoria.toFixed(2)}
-\nEst. Impostos (II+ICMS): R$ ${calculos.totalImpostos.toFixed(2)}
+\n--- RESUMO ---
+\nProdutos: R$ ${subtotalProdutos.toFixed(2)}
+\nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)} (${estimatedWeight}g)
 \n---
-\nTOTAL ESTIMADO: R$ ${calculos.totalGeral.toFixed(2)}
-\n\n*Estou ciente que o valor exato do frete só será confirmado após o fechamento da caixa.*`;
+\nTOTAL: R$ ${calculos.totalGeral.toFixed(2)}
+\n\n*Estou ciente que o frete exato e possíveis taxas alfandegárias serão confirmados após o fechamento da caixa.*`;
 
     window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -143,64 +118,53 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               {/* SELETOR DE PESO ESTIMADO */}
               <div className="pt-2 space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider flex items-center gap-1">
-                  <Scale className="w-3.5 h-3.5" /> Peso Estimado do Pedido
+                  <Scale className="w-3.5 h-3.5" /> Estimativa de Frete
                 </label>
                 <select 
                   value={estimatedWeight}
                   onChange={(e) => setEstimatedWeight(Number(e.target.value))}
-                  className="w-full border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm font-bold text-slate-700 focus:outline-none focus:ring-2 focus:ring-red-500"
+                  className="w-full border border-slate-200 bg-white rounded-lg px-3 py-2 text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-red-500"
                 >
-                  <option value={500}>Até 500g (Média R$ 65)</option>
-                  <option value={1000}>Até 1kg (Média R$ 105)</option>
-                  <option value={1500}>Até 1.5kg (Média R$ 148)</option>
-                  <option value={2000}>Até 2kg (Média R$ 190)</option>
-                  <option value={3000}>Até 3kg (Consultar)</option>
+                  <option value={500}>Até 500g - R$ 65</option>
+                  <option value={1000}>Até 1kg - R$ 105</option>
+                  <option value={1500}>Até 1.5kg - R$ 148</option>
+                  <option value={2000}>Até 2kg - R$ 190</option>
                 </select>
-                <p className="text-[9px] text-slate-400 leading-tight">
-                  * O frete é calculado a cada 100g. O valor exato depende do peso final da caixa.
-                </p>
               </div>
             </>
           )}
         </div>
 
         <div className="p-4 border-t bg-gray-50 space-y-3">
-          {/* RESUMO DE VALORES */}
-          <div className="space-y-1.5 text-[11px] border-b pb-3">
+          {/* RESUMO SIMPLIFICADO */}
+          <div className="space-y-1.5 text-xs border-b pb-3">
             <div className="flex justify-between text-gray-500">
               <span>Subtotal Produtos</span>
               <span>R$ {subtotalProdutos.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-500">
-              <span>Assessoria Japão Box</span>
-              <span>R$ {calculos.assessoria.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-gray-500">
-              <span>Frete Internacional (¥ {calculos.freteYen})</span>
+              <span>Frete Internacional Est.</span>
               <span>R$ {calculos.valorFreteBRL.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-blue-600 font-medium">
-              <span>Est. Impostos (II + ICMS)</span>
-              <span>R$ {calculos.totalImpostos.toFixed(2)}</span>
             </div>
           </div>
 
           <div className="flex justify-between font-black text-lg text-gray-900">
-            <span>Total Estimado</span>
+            <span>Total</span>
             <span>R$ {calculos.totalGeral.toFixed(2)}</span>
           </div>
           
-          {/* AVISO IMPORTANTE ATUALIZADO */}
+          {/* AVISO DE TAXAS E FRETE */}
           <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl">
             <h3 className="font-black text-amber-900 text-[10px] uppercase mb-1 flex items-center gap-1.5">
-              <AlertTriangle className="w-3.5 h-3.5" /> Frete Brasil ✈️
+              <AlertTriangle className="w-3.5 h-3.5" /> Informações Importantes
             </h3>
             <p className="text-amber-800 text-[10px] leading-tight mb-2">
-              O frete é calculado por peso real. Só saberemos o valor exato após o fechamento da sua caixa. A cotação do iene é feita no dia.
+              1. O frete é calculado por peso e o valor exato será confirmado após o fechamento da caixa.<br/>
+              2. Compras internacionais podem estar sujeitas a impostos alfandegários (II + ICMS) por conta do comprador.
             </p>
             <label className="flex items-center gap-2 text-[10px] font-bold text-amber-900 cursor-pointer">
               <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="rounded text-red-600 focus:ring-red-500" />
-              Concordo com os termos e taxas.
+              Estou ciente e concordo.
             </label>
           </div>
 
