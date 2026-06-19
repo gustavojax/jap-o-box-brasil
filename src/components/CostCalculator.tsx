@@ -1,10 +1,14 @@
 import React, { useState, useMemo } from "react";
-import { Calculator, Info, ShieldAlert, Truck, HelpCircle } from "lucide-react";
+import { Calculator, Info, ShieldAlert, Truck, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+
+// Taxa de conversão usada no projeto
+const YEN_TO_BRL_RATE = 0.038;
 
 export default function CostCalculator() {
   // 1. Estados para as informações fornecidas pelo cliente
   const [itemWeight, setItemWeight] = useState<number>(0.5); // Peso padrão em kg
   const [shippingMethod, setShippingMethod] = useState<"ems" | "air" | "sea">("ems");
+  const [isRedirectOpen, setIsRedirectOpen] = useState<boolean>(false); // Estado para abrir/fechar a tabela
 
   // Preço base do produto simulado (já com a sua taxa de assessoria embutida de forma oculta)
   const productPriceBRL = 235.20; 
@@ -21,13 +25,12 @@ export default function CostCalculator() {
   }, [itemWeight, shippingMethod]);
 
   // 3. Estimativa de Imposto conforme as regras atuais de importação do Brasil (2026)
-  // (Ex: Alíquota unificada de ICMS + Imposto de Importação simplificado)
   const estimatedTaxBRL = useMemo(() => {
     const subtotal = productPriceBRL + shippingCostBRL;
     return Math.round(subtotal * 0.20); // Simulação de 20% de carga tributária aproximada do Remessa Conforme
   }, [shippingCostBRL]);
 
-  // 4. Valor Final Chave na Mão
+  // 4. Valor Final Chave na Mão (Apenas produto + frete + taxa estimativa)
   const totalCostBRL = productPriceBRL + shippingCostBRL + estimatedTaxBRL;
 
   return (
@@ -98,6 +101,54 @@ export default function CostCalculator() {
               </div>
             </div>
 
+            {/* ABA EXPANSÍVEL (ACCORDION) DE REDIRECIONAMENTO E TAXAS */}
+            <div className="border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+              <button 
+                type="button"
+                onClick={() => setIsRedirectOpen(!isRedirectOpen)}
+                className="w-full flex items-center justify-between p-4 bg-slate-50 hover:bg-slate-100/80 transition-colors text-left"
+              >
+                <div className="flex items-center gap-2 text-slate-800">
+                  <Info className="w-4 h-4 text-blue-600" />
+                  <span className="text-xs font-black uppercase tracking-wider">Como funciona o Redirecionamento?</span>
+                </div>
+                {isRedirectOpen ? <ChevronUp className="w-4 h-4 text-slate-500" /> : <ChevronDown className="w-4 h-4 text-slate-500" />}
+              </button>
+
+              {isRedirectOpen && (
+                <div className="p-4 bg-white border-t border-slate-200 space-y-4 animate-fadeIn">
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    A taxa de serviço e redirecionamento é calculada de forma transparente por caixa consolidada diretamente no fechamento do seu envio:
+                  </p>
+
+                  {/* TABELA DE TAXAS */}
+                  <div className="w-full bg-slate-50 rounded-xl border border-slate-200 text-xs overflow-hidden">
+                    <div className="grid grid-cols-2 bg-slate-200/60 p-2.5 font-bold text-slate-700 border-b border-slate-200">
+                      <span>Valor da Compra (Yenes)</span>
+                      <span className="text-right">Taxa de Serviço</span>
+                    </div>
+                    <div className="grid grid-cols-2 p-2.5 text-slate-600 border-b border-slate-100 bg-white">
+                      <span>De ¥4.000 até ¥20.000</span>
+                      <span className="text-right font-bold text-slate-900">¥4.000 <span className="text-slate-400 font-normal text-[10px]">(~R$ ${(4000 * YEN_TO_BRL_RATE).toFixed(2)})</span></span>
+                    </div>
+                    <div className="grid grid-cols-2 p-2.5 text-slate-600 bg-white">
+                      <span>Mais de ¥20.000</span>
+                      <span className="text-right font-bold text-slate-900">20% <span className="text-slate-400 font-normal text-[10px]">do valor total</span></span>
+                    </div>
+                  </div>
+
+                  {/* INFORMATIVO ALFANDEGÁRIO INTERNO */}
+                  <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
+                    <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+                    <div>
+                      <span className="font-bold block mb-0.5">Aviso de Importação (Regras 2026):</span>
+                      O frete final exato e a taxa descrita acima são fixados no fechamento físico da sua caixa. Compras internacionais podem estar sujeitas às taxas e normas alfandegárias vigentes no Brasil.
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* COLUNA DA DIREITA: EXIBIÇÃO CLEAN DO PREÇO FINAL */}
@@ -126,7 +177,7 @@ export default function CostCalculator() {
               <span className="text-[10px] text-slate-400 block mt-0.5">Sem surpresas ou cobranças extras na entrega</span>
             </div>
 
-            {/* ⚠️ AVISO LEGAL SOBRE AS TAXAS ATUAIS DO BRASIL */}
+            {/* AVISO GERAL INALTERADO */}
             <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-start gap-2.5 text-[11px] text-amber-900 leading-relaxed">
               <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
               <div>
