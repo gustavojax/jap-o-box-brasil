@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale, Settings } from "lucide-react";
+import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -20,7 +20,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   // Peso estimado em gramas (padrão 500g)
   const [estimatedWeight, setEstimatedWeight] = useState<number>(500);
 
-  // Subtotal dos produtos no carrinho (em Reais)
+  // Subtotal dos produtos no carrinho
   const subtotalProdutos = useMemo(() => {
     return cartItems?.reduce((acc, item) => acc + (item?.product?.priceBRL || 0) * (item?.quantity || 1), 0) || 0;
   }, [cartItems]);
@@ -34,34 +34,15 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     return 5000 + (Math.ceil((weightGrams - 2000) / 100) * 250);
   };
 
-  // Motor de cálculo atualizado com Taxa de Serviço/Redirecionamento
+  // Motor de cálculo limpo: PRODUTO + FRETE Apenas
   const calculos = useMemo(() => {
     const freteYen = calculateShippingYen(estimatedWeight);
     const valorFreteBRL = freteYen * YEN_TO_BRL_RATE;
-
-    // Converter subtotal de BRL para Yen para validar a regra de negócio
-    const subtotalYen = YEN_TO_BRL_RATE > 0 ? subtotalProdutos / YEN_TO_BRL_RATE : 0;
-
-    let taxaServicoYen = 0;
-
-    if (subtotalYen > 0) {
-      if (subtotalYen > 20000) {
-        // Mais de 20 mil ienes = 20% de taxa
-        taxaServicoYen = subtotalYen * 0.20;
-      } else {
-        // Até 20 mil ienes = valor fixo de 4 mil ienes
-        taxaServicoYen = 4000;
-      }
-    }
-
-    const valorTaxaServicoBRL = taxaServicoYen * YEN_TO_BRL_RATE;
-    const totalGeral = subtotalProdutos + valorFreteBRL + valorTaxaServicoBRL;
+    const totalGeral = subtotalProdutos + valorFreteBRL;
 
     return {
       freteYen,
       valorFreteBRL,
-      taxaServicoYen,
-      valorTaxaServicoBRL,
       totalGeral
     };
   }, [subtotalProdutos, estimatedWeight]);
@@ -98,7 +79,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
 \n${itemsList}
 \n--- RESUMO ---
 \nProdutos: R$ ${subtotalProdutos.toFixed(2)}
-\nTaxa de Serviço/Redirecionamento: R$ ${calculos.valorTaxaServicoBRL.toFixed(2)}
 \nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)} (${estimatedWeight}g)
 \n---
 \nTOTAL: R$ ${calculos.totalGeral.toFixed(2)}
@@ -163,10 +143,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               <span>R$ {subtotalProdutos.toFixed(2)}</span>
             </div>
             <div className="flex justify-between text-gray-500">
-              <span>Serviço / Redirecionamento</span>
-              <span>R$ {calculos.valorTaxaServicoBRL.toFixed(2)}</span>
-            </div>
-            <div className="flex justify-between text-gray-500">
               <span>Frete Internacional Est.</span>
               <span>R$ {calculos.valorFreteBRL.toFixed(2)}</span>
             </div>
@@ -183,7 +159,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
               <AlertTriangle className="w-3.5 h-3.5" /> Informações Importantes
             </h3>
             <p className="text-amber-800 text-[10px] leading-tight mb-2">
-              1. O frete é calculado por peso e o valor exato será confirmado após o fechamento da caixa.<br/>
+              1. O frete é calculated por peso e o valor exato será confirmado após o fechamento da caixa.<br/>
               2. Compras internacionais podem estar sujeitas a impostos alfandegários (II + ICMS) por conta do comprador.
             </p>
             <label className="flex items-center gap-2 text-[10px] font-bold text-amber-900 cursor-pointer">
