@@ -2019,5 +2019,6 @@ return (
       <WhatsAppFloat />
 
     </div>
+)
   );
 }
