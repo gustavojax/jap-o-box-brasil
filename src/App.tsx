@@ -1915,17 +1915,18 @@ return (
                       <a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
                         <img src="https://i.postimg.cc/LsF5Rm2p/Captura-de-tela-2026-06-19-053831.png" alt="Nike Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-                        <span>Nike Japan</span>
-             </div>
+                       <span>Nike Japan</span>
+                      </a>
+                    </li>
+                  </ul>
+                </div>
               </div>
-            </section>
-          </main>
-        </> // 
-      ) : activeTab === "about" ? (
             </div>
           </section>
         </main>
-      ) : activeTab === "about" ? (
+      </>
+    ) : activeTab === "about" ? (
+      <main className="flex-1 bg-slate-50 py-12 px-4">
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
             <div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
