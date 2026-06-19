@@ -2018,6 +2018,8 @@ return (
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
      <WhatsAppFloat />
 
-    </div>
+  </div>
   );
 }
+
+export default App;
