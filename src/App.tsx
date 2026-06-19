@@ -1796,22 +1796,25 @@ return (
         onLogoClick={handleReturnToStore}
       />
 
-      <RedirectBanner onRedirectClick={() => { 
-        setActiveTab("redirect"); 
-        setShowTaxNotice(true); 
-      }} />
+    <RedirectBanner onRedirectClick={() => { 
+  setActiveTab("redirect"); 
+  setShowTaxNotice(true); // Mantido aqui porque este é o botão de ação do Redirecionamento!
+}} />
 
-      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
-        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
-          <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
-          <button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento ✈️</button>
-          <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
-          <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
-          {isAdmin && (
-            <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém 🏢</button>
-          )}
-        </div>
-      </div>
+<div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+  <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
+    <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
+    
+    {/* ALTERADO AQUI: Removido o setShowTaxNotice(true) do menu de abas superior para não ficar poluindo a tela ao navegar */}
+    <button onClick={() => { setActiveTab("redirect"); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento ✈️</button>
+    
+    <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
+    <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
+    {isAdmin && (
+      <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém</button>
+    )}
+  </div>
+</div>
 
       {activeTab === "store" ? (
         <>
