@@ -1796,39 +1796,22 @@ return (
         onLogoClick={handleReturnToStore}
       />
 
-    <RedirectBanner onRedirectClick={() => { 
-  setActiveTab("redirect"); 
-  setShowTaxNotice(true); // Mantido aqui porque este é o botão de ação do Redirecionamento!
-}} />
+      <RedirectBanner onRedirectClick={() => { 
+        setActiveTab("redirect"); 
+        setShowTaxNotice(true); 
+      }} />
 
-<div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
-  <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
-    <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
-{/* SUBSTITUA AQUELE BLOCO POR ESTE CORRIGIDO: */}
-        {activeTab === "redirect" && (
-          <div className="max-w-4xl mx-auto px-4 pt-6">
-            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-lg border border-slate-200 bg-black">
-              <iframe
-                src="https://player.vimeo.com/video/1202746844?autoplay=1&muted=1"
-                className="absolute top-0 left-0 w-full h-full"
-                allow="autoplay; fullscreen; picture-in-picture"
-                allowFullScreen
-                title="Vídeo Explicativo Redirecionamento"
-              ></iframe>
-            </div>
-            <div className="mt-6">
-              <RedirectView />
-            </div>
-          </div>
-        )}
-        )}
-    <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
-    <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
-    {isAdmin && (
-      <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém</button>
-    )}
-  </div>
-</div>
+      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
+          <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
+          <button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento ✈️</button>
+          <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
+          <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
+          {isAdmin && (
+            <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém 🏢</button>
+          )}
+        </div>
+      </div>
 
       {activeTab === "store" ? (
         <>
