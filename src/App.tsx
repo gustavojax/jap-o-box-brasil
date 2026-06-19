@@ -1916,11 +1916,12 @@ return (
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
                         <img src="https://i.postimg.cc/LsF5Rm2p/Captura-de-tela-2026-06-19-053831.png" alt="Nike Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
                         <span>Nike Japan</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
+             </div>
               </div>
+            </section>
+          </main>
+        </> // 
+      ) : activeTab === "about" ? (
             </div>
           </section>
         </main>
@@ -1973,10 +1974,7 @@ return (
           ) : (
             <div className="text-center py-12">
               <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
-            </div>
-          )}
-        </main>
-      )}
+) : activeTab === "proxima_aba" ?
 
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
         <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
