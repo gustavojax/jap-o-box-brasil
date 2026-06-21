@@ -1878,90 +1878,91 @@ return (
                   <button onClick={() => window.open("https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
                 </div>
 
-<div className="space-y-6">
-  <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
-  
-  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
-    <ul className="space-y-4 text-sm font-bold text-black">
-      <li>
-        <a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <img src="https://i.postimg.cc/NjHFWKqs/Captura-de-tela-2026-06-19-053415.png" alt="Adidas Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-          <span>Adidas Japan</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <img src="https://i.postimg.cc/FKXzmhN5/Captura-de-tela-2026-06-19-053510.png" alt="GU Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-          <span>GU</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <img src="https://i.postimg.cc/43RyZXsT/Captura-de-tela-2026-06-19-053638.png" alt="Onitsuka Tiger Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-          <span>Onitsuka Tiger</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <img src="https://i.postimg.cc/Xv6q3n46/Captura-de-tela-2026-06-19-053708.png" alt="Uniqlo Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-          <span>Uniqlo Japan</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <img src="https://i.postimg.cc/LsF5Rm2p/Captura-de-tela-2026-06-19-053831.png" alt="Nike Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
-          <span>Nike Japan</span>
-        </a>
-      </li>
-    </ul>
-  </div>
+<div> {/* Tag de controle para alinhar com o escopo externo */}
+  <div className="space-y-6">
+    <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
+    
+    <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
+      <ul className="space-y-4 text-sm font-bold text-black">
+        <li>
+          <a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <img src="https://i.postimg.cc/NjHFWKqs/Captura-de-tela-2026-06-19-053415.png" alt="Adidas Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
+            <span>Adidas Japan</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <img src="https://i.postimg.cc/FKXzmhN5/Captura-de-tela-2026-06-19-053510.png" alt="GU Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
+            <span>GU</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <img src="https://i.postimg.cc/43RyZXsT/Captura-de-tela-2026-06-19-053638.png" alt="Onitsuka Tiger Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
+            <span>Onitsuka Tiger</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <img src="https://i.postimg.cc/Xv6q3n46/Captura-de-tela-2026-06-19-053708.png" alt="Uniqlo Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
+            <span>Uniqlo Japan</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <img src="https://i.postimg.cc/LsF5Rm2p/Captura-de-tela-2026-06-19-053831.png" alt="Nike Logo" className="h-5 w-auto object-contain select-none transition-transform group-hover:scale-105" />
+            <span>Nike Japan</span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
-  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
-    <ul className="space-y-4 text-sm font-bold text-black">
-      <li>
-        <a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <span className="w-5 text-center select-none">🛍️</span>
-          <span>Rakuten JP</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <span className="w-5 text-center select-none">📦</span>
-          <span>Amazon Japan</span>
-        </a>
-      </li>
-      <li>
-        <a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <span className="w-5 text-center select-none">🔄</span>
-          <span>Mercari</span>
-        </a>
-      </li>
-    </ul>
-  </div>
+    <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
+      <ul className="space-y-4 text-sm font-bold text-black">
+        <li>
+          <a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span className="w-5 text-center select-none">🛍️</span>
+            <span>Rakuten JP</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span className="w-5 text-center select-none">📦</span>
+            <span>Amazon Japan</span>
+          </a>
+        </li>
+        <li>
+          <a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span className="w-5 text-center select-none">🔄</span>
+            <span>Mercari</span>
+          </a>
+        </li>
+      </ul>
+    </div>
 
-  <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-    <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
-    <ul className="space-y-4 text-sm font-bold text-black">
-      <li>
-        <a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-          <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-          <span className="w-5 text-center select-none">✨</span>
-          <span>Zara Japan</span>
-        </a>
-      </li>
-    </ul>
+    <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
+      <ul className="space-y-4 text-sm font-bold text-black">
+        <li>
+          <a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+            <span className="w-5 text-center select-none">✨</span>
+            <span>Zara Japan</span>
+          </a>
+        </li>
+      </ul>
+    </div>
   </div>
-</div>
           </section>
         </main>
       ) : activeTab === "about" ? (
