@@ -1541,6 +1541,8 @@ const PRODUCTS: Product[] = [
   }
 ];
 
+import { useState, useEffect } from "react";
+
 export default function App() {
   const [user, setUser] = useState<any>(null);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -1559,7 +1561,6 @@ export default function App() {
         setUser({ ...u });
         setIsAuthOpen(false); 
 
-        // Verifica se o usuÃ¡rio Ã© administrador
         if (u.email) {
           const adminRef = doc(db, "admins", u.email);
           const adminSnap = await getDoc(adminRef);
@@ -1571,11 +1572,11 @@ export default function App() {
         setUser(null);
         setIsAdmin(false);
         setOrders([]);
-        if (activeTab === "account" || activeTab === "admin") setActiveTab("store");
+        setActiveTab((prevTab) => (prevTab === "account" || prevTab === "admin" ? "store" : prevTab));
       }
     });
     return () => unsubAuth();
-  }, [activeTab]);
+  }, []);
 
   useEffect(() => {
     if (!user?.uid || !db) {
@@ -1602,18 +1603,7 @@ export default function App() {
         const timeB = b.createdAt?.seconds || 0;
         return timeB - timeA;
       });
-        <Header
-  onSearchChange={setSearchQuery}
-  selectedCategory={selectedCategory}
-  onSelectCategory={setSelectedCategory}
-  categories={allCategories}
-  cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
-  onOpenCart={() => setIsCartOpen(true)}
-  onOpenAuth={() => user ? setActiveTab("account") : setIsAuthOpen(true)}
-  user={user}
-  onLogout={handleLogout}
-  onLogoClick={handleReturnToStore}
-/>
+
       setOrders(ordersList);
       setLoadingOrders(false);
     }, (error) => {
@@ -1632,9 +1622,9 @@ export default function App() {
       const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
       const randomItems = [
         "Kit Hair Care Shiseido Fino Premium",
-        "Protetor Solar BiorÃ© Aqua Rich FPS 50",
-        "TÃªnis Asics Gel-Quantum Original JP",
-        "LoÃ§Ã£o Hidratante Hada Labo Gokujyun"
+        "Protetor Solar Bioré Aqua Rich FPS 50",
+        "Tênis Asics Gel-Quantum Original JP",
+        "Loção Hidratante Hada Labo Gokujyun"
       ];
       const randomItem = randomItems[Math.floor(Math.random() * randomItems.length)];
 
@@ -1646,7 +1636,6 @@ export default function App() {
         createdAt: serverTimestamp()
       });
 
-      showNotification("Pedido de teste adicionado!");
     } catch (e) {
       console.error("Erro ao simular pedido:", e);
     }
@@ -1659,10 +1648,13 @@ export default function App() {
     setActiveTab("store");
   };
 
-  // =========================
-  // UI & FILTERS STATES (CATEGORIAS LIMPAS)
-  // =========================
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  return (
+    <>
+    </>
+  );
+}
+
+const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
 
@@ -1683,7 +1675,7 @@ export default function App() {
       "Skincare e Tratamentos Faciais",
       "Cuidados Capilares",
       "Maquiagem",
-      "Aparelhos EstÃ©ticos e Tecnologia",
+      "Aparelhos Estéticos e Tecnologia",
       "Higiene e Cuidados Pessoais"
     ];
   }, []);
@@ -1725,12 +1717,12 @@ export default function App() {
         return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-amber-100 text-amber-800 flex items-center gap-1"><Clock className="w-3 h-3" /> PROCESSANDO</span>;
       case "shipped":
       case "enviado":
-        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-blue-100 text-blue-800 flex items-center gap-1"><Truck className="w-3 h-3" /> EM TRÃ‚NSITO</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-blue-100 text-blue-800 flex items-center gap-1"><Truck className="w-3 h-3" /> EM TRÂNSITO</span>;
       case "delivered":
       case "entregue":
         return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> RECEBIDO</span>;
       default:
-        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-slate-100 text-slate-700">CONCLUÃDO</span>;
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-slate-100 text-slate-700">CONCLUÍDO</span>;
     }
   };
 
@@ -1746,9 +1738,9 @@ return (
       {showTaxNotice && (
         <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
           <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
-            <h3 className="font-black text-red-600 mb-2">ðŸ“¦ Aviso Importante</h3>
+            <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
             <p className="text-slate-700 text-sm mb-4">
-              Compras internacionais podem estar sujeitas Ã  cobranÃ§a de 60% de imposto de importaÃ§Ã£o, alÃ©m do ICMS. Essas taxas sÃ£o de responsabilidade do comprador.
+              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS. Essas taxas são de responsabilidade do comprador.
             </p>
             <label className="flex items-center gap-2 text-xs font-bold mb-4 cursor-pointer">
               <input type="checkbox" onChange={(e) => setAcceptedTerms(e.target.checked)} />
@@ -1756,18 +1748,19 @@ return (
             </label>
             <button 
               onClick={() => { if(acceptedTerms) setShowTaxNotice(false); }}
-              className="w-full bg-red-600 text-white font-bold py-2 rounded-lg"
+              className={`w-full text-white font-bold py-2 rounded-lg transition-opacity ${acceptedTerms ? 'bg-red-600' : 'bg-red-400 cursor-not-allowed'}`}
+              disabled={!acceptedTerms}
             >
               ESTOU CIENTE
             </button>
           </div>
         </div>
       )}
-
-      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
-        <span>ðŸ‡¯ðŸ‡µ PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃƒO</span>
+      
+    <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
         <span className="hidden md:inline text-slate-400">|</span>
-        <span className="hidden md:flex items-center gap-1">ðŸ“¦ RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
       </div>
 
       {notification && (
@@ -1804,11 +1797,11 @@ return (
       <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
         <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
           <button onClick={handleReturnToStore} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Loja</button>
-          <button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento âœˆï¸</button>
-          <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre NÃ³s</button>
-          <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha SuÃ­te & Painel ðŸ“¦</button>
+          <button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Redirecionamento ✈️</button>
+          <button onClick={() => setActiveTab("about")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Sobre Nós</button>
+          <button onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "account" ? "bg-emerald-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-50"}`}>Minha Suíte & Painel 📦</button>
           {isAdmin && (
-            <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel ArmazÃ©m ðŸ¢</button>
+            <button onClick={() => setActiveTab("admin")} className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-400 hover:bg-slate-50"}`}>Painel Armazém 🏢</button>
           )}
         </div>
       </div>
@@ -1821,15 +1814,15 @@ return (
             <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
               <div className="flex items-center justify-between mb-6 border-b pb-4">
                 <div className="text-left">
-                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">ðŸ›’ Vitrine de ImportaÃ§Ã£o</h2>
-                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeÃ§alho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
+                  <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
                 </div>
                 <div className="flex items-center gap-2">
                   <ArrowUpDown className="w-4 h-4 text-slate-400" />
                   <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="border border-slate-200 rounded-xl px-3 py-2 bg-white text-xs font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-slate-900">
                     <option value="popular">Popularidade</option>
-                    <option value="priceAsc">Menor preÃ§o</option>
-                    <option value="priceDesc">Maior preÃ§o</option>
+                    <option value="priceAsc">Menor preço</option>
+                    <option value="priceDesc">Maior preço</option>
                     <option value="name">Nome A-Z</option>
                   </select>
                 </div>
@@ -1859,30 +1852,30 @@ return (
               </div>
               <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
-                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">ðŸ“¦ Compre em Qualquer Loja do JapÃ£o</h2>
+                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
                   <div className="text-black space-y-4 text-sm font-bold mb-8">
-                    <p>Muitas lojas online japonesas nÃ£o enviam produtos para o exterior. Ã‰ para isso que estamos aqui!</p>
-                    <p>Com o nosso serviÃ§o de <strong className="text-red-600">Redirecionamento</strong>, vocÃª faz compras nos seus sites favoritos como se morasse no JapÃ£o usando o nosso endereÃ§o como destino. NÃ³s recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
+                    <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
+                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço como destino. Nós recebemos, organizamos suas caixas e enviamos tudo direto para a sua casa no Brasil.</p>
                     <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <p className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereÃ§o abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluÃ­do, clique no botÃ£o abaixo para nos enviar o comprovante pelo WhatsApp e avisar que a encomenda estÃ¡ a caminho.</p>
+                      <p className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for concluído, clique no botão abaixo para nos enviar o comprovante pelo WhatsApp e avisar que a encomenda está a caminho.</p>
                     </div>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">Seu EndereÃ§o no JapÃ£o</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">Seu Endereço no Japão</p>
                     <p className="font-black text-xl leading-snug mb-1 text-black">The Tomorrow</p>
-                    <p className="text-gray-700 font-bold">2-chÅme-3-15 Matsutera, Yokkaichi</p>
+                    <p className="text-gray-700 font-bold">2-chōme-3-15 Matsutera, Yokkaichi</p>
                     <p className="text-gray-700 font-bold">Mie 510-8021</p>
-                    <p className="text-black font-black mt-2">(JapÃ£o)</p>
+                    <p className="text-black font-black mt-2">(Japão)</p>
                   </div>
                   <button onClick={() => window.open("https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
                 </div>
 
 <div className="space-y-6">
-                <h3 className="text-xl font-black mb-4 text-red-600">ðŸ”— Lojas Recomendadas</h3>
+                <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
                 
                 <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-                  <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e CalÃ§ados</h4>
+                  <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
                   <ul className="space-y-4 text-sm font-bold text-black">
                     <li>
                       <a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
@@ -1921,41 +1914,41 @@ return (
                     </li>
                   </ul>
                 </div>
+</div>
 
-                <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+              <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                   <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
                   <ul className="space-y-4 text-sm font-bold text-black">
                     <li>
                       <a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-                        <span className="w-5 text-center select-none">ðŸ›ï¸</span>
+                        <span className="w-5 text-center select-none">🛍️</span>
                         <span>Rakuten JP</span>
                       </a>
                     </li>
                     <li>
                       <a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-                        <span className="w-5 text-center select-none">ðŸ“¦</span>
+                        <span className="w-5 text-center select-none">📦</span>
                         <span>Amazon Japan</span>
                       </a>
                     </li>
                     <li>
                       <a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-                        <span className="w-5 text-center select-none">ðŸ”„</span>
+                        <span className="w-5 text-center select-none">🔄</span>
                         <span>Mercari</span>
                       </a>
                     </li>
                   </ul>
                 </div>
-
-                <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
+<div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                   <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
                   <ul className="space-y-4 text-sm font-bold text-black">
                     <li>
                       <a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
                         <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-                        <span className="w-5 text-center select-none">âœ¨</span>
+                        <span className="w-5 text-center select-none">✨</span>
                         <span>Zara Japan</span>
                       </a>
                     </li>
@@ -1969,19 +1962,19 @@ return (
             <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
               <div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
                 <div>
-                  <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa HistÃ³ria</span>
-                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">âœ¨ Bem-vindos Ã  JapÃ£o Box Brasil âœ¨</h1>
+                  <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
+                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
                 </div>
                 <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                  <p>Iniciamos nossa empresa com um sonho: levar atÃ© o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. ðŸ‡¯ðŸ‡µðŸ‡°ðŸ‡·</p>
-                  <p>Selecionamos cada produto com carinho para oferecer itens originais, tendÃªncias de skincare, cosmÃ©ticos, cuidados pessoais e muito mais, diretamente do JapÃ£o e da Coreia para vocÃª.</p>
-                  <p>A JapÃ£o Box Brasil nasceu para aproximar culturas e entregar experiÃªncias Ãºnicas, com confianÃ§a, dedicaÃ§Ã£o e amor em cada envio.</p>
-                  <p className="font-semibold text-slate-800">Obrigada por fazer parte do comeÃ§o dessa histÃ³ria com a gente!</p>
+                  <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇧🇷</p>
+                  <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                  <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+                  <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
                 </div>
                 <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
                   <div className="flex items-center gap-3 text-left">
                     <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
-                      <img src="https://iili.io/CJbmWhP.md.jpg" alt="JapÃ£o Box Brasil Logo" className="w-full h-full object-cover" />
+                      <img src="https://iili.io/CJbmWhP.md.jpg" alt="Japão Box Brasil Logo" className="w-full h-full object-cover" />
                     </div>
                     <div>
                       <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
@@ -1999,9 +1992,9 @@ return (
               <AdminDashboard />
             ) : (
               <div className="flex flex-col items-center justify-center py-20">
-                <span className="text-4xl mb-4">ðŸ”’</span>
+                <span className="text-4xl mb-4">🔒</span>
                 <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
-                <p className="text-slate-500 mt-2 text-sm">Esta Ã¡rea Ã© exclusiva para a administraÃ§Ã£o da loja.</p>
+                <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
                 <button onClick={handleReturnToStore} className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Voltar para a Loja</button>
               </div>
             )}
@@ -2012,7 +2005,7 @@ return (
               <ClientDashboard user={user} orders={orders} loadingOrders={loadingOrders} onCreateMockOrder={handleCreateMockOrder} onLogout={handleLogout} getStatusBadge={getStatusBadge} />
             ) : (
               <div className="text-center py-12">
-                <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suÃ­te.</p>
+                <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
               </div>
             )}
           </main>
@@ -2021,44 +2014,29 @@ return (
         <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
           <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="text-left">
-              <h3 className="font-black text-slate-900 text-lg mb-4">JapÃ£o Box Brasil</h3>
+              <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
               <p className="text-sm leading-relaxed text-slate-500">
-                Sua ponte definitiva com o mercado japonÃªs. Facilitamos a simulaÃ§Ã£o de custos, compra e o envio de caixas e produtos direto de nosso armazÃ©m em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+                Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
               </p>
             </div>
             <div className="text-left">
-              <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">NavegaÃ§Ã£o</h3>
+              <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
               <ul className="space-y-2 text-sm font-medium">
-                <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver CatÃ¡logo</button></li>
-                <li><button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento âœˆï¸</button></li>
-                <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre NÃ³s</button></li>
+                <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+                <li><button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento ✈️</button></li>
+                <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
                 <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
               </ul>
             </div>
           </div>
-                          {/* RodapÃ© atualizado */}
-        <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
-          
-          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-            Processamento Seguro via PagBank
-          </p>
-          
-          <div className="flex items-center justify-center px-8 py-2">
-            <img 
-              src="https://i.postimg.cc/rsQzxC3r/3.png" 
-              alt="Meios de Pagamento PagBank" 
-              className="h-10 md:h-12 object-contain select-none pointer-events-none" 
-            />
+  {/* Rodapé atualizado */}
+          <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2 pb-6">
+            <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+            <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+              Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+            </p>
           </div>
-        </div>
-
-        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2 pb-6">
-          <p>Â© 2026 JapÃ£o Box Brasil. Todos os direitos reservados.</p>
-          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-          </p>
-        </div>
-      </footer>
+        </footer>
 
       {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
