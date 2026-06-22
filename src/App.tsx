@@ -2036,38 +2036,38 @@ return (
               </ul>
             </div>
           </div>
-          <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
-  {/* Texto atualizado */}
-  <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
-    Processamento Seguro via PagBank
-  </p>
-  
-  {/* Nova imagem do PagBank carregada da pasta local */}
-  <div className="flex items-center justify-center px-8 py-2">
-    <img 
-      src="/assets/images/3.png" 
-      alt="Meios de Pagamento PagBank" 
-      className="h-10 md:h-12 object-contain select-none pointer-events-none" 
-    />
-  </div>
-</div>
-
-          <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2">
-            <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-            <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-              Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-            </p>
+                  <div className="max-w-4xl mx-auto px-4 mt-10 pt-8 border-t border-slate-100 flex flex-col items-center justify-center space-y-4">
+          {/* Texto atualizado */}
+          <p className="text-[10px] font-black tracking-widest text-slate-400 uppercase">
+            Processamento Seguro via PagBank
+          </p>
+          
+          {/* Imagem do PagBank via link externo */}
+          <div className="flex items-center justify-center px-8 py-2">
+            <img 
+              src="https://i.postimg.cc/rsQzxC3r/3.png" 
+              alt="Meios de Pagamento PagBank" 
+              className="h-10 md:h-12 object-contain select-none pointer-events-none" 
+            />
           </div>
-        </footer>
+        </div>
 
-        {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
-        <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
-        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-        <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-        <WhatsAppFloat />
+        <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2">
+          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+          <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+            Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+          </p>
+        </div>
+      </footer>
 
-      </div>
-    );
+      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+      <WhatsAppFloat />
+
+    </div>
+  );
 }
 
 export default App;
