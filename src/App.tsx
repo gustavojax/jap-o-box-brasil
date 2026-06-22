@@ -1943,18 +1943,20 @@ return (
                   </ul>
                 </div>
 <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-                  <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
-                  <ul className="space-y-4 text-sm font-bold text-black">
-                    <li>
-                      <a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
-                        <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
-                        <span className="w-5 text-center select-none">✨</span>
-                        <span>Zara Japan</span>
-                      </a>
-                    </li>
-                  </ul>
-                </div>
-              </div>
+                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
+                      <ul className="space-y-4 text-sm font-bold text-black">
+                        <li>
+                          <a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group">
+                            <ExternalLink className="w-4 h-4 text-red-600 flex-shrink-0" />
+                            <span className="w-5 text-center select-none">✨</span>
+                            <span>Zara Japan</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </div>
+                  </div> 
+                </div> 
+              </div> 
             </section>
           </main>
         ) : activeTab === "about" ? (
@@ -2029,7 +2031,7 @@ return (
               </ul>
             </div>
           </div>
-  {/* Rodapé atualizado */}
+          
           <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2 pb-6">
             <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
             <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
@@ -2038,13 +2040,13 @@ return (
           </div>
         </footer>
 
-      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-      <WhatsAppFloat />
-    </div>
-  );
+        {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
+        <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+        <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+        <WhatsAppFloat />
+      </div>
+    );
 }
 
 export default App;
