@@ -1954,99 +1954,97 @@ return (
                         </li>
                       </ul>
                     </div>
-                  </div> 
-                </div> 
-              </div> 
-            </section>
-          </main>
-        ) : activeTab === "about" ? (
-          <main className="flex-1 bg-slate-50 py-12 px-4">
-            <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
-              <div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
-                <div>
-                  <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
-                  <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
-                </div>
-                <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
-                  <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇧🇷</p>
-                  <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
-                  <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
-                  <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
-                </div>
-                <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-                  <div className="flex items-center gap-3 text-left">
-                    <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
-                      <img src="https://iili.io/CJbmWhP.md.jpg" alt="Japão Box Brasil Logo" className="w-full h-full object-cover" />
-                    </div>
+                  </div>
+                </section>
+              </main>
+            ) : activeTab === "about" ? (
+              <main className="flex-1 bg-slate-50 py-12 px-4">
+                <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 grid grid-cols-1 md:grid-cols-12">
+                  <div className="md:col-span-12 p-8 md:p-12 flex flex-col justify-center space-y-6 bg-white">
                     <div>
-                      <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
-                      <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                      <span className="text-xs font-black text-red-600 uppercase tracking-widest block mb-2">Nossa História</span>
+                      <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">✨ Bem-vindos à Japão Box Brasil ✨</h1>
+                    </div>
+                    <div className="text-slate-600 text-sm md:text-base space-y-4 leading-relaxed font-medium text-left">
+                      <p>Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos nacionais e importados, trazendo qualidade, beleza, tecnologia e novidades que conquistam o mundo inteiro. 🇯🇵🇧🇷</p>
+                      <p>Selecionamos cada produto com carinho para oferecer itens originais, tendências de skincare, cosméticos, cuidados pessoais e muito mais, diretamente do Japão e da Coreia para você.</p>
+                      <p>A Japão Box Brasil nasceu para aproximar culturas e entregar experiências únicas, com confiança, dedicação e amor em cada envio.</p>
+                      <p className="font-semibold text-slate-800">Obrigada por fazer parte do começo dessa história com a gente!</p>
+                    </div>
+                    <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
+                      <div className="flex items-center gap-3 text-left">
+                        <div className="w-12 h-12 rounded-full overflow-hidden border border-slate-200 bg-slate-100 flex-shrink-0 shadow-sm">
+                          <img src="https://iili.io/CJbmWhP.md.jpg" alt="Japão Box Brasil Logo" className="w-full h-full object-cover" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-slate-400 font-bold uppercase tracking-wider">Atenciosamente,</p>
+                          <p className="text-sm font-black text-slate-900 tracking-wide mt-0.5">Paula Takashiro</p>
+                        </div>
+                      </div>
+                      <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
                     </div>
                   </div>
-                  <Heart className="w-6 h-6 text-rose-500 fill-rose-100 stroke-1" />
+                </div>
+              </main>
+            ) : activeTab === "admin" ? (
+              <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+                {isAdmin ? (
+                  <AdminDashboard />
+                ) : (
+                  <div className="flex flex-col items-center justify-center py-20">
+                    <span className="text-4xl mb-4">🔒</span>
+                    <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
+                    <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
+                    <button onClick={handleReturnToStore} className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Voltar para a Loja</button>
+                  </div>
+                )}
+              </main>
+            ) : (
+              <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+                {user ? (
+                  <ClientDashboard user={user} orders={orders} loadingOrders={loadingOrders} onCreateMockOrder={handleCreateMockOrder} onLogout={handleLogout} getStatusBadge={getStatusBadge} />
+                ) : (
+                  <div className="text-center py-12">
+                    <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
+                  </div>
+                )}
+              </main>
+            )}
+
+            <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
+              <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div className="text-left">
+                  <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
+                  <p className="text-sm leading-relaxed text-slate-500">
+                    Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
+                  </p>
+                </div>
+                <div className="text-left">
+                  <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
+                  <ul className="space-y-2 text-sm font-medium">
+                    <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
+                    <li><button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento ✈️</button></li>
+                    <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
+                    <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
+                  </ul>
                 </div>
               </div>
-            </div>
-          </main>
-        ) : activeTab === "admin" ? (
-          <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-            {isAdmin ? (
-              <AdminDashboard />
-            ) : (
-              <div className="flex flex-col items-center justify-center py-20">
-                <span className="text-4xl mb-4">🔒</span>
-                <h2 className="text-xl font-black text-slate-900">Acesso Restrito</h2>
-                <p className="text-slate-500 mt-2 text-sm">Esta área é exclusiva para a administração da loja.</p>
-                <button onClick={handleReturnToStore} className="mt-6 bg-slate-900 text-white px-6 py-2 rounded-lg text-sm font-bold">Voltar para a Loja</button>
+              
+              <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2 pb-6">
+                <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+                <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
+                  Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
+                </p>
               </div>
-            )}
-          </main>
-        ) : (
-          <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-            {user ? (
-              <ClientDashboard user={user} orders={orders} loadingOrders={loadingOrders} onCreateMockOrder={handleCreateMockOrder} onLogout={handleLogout} getStatusBadge={getStatusBadge} />
-            ) : (
-              <div className="text-center py-12">
-                <p className="text-sm text-slate-500">Por favor, realize o login para acessar sua suíte.</p>
-              </div>
-            )}
-          </main>
-        )}
+            </footer>
 
-        <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 md:pb-12">
-          <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="text-left">
-              <h3 className="font-black text-slate-900 text-lg mb-4">Japão Box Brasil</h3>
-              <p className="text-sm leading-relaxed text-slate-500">
-                Sua ponte definitiva com o mercado japonês. Facilitamos a simulação de custos, compra e o envio de caixas e produtos direto de nosso armazém em Mie para a sua casa no Brasil de forma 100% segura e transparente.
-              </p>
-            </div>
-            <div className="text-left">
-              <h3 className="font-bold text-slate-900 text-sm tracking-wider uppercase mb-4">Navegação</h3>
-              <ul className="space-y-2 text-sm font-medium">
-                <li><button onClick={handleReturnToStore} className="hover:text-slate-900 transition-colors cursor-pointer">Ver Catálogo</button></li>
-                <li><button onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }} className="hover:text-slate-900 transition-colors cursor-pointer">Redirecionamento ✈️</button></li>
-                <li><button onClick={() => setActiveTab("about")} className="hover:text-slate-900 transition-colors cursor-pointer">Sobre Nós</button></li>
-                <li><button onClick={() => { if(user) { setActiveTab("account") } else { setIsAuthOpen(true) } }} className="hover:text-slate-900 transition-colors cursor-pointer">Rastrear Pedido</button></li>
-              </ul>
-            </div>
+            {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
+            <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
+            <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+            <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+            <WhatsAppFloat />
           </div>
-          
-          <div className="max-w-7xl mx-auto px-4 mt-8 text-center text-xs text-slate-400 space-y-2 pb-6">
-            <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-            <p className="text-[11px] font-medium tracking-wide text-slate-500 pt-1">
-              Desenvolvimento por <span className="text-slate-800 font-bold">Gustavo Jax Audiovisual</span>
-            </p>
-          </div>
-        </footer>
-
-        {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} cartItems={cartItems} setCartItems={setCartItems} />}
-        <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} onSubmit={() => {}} />
-        <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-        <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-        <WhatsAppFloat />
-      </div>
-    );
+  );
 }
 
 export default App;
