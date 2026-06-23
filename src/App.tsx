@@ -1551,23 +1551,29 @@ export default function App() {
   const [showTaxNotice, setShowTaxNotice] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
-  
-  // 👉 ESSES SÃO OS QUE ESTÃO FALTANDO E CAUSANDO O ERRO:
-  const [orders, setOrders] = useState<any[]>([]);
-  const [loadingOrders, setLoadingOrders] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("popular");
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
-  const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
-  const [isClubModalOpen, setIsClubModalOpen] = useState(false);
-  const [notification, setNotification] = useState<string | null>(null);
 
-  useEffect(() => {
-    const unsubAuth = onAuthStateChanged(auth, async (u) => {
-// ... CONTINUA O SEU CÓDIGO NORMAL DAQUI PRA BAIXO
 
+
+useEffect(() => {
+  const unsubAuth = onAuthStateChanged(auth, async (u) => {
+    if (u) {
+      setUser(u);
+
+      try {
+        const adminRef = doc(db, "admins", u.uid);
+        const adminSnap = await getDoc(adminRef);
+        setIsAdmin(adminSnap.exists());
+      } catch (error) {
+        console.error("Erro ao verificar administrador:", error);
+      }
+    } else {
+      setUser(null);
+      setIsAdmin(false);
+    }
+  });
+
+  return () => unsubAuth();
+}, []);
 
   // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
 
@@ -1855,10 +1861,16 @@ return (
       </main>
     ) : (
       <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
-        {user ? <ClientDashboard user={user} /> : <p className="text-center">Por favor, faça o login.</p>}
-      </main>
-    )}
-
+      {user ? (
+  <ClientDashboard
+    user={user}
+    orders={orders}
+    loadingOrders={loadingOrders}
+    getStatusBadge={getStatusBadge}
+  />
+) : (
+  <p className="text-center">Por favor, faça o login.</p>
+)}
 {/* ... seu footer ... */}
       <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24">
         <div className="max-w-7xl mx-auto px-4 text-center">
