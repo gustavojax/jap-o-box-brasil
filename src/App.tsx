@@ -1692,17 +1692,30 @@ export default function App() {
     });
   }, [selectedCategory, searchQuery, sortBy]);
 
-  const handleAddToCart = (product: Product) => {
-    setCartItems(prev => {
-      const existing = prev.find(i => i.product.id === product.id);
-      if (existing) {
-        return prev.map(i => i.product.id === product.id ? { ...i, quantity: i.quantity + 1 } : i);
-      }
-      return [...prev, { product, quantity: 1, selectedUpsells: [] }];
-    });
-    setIsCartOpen(true);
-    showNotification(`${product.name} adicionado ao carrinho`);
-  };
+const handleAddToCart = (product: Product) => {
+  setCartItems(prev => {
+    // 1. Força a criação de um novo array, ignorando qualquer undefined anterior
+    const currentList = Array.isArray(prev) ? [...prev] : [];
+    
+    // 2. Busca o índice (é mais seguro que find)
+    const existingIndex = currentList.findIndex(i => i.product.id === product.id);
+    
+    if (existingIndex >= 0) {
+      // Cria uma cópia para não mutar o estado diretamente
+      const newList = [...currentList];
+      newList[existingIndex] = { 
+        ...newList[existingIndex], 
+        quantity: newList[existingIndex].quantity + 1 
+      };
+      return newList;
+    }
+    
+    // 3. Adiciona o novo produto
+    return [...currentList, { product, quantity: 1, selectedUpsells: [] }];
+  });
+
+  setIsCartOpen(true);
+};
 
   const getStatusBadge = (status: string) => {
     switch (status?.toLowerCase()) {
