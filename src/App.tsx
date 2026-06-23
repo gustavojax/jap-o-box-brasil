@@ -1923,11 +1923,21 @@ return (
       </main>
     )}
 
-    <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24">
-      <div className="max-w-7xl mx-auto px-4 text-center">
-        <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-      </div>
-    </footer>
+<footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24">
+  <div className="max-w-7xl mx-auto px-4 text-center">
+    {/* Logo PagBank */}
+    <div className="mb-6">
+      <img 
+        src="https://raw.githubusercontent.com/gustavojax/jap-o-box-brasil/main/src/assets/images/3.png" 
+        alt="PagBank" 
+        className="mx-auto h-12 w-auto object-contain"
+      />
+    </div>
+
+    {/* Direitos Autorais */}
+    <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+  </div>
+</footer>
 
     {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />}
     <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
