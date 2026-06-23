@@ -403,10 +403,10 @@ export default function App() {
                   <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
                   <div className="text-black space-y-4 text-sm font-bold mb-8">
                     <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereco de remessas.</p>
+                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso ende[...]
                     <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for confirmado, enviamos para você!</div>
+                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o p[...]
                     </div>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
@@ -432,35 +432,36 @@ export default function App() {
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Adidas</a></li>
-                        <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> GU</a></li>
-                        <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Onitsuka Tiger</a></li>
-                        <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Uniqlo</a></li>
-                        <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Nike</a></li>
+                        <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-[...]
+                        <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-[...]
+                        <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink [...]
+                        <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className=[...]
+                        <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 [...]
                       </ul>
                     </div>
 
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Rakuten</a></li>
-                        <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Amazon JP</a></li>
-                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Mercari</a></li>
+                        <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-[...]
+                        <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4[...]
+                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h[...]
                       </ul>
                     </div>
 
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Zara</a></li>
+                        <li><a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 [...]
                       </ul>
                     </div>
 
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Entretenimento & Colecionáveis</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://weverse.co" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Weverse</a></li>
-                        <li><a href="https://popmart.com" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pop Mart</a></li>
+                        <li><a href="https://weverse.co" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /[...]
+                        <li><a href="https://popmart.com" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" [...]
+                        <li><a href="https://www.pokemon-card.com/?hl=pt-BR" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pokémon Card</a></li>
                       </ul>
                     </div>
                   </div>
