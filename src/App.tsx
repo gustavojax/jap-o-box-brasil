@@ -1935,13 +1935,13 @@ return (
   </div>
 </footer>
 
-    {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />}
-    <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
-    <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-    <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-    <WhatsAppFloat />
-  </div>
-);
+  {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />}
+      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
+      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
+      <WhatsAppFloat />
+    </div>
+  );
 }
 
 export default App;
