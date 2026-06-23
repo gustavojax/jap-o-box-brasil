@@ -1550,42 +1550,80 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [showTaxNotice, setShowTaxNotice] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
+  const [activeTab, setActiveTab] = useState<
+    "store" | "redirect" | "account" | "about" | "admin"
+  >("store");
 
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
-
-useEffect(() => {
-  const unsubAuth = onAuthStateChanged(auth, async (u) => {
-    if (u) {
-      setUser(u);
-
-      try {
-        const adminRef = doc(db, "admins", u.uid);
-        const adminSnap = await getDoc(adminRef);
-        setIsAdmin(adminSnap.exists());
-      } catch (error) {
-        console.error("Erro ao verificar administrador:", error);
-      }
-    } else {
-      setUser(null);
-      setIsAdmin(false);
-    }
-  });
-
-  return () => unsubAuth();
-}, []);
-
-  // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
-
-const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-const [searchQuery, setSearchQuery] = useState("");
-const [sortBy, setSortBy] = useState("popular");
+  const [selectedCategory, setSelectedCategory] =
+    useState<string>("Todos");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("popular");
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isClubModalOpen, setIsClubModalOpen] = useState(false);
-  const [notification, setNotification] = useState<string | null>(null);
+  const [notification, setNotification] =
+    useState<string | null>(null);
+
+  useEffect(() => {
+    const unsubAuth = onAuthStateChanged(auth, async (u) => {
+      if (u) {
+        setUser(u);
+
+        try {
+          const adminRef = doc(db, "admins", u.uid);
+          const adminSnap = await getDoc(adminRef);
+          setIsAdmin(adminSnap.exists());
+        } catch (error) {
+          console.error("Erro ao verificar administrador:", error);
+        }
+      } else {
+        setUser(null);
+        setIsAdmin(false);
+      }
+    });
+
+    return () => unsubAuth();
+  }, []);
+
+  useEffect(() => {
+    if (!user || !db) {
+      setOrders([]);
+      setLoadingOrders(false);
+      return;
+    }
+
+    setLoadingOrders(true);
+
+    const q = query(
+      collection(db, "orders"),
+      where("userId", "==", user.uid)
+    );
+
+    const unsubscribe = onSnapshot(
+      q,
+      (snapshot) => {
+        const data = snapshot.docs.map((d) => ({
+          id: d.id,
+          ...d.data(),
+        }));
+
+        setOrders(data);
+        setLoadingOrders(false);
+      },
+      (error) => {
+        console.error("Erro ao buscar pedidos:", error);
+        setLoadingOrders(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [user]);
+
 
   const showNotification = (msg: string) => {
     setNotification(msg);
@@ -1862,12 +1900,14 @@ return (
     ) : (
       <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
       {user ? (
-  <ClientDashboard
-    user={user}
-    orders={orders}
-    loadingOrders={loadingOrders}
-    getStatusBadge={getStatusBadge}
-  />
+<ClientDashboard
+  user={user}
+  orders={orders}
+  loadingOrders={loadingOrders}
+  onCreateMockOrder={() => {}}
+  onLogout={handleLogout}
+  getStatusBadge={getStatusBadge}
+/>
 ) : (
   <p className="text-center">Por favor, faça o login.</p>
 )}
