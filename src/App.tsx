@@ -1641,14 +1641,17 @@ export default function App() {
     }
   };
 
- const handleLogout = async () => {
+const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
     setIsAdmin(false);
     setActiveTab("store");
   };
 
+  // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
+
   const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
 
@@ -1953,10 +1956,4 @@ return (
       </footer>
 
     // Dentro do return no App.tsx
-{isCartOpen && (
-  <CartDrawer 
-    onClose={() => setIsCartOpen(false)} 
-    cartItems={cartItems} // Certifique-se de que é a variável lá do topo
-    setCartItems={setCartItems} 
-  />
-)}
+{isCartOpen && <CartDrawer cartItems={cartItems} setCartItems={setCartItems} onClose={() => setIsCartOpen(false)} />}
