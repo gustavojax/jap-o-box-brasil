@@ -1641,20 +1641,14 @@ export default function App() {
     }
   };
 
-  const handleLogout = async () => {
+ const handleLogout = async () => {
     await signOut(auth);
     setUser(null);
     setIsAdmin(false);
     setActiveTab("store");
   };
 
-  return (
-    <>
-    </>
-  );
-}
-
-const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
   const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState("popular");
 
@@ -1866,10 +1860,12 @@ return (
                     <p className="font-black text-xl leading-snug mb-1 text-black">The Tomorrow</p>
                     <p className="text-gray-700 font-bold">2-chōme-3-15 Matsutera, Yokkaichi</p>
                     <p className="text-gray-700 font-bold">Mie 510-8021</p>
-                    <p className="text-black font-black mt-2">(Japão)</p>
-                  </div>
-                  <button onClick={() => window.open("https://wa.me/817014074971?text=Ol%C3%A1%21%20Acabei%20de%20fazer%20uma%20compra%20usando%20o%20endere%C3%A7o%20de%20redirecionamento%20da%20Jap%C3%A3o%20Box%20Brasil%20e%20gostaria%20de%20avisar%20o%20envio%21", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
-                </div>
+                  <p className="text-black font-black mt-2">(Japão)</p>
+            </div>
+            <button onClick={() => window.open("https://wa.me/817014074971?text=...", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
+          </div>
+        </div> {/* <- 1. FECHA O GRID */}
+      </div> {/* <- 2. FECHA A CAIXA BRANCA */}
 
 {/* Lojas Recomendadas */}
           <div className="space-y-6">
