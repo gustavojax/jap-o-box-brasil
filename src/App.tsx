@@ -393,7 +393,7 @@ export default function App() {
         </>
       ) : activeTab === "redirect" ? (
         <main className="flex-1 bg-white py-12 px-4">
-          <section className="max-w-6xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             <div className="bg-white rounded-3xl p-8 md:p-12 shadow-2xl border-2 border-red-600 relative overflow-hidden">
               <div className="absolute top-0 right-0 p-8 opacity-5">
                 <MapPin className="w-48 h-48 text-red-600" />
@@ -403,11 +403,10 @@ export default function App() {
                   <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
                   <div className="text-black space-y-4 text-sm font-bold mb-8">
                     <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso ende[...]
+                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereco de remessas.</p>
                     <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pag[...]
-                      </div>
+                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for confirmado, enviamos para você!</div>
                     </div>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
@@ -468,7 +467,7 @@ export default function App() {
                 </div>
               </div>
             </div>
-          </section>
+          </div>
         </main>
       ) : activeTab === "about" ? (
         <main className="flex-1 bg-slate-50 py-12 px-4">
