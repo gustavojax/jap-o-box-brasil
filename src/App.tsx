@@ -1927,5 +1927,7 @@ return (
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-      <WhatsAppFloat />
-
+    <WhatsAppFloat />
+    </main>
+  );
+}
