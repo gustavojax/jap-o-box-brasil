@@ -1933,5 +1933,5 @@ return (
       <WhatsAppFloat />
 
     </div> // <-- ESSA É A DIV PRINCIPAL QUE FECHA O APLICATIVO
-  );
+  )}
 }
