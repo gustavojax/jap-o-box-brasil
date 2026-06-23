@@ -1646,7 +1646,7 @@ const handleLogout = async () => {
     setUser(null);
     setIsAdmin(false);
     setActiveTab("store");
-  };
+
 
   // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
 
