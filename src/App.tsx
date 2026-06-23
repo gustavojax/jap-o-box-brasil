@@ -1542,7 +1542,7 @@ const PRODUCTS: Product[] = [
 ];
 
 import { useState, useEffect, useMemo } from "react";
-// ... (mantenha os seus outros imports normais)
+
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -1661,14 +1661,13 @@ export default function App() {
 
 const handleAddToCart = (product: Product) => {
   setCartItems(prev => {
-    // 1. Força a criação de um novo array, ignorando qualquer undefined anterior
     const currentList = Array.isArray(prev) ? [...prev] : [];
     
-    // 2. Busca o índice (é mais seguro que find)
+
     const existingIndex = currentList.findIndex(i => i.product.id === product.id);
     
     if (existingIndex >= 0) {
-      // Cria uma cópia para não mutar o estado diretamente
+ 
       const newList = [...currentList];
       newList[existingIndex] = { 
         ...newList[existingIndex], 
@@ -1677,7 +1676,7 @@ const handleAddToCart = (product: Product) => {
       return newList;
     }
     
-    // 3. Adiciona o novo produto
+
     return [...currentList, { product, quantity: 1, selectedUpsells: [] }];
   });
 
@@ -1848,15 +1847,15 @@ return (
             </div>
             <button onClick={() => window.open("https://wa.me/817014074971?text=...", "_blank")} className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-8 rounded-xl transition-all w-full sm:w-auto shadow-lg">Avisar Envio no WhatsApp</button>
           </div>
-        </div> {/* <- 1. FECHA O GRID */}
-      </div> {/* <- 2. FECHA A CAIXA BRANCA */}
+        </div> 
+      </div> 
 
 {/* Lojas Recomendadas */}
           <div className="space-y-6">
             <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
             
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {/* Coluna 1 */}
+       
               <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                 <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
                 <ul className="space-y-4 text-sm font-bold text-black">
@@ -1868,7 +1867,6 @@ return (
                 </ul>
               </div>
 
-              {/* Coluna 2 */}
               <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                 <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marketplaces</h4>
                 <ul className="space-y-4 text-sm font-bold text-black">
@@ -1878,7 +1876,7 @@ return (
                 </ul>
               </div>
 
-              {/* Coluna 3 */}
+            
               <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                 <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
                 <ul className="space-y-4 text-sm font-bold text-black">
@@ -1894,7 +1892,7 @@ return (
         <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 p-8 md:p-12">
            <h1 className="text-3xl font-black text-slate-900 mb-6">✨ Bem-vindos à Japão Box Brasil ✨</h1>
            <p className="text-slate-600 mb-4">Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos do Japão.</p>
-           {/* Restante do seu conteúdo About */}
+    
         </div>
       </main>
     ) : (
