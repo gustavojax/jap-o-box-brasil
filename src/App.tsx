@@ -1954,7 +1954,7 @@ return (
       </footer>
 
       {/* MODAIS E CARRINHO AQUI */}
-      {isCartOpen && <CartDrawer cartItems={cartItems} setCartItems={setCartItems} onClose={() => setIsCartOpen(false)} />}
+   {isCartOpen && <CartDrawer cartItems={cartItems} setCartItems={setCartItems} onClose={() => setIsCartOpen(false)} />}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
