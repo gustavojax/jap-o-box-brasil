@@ -417,13 +417,11 @@ export default function App() {
                     <p className="text-black font-black mt-2">(Japão)</p>
                   </div>
                   <button
-                    onClick={() => window.open("https://wa.me/817014074971?text=...", "_blank")}
-                    className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-6 rounded-xl transition-all w-full"
-                 <button>
+  onClick={() => window.open("https://wa.me/817014074971?text=...", "_blank")}
+  className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-6 rounded-xl transition-all w-full"
+>
   💬 Dúvidas? Chame no WhatsApp
 </button>
-</div>
-
                 {/* Lojas Recomendadas */}
                 <div className="space-y-6">
                   <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
