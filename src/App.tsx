@@ -1912,7 +1912,7 @@ return (
   <p className="text-center">Por favor, faça o login.</p>
 )}
 {/* ... seu footer ... */}
-      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24">
+     <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24">
         <div className="max-w-7xl mx-auto px-4 text-center">
           <div className="mb-6">
             <img 
@@ -1926,12 +1926,12 @@ return (
       </footer>
 
       {/* MODAIS E CARRINHO AQUI */}
-   {isCartOpen && <CartDrawer cartItems={cartItems} setCartItems={setCartItems} onClose={() => setIsCartOpen(false)} />}
+      {isCartOpen && <CartDrawer cartItems={cartItems} setCartItems={setCartItems} onClose={() => setIsCartOpen(false)} />}
       <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
       <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
       <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
       <WhatsAppFloat />
 
-    </div> // <-- ESSA É A DIV PRINCIPAL QUE FECHA O APLICATIVO
-  )}
+    </main>
+  )
 }
