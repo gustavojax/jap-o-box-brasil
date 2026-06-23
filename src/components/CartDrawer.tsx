@@ -38,6 +38,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     const totalGeral = subtotalProdutos + valorFreteBRL;
     return { freteYen, valorFreteBRL, totalGeral };
   }, [subtotalProdutos, estimatedWeight]);
+console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
 
   const handleRemoveItem = (indexToRemove: number) => {
     setCartItems(prevItems => (prevItems || []).filter((_, idx) => idx !== indexToRemove));
