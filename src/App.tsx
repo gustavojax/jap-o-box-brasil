@@ -1641,18 +1641,18 @@ export default function App() {
   };
 
 const handleLogout = async () => {
-    await signOut(auth);
-    setUser(null);
-    setIsAdmin(false);
-    setActiveTab("store");
+  await signOut(auth);
+  setUser(null);
+  setIsAdmin(false);
+  setActiveTab("store");
+}; // <-- FECHE O HANDLELOGOUT AQUI!
 
 
   // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
 
-  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
-  };
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState("popular");
+const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+const [searchQuery, setSearchQuery] = useState("");
+const [sortBy, setSortBy] = useState("popular");
 
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
