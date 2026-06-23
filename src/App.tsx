@@ -154,100 +154,207 @@ export default function App() {
     }
   };
 
-  const handleAddToCart = (product: Product) => {
-    const existingItem = cartItems.find((item) => item.product.id === product.id);
-    
-    if (existingItem) {
-      setCartItems(cartItems.map((item) =>
-        item.product.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
-    } else {
-      setCartItems([...cartItems, { product, quantity: 1 }]);
-    }
-    
-    showNotification("Adicionado ao carrinho!");
+  const showNotification = (msg: string) => {
+    setNotification(msg);
+    setTimeout(() => setNotification(null), 3500);
   };
 
-  const showNotification = (message: string) => {
-    setNotification(message);
-    setTimeout(() => setNotification(null), 2000);
+  const allCategories = useMemo(() => {
+    return [
+      "Todos",
+      "Skincare e Tratamentos Faciais",
+      "Cuidados Capilares",
+      "Maquiagem",
+      "Aparelhos Estéticos e Tecnologia",
+      "Higiene e Cuidados Pessoais"
+    ];
+  }, []);
+
+  const filteredProducts = useMemo(() => {
+    return PRODUCTS.filter(p => {
+      const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
+      const matchSearch =
+        p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.jpName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      return matchCat && matchSearch;
+    }).sort((a, b) => {
+      const totalA = a.priceBRL + a.serviceFeeBRL;
+      const totalB = b.priceBRL + b.serviceFeeBRL;
+      if (sortBy === "priceAsc") return totalA - totalB;
+      if (sortBy === "priceDesc") return totalB - totalA;
+      if (sortBy === "name") return a.name.localeCompare(b.name);
+      return b.rating - a.rating;
+    });
+  }, [selectedCategory, searchQuery, sortBy]);
+
+  const handleAddToCart = (product: Product) => {
+    setCartItems(prev => {
+      const currentList = Array.isArray(prev) ? [...prev] : [];
+
+      const existingIndex = currentList.findIndex(i => i.product.id === product.id);
+
+      if (existingIndex >= 0) {
+        const newList = [...currentList];
+        newList[existingIndex] = {
+          ...newList[existingIndex],
+          quantity: newList[existingIndex].quantity + 1
+        };
+        return newList;
+      }
+
+      return [...currentList, { product, quantity: 1, selectedUpsells: [] }];
+    });
+
+    setIsCartOpen(true);
   };
 
   const getStatusBadge = (status: string) => {
-    const badges: { [key: string]: { icon: React.ReactNode; label: string; color: string } } = {
-      pending: { icon: <Clock className="w-4 h-4" />, label: "Pendente", color: "bg-yellow-100 text-yellow-800" },
-      processing: { icon: <Clock className="w-4 h-4" />, label: "Processando", color: "bg-blue-100 text-blue-800" },
-      shipped: { icon: <Truck className="w-4 h-4" />, label: "Enviado", color: "bg-purple-100 text-purple-800" },
-      delivered: { icon: <CheckCircle className="w-4 h-4" />, label: "Entregue", color: "bg-green-100 text-green-800" },
-      cancelled: { icon: <CheckCircle2 className="w-4 h-4" />, label: "Cancelado", color: "bg-red-100 text-red-800" },
-    };
-
-    return badges[status] || { icon: null, label: "Desconhecido", color: "bg-gray-100 text-gray-800" };
+    switch (status?.toLowerCase()) {
+      case "pending":
+      case "aguardando":
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-amber-100 text-amber-800 flex items-center gap-1"><Clock className="w-3 h-3" /> PROCESSANDO</span>;
+      case "shipped":
+      case "enviado":
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-blue-100 text-blue-800 flex items-center gap-1"><Truck className="w-3 h-3" /> EM TRÂNSITO</span>;
+      case "delivered":
+      case "entregue":
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-emerald-100 text-emerald-800 flex items-center gap-1"><CheckCircle className="w-3 h-3" /> RECEBIDO</span>;
+      default:
+        return <span className="px-2 py-0.5 text-[10px] font-black rounded-md bg-slate-100 text-slate-700">CONCLUÍDO</span>;
+    }
   };
 
-  const categories = Array.from(new Set(PRODUCTS.map((p) => p.category)));
-
-  const filteredProducts = useMemo(() => {
-    let result = PRODUCTS;
-
-    if (selectedCategory !== "Todos") {
-      result = result.filter((p) => p.category === selectedCategory);
-    }
-
-    if (searchQuery.trim()) {
-      const lowerQuery = searchQuery.toLowerCase();
-      result = result.filter(
-        (p) =>
-          p.name.toLowerCase().includes(lowerQuery) ||
-          p.description.toLowerCase().includes(lowerQuery)
-      );
-    }
-
-    if (sortBy === "priceAsc") {
-      result.sort((a, b) => a.priceBRL - b.priceBRL);
-    } else if (sortBy === "priceDesc") {
-      result.sort((a, b) => b.priceBRL - a.priceBRL);
-    } else if (sortBy === "name") {
-      result.sort((a, b) => a.name.localeCompare(b.name));
-    } else {
-      result.sort((a, b) => b.rating - a.rating);
-    }
-
-    return result;
-  }, [selectedCategory, searchQuery, sortBy]);
+  const handleReturnToStore = () => {
+    setSelectedCategory("Todos");
+    setSearchQuery("");
+    setActiveTab("store");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   return (
-    <div className="flex flex-col min-h-screen bg-white overflow-x-hidden">
-      <Header
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        cartCount={cartItems.length}
-        onCartClick={() => setIsCartOpen(true)}
-        user={user}
-        onAuthClick={() => setIsAuthOpen(true)}
-        onLogout={handleLogout}
-        onBudgetClick={() => setIsBudgetModalOpen(true)}
-        onClubClick={() => setIsClubModalOpen(true)}
-      />
+    <div className="min-h-screen bg-slate-50 flex flex-col pb-20 md:pb-0 font-sans text-slate-900 antialiased">
+      {showTaxNotice && (
+        <div className="fixed inset-0 z-[500] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white p-6 rounded-3xl max-w-sm w-full shadow-2xl border-2 border-red-600">
+            <h3 className="font-black text-red-600 mb-2">📦 Aviso Importante</h3>
+            <p className="text-slate-700 text-sm mb-4">
+              Compras internacionais podem estar sujeitas à cobrança de 60% de imposto de importação, além do ICMS. Essas taxas são de responsabilidade do comprador.
+            </p>
+            <label className="flex items-center gap-2 text-xs font-bold mb-4 cursor-pointer">
+              <input type="checkbox" onChange={(e) => setAcceptedTerms(e.target.checked)} />
+              Li e concordo.
+            </label>
+            <button
+              onClick={() => { if(acceptedTerms) setShowTaxNotice(false); }}
+              className={`w-full text-white font-bold py-2 rounded-lg transition-opacity ${acceptedTerms ? 'bg-red-600' : 'bg-red-400 cursor-not-allowed'}`}
+              disabled={!acceptedTerms}
+            >
+              ESTOU CIENTE
+            </button>
+          </div>
+        </div>
+      )}
+
+      <div className="w-full bg-slate-900 text-white text-center py-2 px-4 text-xs font-medium tracking-wide flex items-center justify-center gap-4">
+        <span>🇯🇵 PRODUTOS 100% ORIGINAIS DIRETO DE MIE, JAPÃO</span>
+        <span className="hidden md:inline text-slate-400">|</span>
+        <span className="hidden md:flex items-center gap-1">📦 RASTREAMENTO COMPLETO EM TODAS AS ENCOMENDAS</span>
+      </div>
 
       {notification && (
-        <div className="fixed top-20 left-1/2 -translate-x-1/2 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg z-40">
+        <div className="fixed bottom-20 right-4 md:bottom-4 z-50 bg-slate-900 text-white px-5 py-4 rounded-2xl flex items-center gap-2 shadow-2xl">
+          <CheckCircle2 className="w-5 h-5 text-green-400" />
           {notification}
         </div>
       )}
 
+      <Header
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={allCategories}
+        cartCount={cartItems.reduce((a, i) => a + i.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+        onOpenAuth={() => {
+          if (user) {
+            setActiveTab("account");
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+        user={user}
+        onLogout={handleLogout}
+        onLogoClick={handleReturnToStore}
+      />
+
+      <RedirectBanner onRedirectClick={() => {
+        setActiveTab("redirect");
+        setShowTaxNotice(true);
+      }} />
+
+      <div className="max-w-7xl mx-auto w-full px-4 pt-4 flex justify-end">
+        <div className="bg-white p-1 rounded-xl shadow-sm border border-slate-200 flex gap-1 flex-wrap justify-end">
+          <button
+            onClick={handleReturnToStore}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "store" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            🛍️ Loja
+          </button>
+          <button
+            onClick={() => { setActiveTab("redirect"); setShowTaxNotice(true); }}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "redirect" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            🌐 Redirecionamento
+          </button>
+          <button
+            onClick={() => setActiveTab("about")}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "about" ? "bg-rose-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            ℹ️ Sobre
+          </button>
+          <button
+            onClick={() => { if (user) { setActiveTab("account"); } else { setIsAuthOpen(true); } }}
+            className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+              activeTab === "account" ? "bg-blue-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+            }`}
+          >
+            👤 Conta
+          </button>
+          {isAdmin && (
+            <button
+              onClick={() => setActiveTab("admin")}
+              className={`px-4 py-2 rounded-lg font-bold text-xs transition-all cursor-pointer ${
+                activeTab === "admin" ? "bg-red-600 text-white shadow-sm" : "text-slate-600 hover:bg-slate-100"
+              }`}
+            >
+              ⚙️ Admin
+            </button>
+          )}
+        </div>
+      </div>
+
       {activeTab === "store" ? (
         <>
-          <Hero />
-          <RedirectBanner />
-          <TrustBadges />
-          <main className="flex-1 max-w-7xl mx-auto w-full px-4 py-12">
-            <section>
-              <div className="mb-12 space-y-6">
-                <div className="flex items-center gap-2">
-                  <Heart className="w-4 h-4 text-red-600" />
+          <Hero
+            onScrollToCatalog={() => {
+              setSelectedCategory("Todos");
+              document.getElementById("catalogo")?.scrollIntoView({ behavior: "smooth" });
+            }}
+            onOpenBudgetModal={() => setIsBudgetModalOpen(true)}
+          />
+          <main className="flex-1">
+            <TrustBadges />
+            <section id="catalogo" className="max-w-7xl mx-auto px-4 py-6">
+              <div className="flex items-center justify-between mb-6 border-b pb-4">
+                <div className="text-left">
+                  <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">🛒 Vitrine de Importação</h2>
                   <p className="text-xs text-slate-500 mt-0.5">Filtro ativo no cabeçalho: <span className="text-red-600 font-bold">{selectedCategory}</span></p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -296,10 +403,10 @@ export default function App() {
                   <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
                   <div className="text-black space-y-4 text-sm font-bold mb-8">
                     <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço de entrega no país.</p>
+                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereco de remessas.</p>
                     <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o produto chegar em nosso depósito no Japão, nós entramos em contato para você decidir o que fazer com ele.</div>
+                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for confirmado, enviamos para você!</div>
                     </div>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
@@ -316,6 +423,7 @@ export default function App() {
                     💬 Dúvidas? Chame no WhatsApp
                   </button>
                 </div>
+
                 {/* Lojas Recomendadas */}
                 <div className="space-y-6">
                   <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
@@ -324,11 +432,11 @@ export default function App() {
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Adidas JP</a></li>
-                        <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> GU Global</a></li>
+                        <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Adidas</a></li>
+                        <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> GU</a></li>
                         <li><a href="https://www.onitsukatiger.com/jp/ja-jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Onitsuka Tiger</a></li>
-                        <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Uniqlo JP</a></li>
-                        <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Nike JP</a></li>
+                        <li><a href="https://www.uniqlo.com/jp/ja/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Uniqlo</a></li>
+                        <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Nike</a></li>
                       </ul>
                     </div>
 
@@ -337,14 +445,14 @@ export default function App() {
                       <ul className="space-y-4 text-sm font-bold text-black">
                         <li><a href="https://www.rakuten.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Rakuten</a></li>
                         <li><a href="https://www.amazon.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Amazon JP</a></li>
-                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Mercari JP</a></li>
+                        <li><a href="https://jp.mercari.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Mercari</a></li>
                       </ul>
                     </div>
 
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
                       <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Joias & Moda</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
-                        <li><a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Zara JP</a></li>
+                        <li><a href="https://www.zara.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Zara</a></li>
                       </ul>
                     </div>
 
@@ -353,7 +461,6 @@ export default function App() {
                       <ul className="space-y-4 text-sm font-bold text-black">
                         <li><a href="https://weverse.co" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Weverse</a></li>
                         <li><a href="https://popmart.com" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pop Mart</a></li>
-                        <li><a href="https://www.pokemon-card.com/?hl=pt-BR" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pokémon Card</a></li>
                       </ul>
                     </div>
                   </div>
@@ -407,11 +514,3 @@ export default function App() {
     </div>
   );
 }
-
-
-
-
-
-
-
-    
