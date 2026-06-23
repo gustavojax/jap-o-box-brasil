@@ -1541,7 +1541,8 @@ const PRODUCTS: Product[] = [
   }
 ];
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
+// ... (mantenha os seus outros imports normais)
 
 export default function App() {
   const [user, setUser] = useState<any>(null);
@@ -1549,103 +1550,23 @@ export default function App() {
   const [isAuthOpen, setIsAuthOpen] = useState(false);
   const [showTaxNotice, setShowTaxNotice] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
-  
   const [activeTab, setActiveTab] = useState<"store" | "redirect" | "account" | "about" | "admin">("store");
   
- 
+  // 👉 ESSES SÃO OS QUE ESTÃO FALTANDO E CAUSANDO O ERRO:
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState<string>("Todos");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState("popular");
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
+  const [isClubModalOpen, setIsClubModalOpen] = useState(false);
+  const [notification, setNotification] = useState<string | null>(null);
 
   useEffect(() => {
     const unsubAuth = onAuthStateChanged(auth, async (u) => {
-      if (u) {
-        setUser({ ...u });
-        setIsAuthOpen(false); 
-
-        if (u.email) {
-          const adminRef = doc(db, "admins", u.email);
-          const adminSnap = await getDoc(adminRef);
-          setIsAdmin(adminSnap.exists());
-        } else {
-          setIsAdmin(false);
-        }
-      } else {
-        setUser(null);
-        setIsAdmin(false);
-        setOrders([]);
-        setActiveTab((prevTab) => (prevTab === "account" || prevTab === "admin" ? "store" : prevTab));
-      }
-    });
-    return () => unsubAuth();
-  }, []);
-
-  useEffect(() => {
-    if (!user?.uid || !db) {
-      setLoadingOrders(false);
-      return;
-    }
-
-    setLoadingOrders(true);
-
-    const ordersRef = collection(db, "orders");
-    const q = query(
-      ordersRef, 
-      where("userId", "==", user.uid)
-    );
-
-    const unsubOrders = onSnapshot(q, (snapshot) => {
-      const ordersList: any[] = [];
-      snapshot.forEach((doc) => {
-        ordersList.push({ id: doc.id, ...doc.data() });
-      });
-      
-      ordersList.sort((a, b) => {
-        const timeA = a.createdAt?.seconds || 0;
-        const timeB = b.createdAt?.seconds || 0;
-        return timeB - timeA;
-      });
-
-      setOrders(ordersList);
-      setLoadingOrders(false);
-    }, (error) => {
-      console.error("Erro ao buscar pedidos no Firestore:", error);
-      setLoadingOrders(false);
-    });
-
-    return () => unsubOrders();
-  }, [user?.uid]);
-
-  const handleCreateMockOrder = async () => {
-    if (!user?.uid) return;
-    
-    try {
-      const statuses = ["pending", "shipped", "delivered"];
-      const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-      const randomItems = [
-        "Kit Hair Care Shiseido Fino Premium",
-        "Protetor Solar Bioré Aqua Rich FPS 50",
-        "Tênis Asics Gel-Quantum Original JP",
-        "Loção Hidratante Hada Labo Gokujyun"
-      ];
-      const randomItem = randomItems[Math.floor(Math.random() * randomItems.length)];
-
-      await addDoc(collection(db, "orders"), {
-        userId: user.uid,
-        itemsSummary: randomItem,
-        status: randomStatus,
-        trackingCode: `NX${Math.floor(100000000 + Math.random() * 900000000)}JP`,
-        createdAt: serverTimestamp()
-      });
-
-    } catch (e) {
-      console.error("Erro ao simular pedido:", e);
-    }
-  };
-
-const handleLogout = async () => {
-  await signOut(auth);
-  setUser(null);
-  setIsAdmin(false);
-  setActiveTab("store");
-}; // <-- FECHE O HANDLELOGOUT AQUI!
+// ... CONTINUA O SEU CÓDIGO NORMAL DAQUI PRA BAIXO
 
 
   // REMOVIDO O RETURN VAZIO E A CHAVE DE FECHAMENTO AQUI
