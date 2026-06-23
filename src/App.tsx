@@ -1939,11 +1939,11 @@ return (
         </div>
       </footer>
 
-      {isCartOpen && <CartDrawer onClose={() => setIsCartOpen(false)} />}
-      <BudgetModal isOpen={isBudgetModalOpen} onClose={() => setIsBudgetModalOpen(false)} />
-      <AuthModal isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      <ClubModal isOpen={isClubModalOpen} onClose={() => setIsClubModalOpen(false)} />
-      <WhatsAppFloat />
-    </div>
-  );
-}
+    // Dentro do return no App.tsx
+{isCartOpen && (
+  <CartDrawer 
+    onClose={() => setIsCartOpen(false)} 
+    cartItems={cartItems} // Certifique-se de que é a variável lá do topo
+    setCartItems={setCartItems} 
+  />
+)}
