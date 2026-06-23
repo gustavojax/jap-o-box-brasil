@@ -1926,7 +1926,14 @@ return (
       <img 
         src="https://raw.githubusercontent.com/gustavojax/jap-o-box-brasil/main/src/assets/images/3.png" 
         alt="PagBank" 
-        className="mx-auto h-12 w-auto object-contain"
+        className="mx-auto h-24 w-auto object-contain" 
+      />
+    </div>
+    
+    {/* Direitos Autorais */}
+    <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+  </div>
+</footer>
       />
     </div>
 
