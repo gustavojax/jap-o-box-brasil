@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale } from "lucide-react";
+import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale, CreditCard, ChevronDown } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
@@ -16,6 +16,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [estimatedWeight, setEstimatedWeight] = useState<number>(500);
+  const [installments, setInstallments] = useState<number>(1);
+  const [showInstallmentDetails, setShowInstallmentDetails] = useState(false);
 
   // Garantimos que cartItems seja sempre tratado como array para evitar erros de undefined
   const safeCartItems = cartItems || [];
@@ -36,9 +38,11 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     const freteYen = calculateShippingYen(estimatedWeight);
     const valorFreteBRL = freteYen * YEN_TO_BRL_RATE;
     const totalGeral = subtotalProdutos + valorFreteBRL;
-    return { freteYen, valorFreteBRL, totalGeral };
-  }, [subtotalProdutos, estimatedWeight]);
-console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
+    const valorParcela = totalGeral / installments;
+    return { freteYen, valorFreteBRL, totalGeral, valorParcela };
+  }, [subtotalProdutos, estimatedWeight, installments]);
+
+  console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
 
   const handleRemoveItem = (indexToRemove: number) => {
     setCartItems(prevItems => (prevItems || []).filter((_, idx) => idx !== indexToRemove));
@@ -59,6 +63,8 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
           itemsSummary: itemsSummary,
           pesoEstimado: `${estimatedWeight}g`,
           totalPedido: calculos.totalGeral.toFixed(2),
+          parcelamento: installments,
+          valorParcela: calculos.valorParcela.toFixed(2),
           createdAt: serverTimestamp()
         });
       }
@@ -68,7 +74,11 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
       setIsSubmitting(false);
     }
 
-    const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\n--- RESUMO ---\nProdutos: R$ ${subtotalProdutos.toFixed(2)}\nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)} (${estimatedWeight}g)\n---\nTOTAL: R$ ${calculos.totalGeral.toFixed(2)}\n\n*Estou ciente que o frete exato será confirmado após o fechamento da caixa.*`;
+    const parcelamentoMsg = installments > 1 
+      ? `\n💳 Parcelado em ${installments}x de R$ ${calculos.valorParcela.toFixed(2)}`
+      : "";
+
+    const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\n--- RESUMO ---\nProdutos: R$ ${subtotalProdutos.toFixed(2)}\nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)} (${estimatedWeight}g)\n---\nTOTAL: R$ ${calculos.totalGeral.toFixed(2)}${parcelamentoMsg}\n\n*Estou ciente que o frete exato será confirmado após o fechamento da caixa.*`;
 
     window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -100,6 +110,8 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
                   </button>
                 </div>
               ))}
+              
+              {/* Estimativa de Frete */}
               <div className="pt-2 space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
                 <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider flex items-center gap-1">
                   <Scale className="w-3.5 h-3.5" /> Estimativa de Frete
@@ -111,6 +123,48 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
                   <option value={2000}>Até 2kg - R$ 190</option>
                 </select>
               </div>
+
+              {/* Simulador de Parcelamento */}
+              <div className="pt-2 space-y-2 bg-blue-50 p-3 rounded-xl border border-blue-200">
+                <label className="text-[10px] font-black text-blue-700 uppercase tracking-wider flex items-center gap-1">
+                  <CreditCard className="w-3.5 h-3.5" /> Parcelamento no Cartão
+                </label>
+                <select 
+                  value={installments} 
+                  onChange={(e) => setInstallments(Number(e.target.value))}
+                  className="w-full border border-blue-200 bg-white rounded-lg px-3 py-2 text-sm font-bold text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  {Array.from({ length: 12 }, (_, i) => i + 1).map(num => (
+                    <option key={num} value={num}>
+                      {num}x de R$ {(calculos.totalGeral / num).toFixed(2)}
+                    </option>
+                  ))}
+                </select>
+                
+                {/* Detalhes da Parcela */}
+                {installments > 1 && (
+                  <div className="mt-2 pt-2 border-t border-blue-200 space-y-1">
+                    <button
+                      onClick={() => setShowInstallmentDetails(!showInstallmentDetails)}
+                      className="w-full flex items-center justify-between text-xs font-bold text-blue-700 hover:text-blue-800 transition-colors"
+                    >
+                      <span>Ver detalhes das parcelas</span>
+                      <ChevronDown className={`w-3.5 h-3.5 transition-transform ${showInstallmentDetails ? 'rotate-180' : ''}`} />
+                    </button>
+                    
+                    {showInstallmentDetails && (
+                      <div className="mt-2 space-y-1 max-h-32 overflow-y-auto bg-white rounded p-2">
+                        {Array.from({ length: installments }, (_, i) => (
+                          <div key={i} className="flex justify-between text-[10px] text-gray-600">
+                            <span>Parcela {i + 1}</span>
+                            <span className="font-bold">R$ {calculos.valorParcela.toFixed(2)}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
             </>
           )}
         </div>
@@ -119,6 +173,9 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
           <div className="space-y-1.5 text-xs border-b pb-3">
             <div className="flex justify-between text-gray-500"><span>Subtotal Produtos</span><span>R$ {subtotalProdutos.toFixed(2)}</span></div>
             <div className="flex justify-between text-gray-500"><span>Frete Internacional Est.</span><span>R$ {calculos.valorFreteBRL.toFixed(2)}</span></div>
+            {installments > 1 && (
+              <div className="flex justify-between text-blue-600 font-bold"><span>Valor por Parcela</span><span>R$ {calculos.valorParcela.toFixed(2)}</span></div>
+            )}
           </div>
           <div className="flex justify-between font-black text-lg text-gray-900"><span>Total</span><span>R$ {calculos.totalGeral.toFixed(2)}</span></div>
           
@@ -144,3 +201,10 @@ console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
     </div>
   );
 }
+
+
+
+
+
+
+
