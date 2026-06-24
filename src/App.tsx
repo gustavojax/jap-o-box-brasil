@@ -129,7 +129,7 @@ export default function App() {
   };
 
   // ==========================================
-  // FUNÇÃO DE STATUS DO PEDIDO
+  // FUNÃ‡ÃƒO DE STATUS DO PEDIDO
   // ==========================================
   const getStatusBadge = (status: string) => {
     const statusMap: { [key: string]: { icon: React.ReactNode; color: string; text: string } } = {
@@ -165,14 +165,14 @@ export default function App() {
   };
 
   // ==========================================
-  // FUNÇÃO DE ADICIONAR AO CARRINHO
+  // FUNÃ‡ÃƒO DE ADICIONAR AO CARRINHO
   // ==========================================
   const handleAddToCart = (product: Product) => {
     setCartItems(prev => {
       const existingItem = prev.find(item => item.product.id === product.id);
       
       if (existingItem) {
-        // Se o produto já existe no carrinho, aumenta a quantidade
+        // Se o produto jÃ¡ existe no carrinho, aumenta a quantidade
         return prev.map(item =>
           item.product.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
@@ -194,7 +194,7 @@ export default function App() {
       "Skincare e Tratamentos Faciais",
       "Cuidados Capilares",
       "Maquiagem",
-      "Aparelhos Estéticos e Tecnologia",
+      "Aparelhos EstÃ©ticos e Tecnologia",
       "Higiene e Cuidados Pessoais"
     ];
   }, []);
@@ -243,13 +243,13 @@ export default function App() {
         <>
           <Hero onClubClick={() => setIsClubModalOpen(true)} />
           <RedirectBanner onRedirectClick={() => setActiveTab("redirect")} />
-          {/* Botão de teste para redirect */}
+          {/* BotÃ£o de teste para redirect */}
           <div className="bg-yellow-100 border-2 border-yellow-500 p-4 text-center">
             <button 
               onClick={() => setActiveTab("redirect")}
               className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg"
             >
-              🧪 TESTE: Ir para Redirecionamento
+              ðŸ§ª TESTE: Ir para Redirecionamento
             </button>
           </div>
           <TrustBadges />
@@ -258,10 +258,10 @@ export default function App() {
               <div className="mb-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
                 <div>
                   <h2 className="text-3xl font-black text-slate-900 mb-2">
-                    Catálogo Completo
+                    CatÃ¡logo Completo
                   </h2>
                   <p className="text-slate-600 font-bold">
-                    {filteredProducts.length} produtos disponíveis
+                    {filteredProducts.length} produtos disponÃ­veis
                   </p>
                 </div>
                 <div className="w-full md:w-auto flex flex-col sm:flex-row gap-4">
@@ -287,8 +287,8 @@ export default function App() {
                     className="px-4 py-2 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500"
                   >
                     <option value="popular">Popularidade</option>
-                    <option value="priceAsc">Menor preço</option>
-                    <option value="priceDesc">Maior preço</option>
+                    <option value="priceAsc">Menor preÃ§o</option>
+                    <option value="priceDesc">Maior preÃ§o</option>
                     <option value="name">Nome A-Z</option>
                   </select>
                 </div>
@@ -322,37 +322,37 @@ export default function App() {
               </div>
               <div className="relative z-10 grid grid-cols-1 lg:grid-cols-2 gap-12">
                 <div>
-                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">📦 Compre em Qualquer Loja do Japão</h2>
+                  <h2 className="text-2xl md:text-4xl font-black mb-4 tracking-tight text-red-600">ðŸ“¦ Compre em Qualquer Loja do JapÃ£o</h2>
                   <div className="text-black space-y-4 text-sm font-bold mb-8">
-                    <p>Muitas lojas online japonesas não enviam produtos para o exterior. É para isso que estamos aqui!</p>
-                    <p>Com o nosso serviço de <strong className="text-red-600">Redirecionamento</strong>, você faz compras nos seus sites favoritos como se morasse no Japão usando o nosso endereço de remessas.</p>
+                    <p>Muitas lojas online japonesas nÃ£o enviam produtos para o exterior. Ã‰ para isso que estamos aqui!</p>
+                    <p>Com o nosso serviÃ§o de <strong className="text-red-600">Redirecionamento</strong>, vocÃª faz compras nos seus sites favoritos como se morasse no JapÃ£o usando o nosso endereÃ§o de remessas.</p>
                     <div className="bg-red-50 border-2 border-red-200 p-4 rounded-xl flex gap-3 text-red-700 mt-6">
                       <Info className="w-5 h-5 flex-shrink-0 mt-0.5" />
-                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereço abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for confirmado, enviamos para você!</div>
+                      <div className="text-xs leading-relaxed font-bold"><strong>Como fazer:</strong> Copie o endereÃ§o abaixo e cole na hora de finalizar a compra na loja japonesa. Assim que o pagamento for confirmado, enviamos para vocÃª!</div>
                     </div>
                   </div>
                   <div className="bg-white p-6 rounded-2xl shadow-lg border-l-4 border-red-600 border border-red-100 relative">
-                    <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">Seu Endereço no Japão</p>
+                    <p className="text-[10px] font-black uppercase tracking-widest text-red-600 mb-2">Seu EndereÃ§o no JapÃ£o</p>
                     <p className="font-black text-xl leading-snug mb-1 text-black">The Tomorrow</p>
-                    <p className="text-gray-700 font-bold">2-chōme-3-15 Matsutera, Yokkaichi</p>
+                    <p className="text-gray-700 font-bold">2-chÅme-3-15 Matsutera, Yokkaichi</p>
                     <p className="text-gray-700 font-bold">Mie 510-8021</p>
-                    <p className="text-black font-black mt-2">(Japão)</p>
+                    <p className="text-black font-black mt-2">(JapÃ£o)</p>
                   </div>
                   <button
                     onClick={() => window.open("https://wa.me/817014074971?text=...", "_blank")}
                     className="mt-8 bg-red-600 hover:bg-red-700 text-white font-black text-sm uppercase tracking-wider py-4 px-6 rounded-xl transition-all w-full"
                   >
-                    💬 Dúvidas? Chame no WhatsApp
+                    ðŸ’¬ DÃºvidas? Chame no WhatsApp
                   </button>
                 </div>
 
                 {/* Lojas Recomendadas */}
                 <div className="space-y-6">
-                  <h3 className="text-xl font-black mb-4 text-red-600">🔗 Lojas Recomendadas</h3>
+                  <h3 className="text-xl font-black mb-4 text-red-600">ðŸ”— Lojas Recomendadas</h3>
 
                   <div className="grid grid-cols-1 gap-6">
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e Calçados</h4>
+                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Marcas de Roupa e CalÃ§ados</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
                         <li><a href="https://www.adidas.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Adidas JP</a></li>
                         <li><a href="https://www.gu-global.com/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> GU Global</a></li>
@@ -380,11 +380,11 @@ export default function App() {
                     </div>
 
                     <div className="bg-white p-5 rounded-2xl border-2 border-red-200 shadow-md hover:border-red-500 transition-all">
-                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Entretenimento & Colecionáveis</h4>
+                      <h4 className="text-sm font-black text-red-600 mb-3 uppercase tracking-wider">Entretenimento & ColecionÃ¡veis</h4>
                       <ul className="space-y-4 text-sm font-bold text-black">
                         <li><a href="https://weverse.co" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Weverse</a></li>
                         <li><a href="https://popmart.com" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pop Mart</a></li>
-                        <li><a href="https://www.pokemon-card.com/?hl=pt-BR" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pokémon Card</a></li>
+                        <li><a href="https://www.pokemon-card.com/?hl=pt-BR" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> PokÃ©mon Card</a></li>
                         <li><a href="https://www.sanrio.com/collections/kuromi#shop_character" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Kuromi</a></li>
                       </ul>
                     </div>
@@ -397,8 +397,8 @@ export default function App() {
       ) : activeTab === "about" ? (
         <main className="flex-1 bg-slate-50 py-12 px-4">
           <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 p-8 md:p-12">
-            <h1 className="text-3xl font-black text-slate-900 mb-6">✨ Bem-vindos à Japão Box Brasil ✨</h1>
-            <p className="text-slate-600 mb-4">Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos do Japão.</p>
+            <h1 className="text-3xl font-black text-slate-900 mb-6">âœ¨ Bem-vindos Ã  JapÃ£o Box Brasil âœ¨</h1>
+            <p className="text-slate-600 mb-4">Iniciamos nossa empresa com um sonho: levar atÃ© o Brasil os melhores produtos do JapÃ£o.</p>
           </div>
         </main>
       ) : (
@@ -413,7 +413,7 @@ export default function App() {
               getStatusBadge={getStatusBadge}
             />
           ) : (
-            <p className="text-center">Por favor, faça o login.</p>
+            <p className="text-center">Por favor, faÃ§a o login.</p>
           )}
           <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 mt-12">
             <div className="max-w-7xl mx-auto px-4 text-center">
@@ -424,7 +424,7 @@ export default function App() {
                   className="mx-auto h-24 w-auto object-contain"
                 />
               </div>
-              <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
+              <p>Â© 2026 JapÃ£o Box Brasil. Todos os direitos reservados.</p>
             </div>
           </footer>
         </main>
@@ -439,7 +439,6 @@ export default function App() {
     </div>
   );
 }
-
 
 
 
