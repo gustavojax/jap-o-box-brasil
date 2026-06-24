@@ -200,6 +200,14 @@ export default function App() {
   }, []);
 
   const filteredProducts = useMemo(() => {
+    // ✅ FIX: Verificar se PRODUCTS existe e é um array antes de filtrar
+    if (!PRODUCTS || !Array.isArray(PRODUCTS)) {
+      console.warn('PRODUCTS não está disponível ou não é um array', PRODUCTS);
+      return [];
+    }
+
+    console.log('DADOS CHEGANDO NO CARRINHO:', PRODUCTS.length); // Debug
+    
     return PRODUCTS.filter(p => {
       const matchCat = selectedCategory === "Todos" || p.category === selectedCategory;
       const matchSearch =
