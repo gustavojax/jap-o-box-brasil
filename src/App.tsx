@@ -468,6 +468,7 @@ export default function App() {
                     </div>
                   </div>
                 </div> 
+                
         </main>
       ) : activeTab === "about" ? (
         <main className="flex-1 bg-slate-50 py-12 px-4">
