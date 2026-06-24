@@ -51,6 +51,8 @@ export default function App() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isBudgetModalOpen, setIsBudgetModalOpen] = useState(false);
   const [isClubModalOpen, setIsClubModalOpen] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
   const [notification, setNotification] =
     useState<string | null>(null);
 
@@ -225,6 +227,10 @@ export default function App() {
         cartItemsCount={cartItems.length}
         onCartClick={() => setIsCartOpen(true)}
         onAuthClick={() => setIsAuthOpen(true)}
+        isMenuOpen={isMenuOpen}
+        setIsMenuOpen={setIsMenuOpen}
+        isFiltersOpen={isFiltersOpen}
+        setIsFiltersOpen={setIsFiltersOpen}
       />
 
       {notification && (
