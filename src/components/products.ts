@@ -1516,4 +1516,6 @@ const PRODUCTS: Product[] = [
     category: "Aparelhos Estéticos e Tecnologia",
     stock: 10
   }
-];export default PRODUCTS;
+];
+
+export default PRODUCTS;
