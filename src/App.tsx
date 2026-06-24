@@ -237,6 +237,15 @@ export default function App() {
         <>
           <Hero onClubClick={() => setIsClubModalOpen(true)} />
           <RedirectBanner onRedirectClick={() => setActiveTab("redirect")} />
+          {/* Botão de teste para redirect */}
+          <div className="bg-yellow-100 border-2 border-yellow-500 p-4 text-center">
+            <button 
+              onClick={() => setActiveTab("redirect")}
+              className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-6 rounded-lg"
+            >
+              🧪 TESTE: Ir para Redirecionamento
+            </button>
+          </div>
           <TrustBadges />
           <main className="flex-1 bg-slate-50 py-12 px-4">
             <section className="max-w-7xl mx-auto">
