@@ -230,19 +230,18 @@ export default function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-slate-50">
-      <Header
-        user={user}
-        isAdmin={isAdmin}
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        cartItemsCount={cartItems.length}
-        onCartClick={() => setIsCartOpen(true)}
-        onAuthClick={() => setIsAuthOpen(true)}
-        isMenuOpen={isMenuOpen}
-        setIsMenuOpen={setIsMenuOpen}
-        isFiltersOpen={isFiltersOpen}
-        setIsFiltersOpen={setIsFiltersOpen}
-      />
+  <Header
+  onSearchChange={setSearchQuery}
+  selectedCategory={selectedCategory}
+  onSelectCategory={setSelectedCategory}
+  categories={["Todos", "Skincare e Tratamentos Faciais", "Cuidados Capilares", "Maquiagem", "Aparelhos Estéticos e Tecnologia", "Higiene e Cuidados Pessoais"]}
+  cartCount={cartItems.length}
+  onOpenCart={() => setIsCartOpen(true)}
+  onOpenAuth={() => setIsAuthOpen(true)}
+  user={user}
+  onLogout={handleLogout}
+  onLogoClick={() => setActiveTab("store")}
+/>
 
       {notification && (
         <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50 animate-pulse">
