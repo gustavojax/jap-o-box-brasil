@@ -1,10 +1,6 @@
-// ==========================================
-// BASE DE DADOS DE PRODUTOS COMPLETA E REVISADA
-// ==========================================
 import type { Product } from "../types";
 
 const PRODUCTS: Product[] = [
-  // --- SKINCARE E TRATAMENTOS FACIAIS ---
 
   {
     id: "medicube-forever-cherry-ager-booster",
