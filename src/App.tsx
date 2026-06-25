@@ -16,7 +16,7 @@ import ClientDashboard from "./components/ClientDashboard";
 import AdminDashboard from "./components/AdminDashboard";
 
 import type { Product, CartItem } from "./types";
-import PRODUCTS from "./components/products";
+import PRODUCTS from "./components/products_teste";
 
 import { CheckCircle2, Clock, Truck, MapPin, ExternalLink, Info } from "lucide-react";
 
