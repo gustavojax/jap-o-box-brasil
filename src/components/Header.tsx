@@ -41,6 +41,9 @@ export default function Header({
 
   const bgSakuraUrl = "https://iili.io/CJpxUiu.md.png";
 
+  // ✅ FIX: Validar categories antes de usar
+  const validCategories = categories && Array.isArray(categories) ? categories : [];
+
   return (
     <header className="w-full bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm relative">
       <div 
@@ -172,7 +175,8 @@ export default function Header({
                   Ver Todo o Catálogo
                 </button>
                 <div className="h-px bg-slate-100 my-1.5" />
-                {categories.filter(c => c !== "Todos").map((cat) => (
+                {/* ✅ FIX: Validar categories antes de usar filter */}
+                {validCategories.filter(c => c !== "Todos").map((cat) => (
                   <button
                     key={cat}
                     onClick={(e) => handleCategoryClick(cat, e)}
