@@ -17,6 +17,11 @@ import AdminDashboard from "./components/AdminDashboard";
 
 import type { Product, CartItem } from "./types";
 import PRODUCTS from "./components/products";
+console.log('=== APP INICIOU ===');
+console.log('PRODUCTS:', PRODUCTS?.length);
+console.log('selectedCategory:', selectedCategory);
+console.log('searchQuery:', searchQuery);
+console.log('sortBy:', sortBy);
 
 import { CheckCircle2, Clock, Truck, MapPin, ExternalLink, Info } from "lucide-react";
 
