@@ -57,13 +57,18 @@ export default function AdminDashboard() {
 
   // Estatísticas Dinâmicas
   const stats = useMemo(() => {
-    return {
-      total: orders.length,
-      pending: orders.filter(o => o.status === "pending" || o.status === "aguardando").length,
-      shipped: orders.filter(o => o.status === "shipped" || o.status === "enviado").length,
-      delivered: orders.filter(o => o.status === "delivered" || o.status === "entregue").length,
-    };
-  }, [orders]);
+  // ✅ FIX: Validar orders antes de usar filter
+  if (!orders || !Array.isArray(orders)) {
+    return { total: 0, pending: 0, shipped: 0, delivered: 0 };
+  }
+  
+  return {
+    total: orders.length,
+    pending: orders.filter(o => o.status === "pending" || o.status === "aguardando").length,
+    shipped: orders.filter(o => o.status === "shipped" || o.status === "enviado").length,
+    delivered: orders.filter(o => o.status === "delivered" || o.status === "entregue").length,
+  };
+}, [orders]);
 
   // Filtros de busca e status
   const filteredOrders = useMemo(() => {
