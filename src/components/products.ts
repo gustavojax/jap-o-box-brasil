@@ -1444,7 +1444,7 @@ const PRODUCTS: Product[] = [
     name: "Mofurashi Toothbrush",
     jpName: "モフラシ 歯ブラシ 特殊設計",
     description: "Escova de dentes especial ergonômica.",
-    priceBRL: 120.00,
+    priceBRL: 60.00,
     serviceFeeBRL: 0,
     shippingEstBRL: 25.00,
     image: "https://iili.io/C2KS5Cb.png",
