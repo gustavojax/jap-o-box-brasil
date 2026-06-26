@@ -362,7 +362,6 @@ export default function App() {
                         <li><a href="https://www.nike.com/jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Nike JP</a></li>
                         <li><a href="https://www.crocs.co.jp/" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Crocs</a></li>
                         <li><a href="https://shop.newbalance.jp" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> New Balance JP</a></li>
-                        <li><a href="https://www.sootang.jp" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Sootang</a></li>
                       </ul>
                     </div>
 
@@ -389,6 +388,7 @@ export default function App() {
                         <li><a href="https://popmart.com" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pop Mart</a></li>
                         <li><a href="https://www.pokemon-card.com/?hl=pt-BR" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Pokémon Card</a></li>
                         <li><a href="https://www.sanrio.com/collections/kuromi#shop_character" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Kuromi</a></li>
+                        <li><a href="https://www.sootang.jp" target="_blank" rel="noopener noreferrer" className="hover:text-red-600 flex items-center gap-3 group"><ExternalLink className="w-4 h-4" /> Sootang</a></li>
                       </ul>
                     </div>
                   </div>
