@@ -62,11 +62,16 @@ export default function App() {
         setUser(u);
 
         try {
-          const adminRef = doc(db, "admins", u.uid);
+          // ✅ CORRIGIDO: Usar email como ID do documento admin (conforme Firebase)
+          const adminRef = doc(db, "admins", u.email || "");
           const adminSnap = await getDoc(adminRef);
           setIsAdmin(adminSnap.exists());
+          
+          // Debug log (pode remover depois)
+          console.log("🔐 Verificando admin:", u.email, "→", adminSnap.exists());
         } catch (error) {
           console.error("Erro ao verificar administrador:", error);
+          setIsAdmin(false);
         }
       } else {
         setUser(null);
