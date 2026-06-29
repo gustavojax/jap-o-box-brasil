@@ -405,7 +405,26 @@ export default function App() {
             <p className="text-slate-600 mb-4">Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos do Japão.</p>
           </div>
         </main>
-      ) : (
+      ) : activeTab === "admin" ? (
+        // ✅ ADMIN PANEL - RESTAURADO
+        isAdmin ? (
+          <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
+            <AdminDashboard
+              user={user}
+              onLogout={handleLogout}
+              getStatusBadge={getStatusBadge}
+            />
+          </main>
+        ) : (
+          <main className="flex-1 bg-slate-50 py-12 px-4 flex items-center justify-center">
+            <div className="max-w-md mx-auto bg-white rounded-2xl shadow-lg p-8 text-center border-2 border-red-600">
+              <h2 className="text-2xl font-black text-red-600 mb-3">🔒 Acesso Negado</h2>
+              <p className="text-gray-600 font-bold">Você não tem permissão para acessar o painel de administração.</p>
+            </div>
+          </main>
+        )
+      ) : activeTab === "account" ? (
+        // ✅ CLIENT DASHBOARD - PEDIDOS DO CLIENTE
         <main className="flex-1 bg-slate-50 py-8 px-4 min-h-[85vh]">
           {user ? (
             <ClientDashboard
@@ -432,6 +451,16 @@ export default function App() {
             </div>
           </footer>
         </main>
+      ) : (
+        // ✅ STORE (PADRÃO)
+        <>
+          <Hero onClubClick={() => setIsClubModalOpen(true)} />
+          <RedirectBanner onRedirectClick={() => setActiveTab("redirect")} />
+          <TrustBadges />
+          <main className="flex-1 bg-slate-50 py-12 px-4">
+            {/* ... resto do código da loja ... */}
+          </main>
+        </>
       )}
 
       {/* MODAIS E CARRINHO */}
@@ -443,3 +472,4 @@ export default function App() {
     </div>
   );
 }
+
