@@ -1,5 +1,6 @@
 import React from "react";
 import { Instagram, Music } from "lucide-react";
+import Footer from "./Footer";
 
 export default function About() {
   return (
@@ -66,19 +67,7 @@ export default function About() {
 
       </div>
 
-      {/* FOOTER */}
-      <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 mt-12">
-        <div className="max-w-7xl mx-auto px-4 text-center">
-          <div className="mb-6">
-            <img
-              src="https://raw.githubusercontent.com/gustavojax/jap-o-box-brasil/main/src/assets/images/3.png"
-              alt="PagBank"
-              className="mx-auto h-24 w-auto object-contain"
-            />
-          </div>
-          <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-        </div>
-      </footer>
+      <Footer />
     </main>
   );
 }
