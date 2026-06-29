@@ -1179,7 +1179,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 167,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 30
   },
   {
@@ -1194,7 +1194,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 280,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 15
   },
   {
@@ -1209,7 +1209,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 340,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 25
   },
   {
@@ -1224,7 +1224,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 412,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 20
   },
   {
@@ -1239,7 +1239,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 650,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 50
   },
   {
@@ -1254,7 +1254,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 154,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 25
   },
   {
@@ -1269,7 +1269,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 198,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 35
   },
   {
@@ -1284,7 +1284,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 220,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 30
   },
   {
@@ -1299,7 +1299,7 @@ const PRODUCTS: Product[] = [
     rating: 5.0,
     reviewsCount: 312,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 25
   },
   {
@@ -1344,7 +1344,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 290,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 35
   },
   {
@@ -1359,7 +1359,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 175,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 20
   },
   {
@@ -1374,7 +1374,7 @@ const PRODUCTS: Product[] = [
     rating: 4.8,
     reviewsCount: 145,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 18
   },
   {
@@ -1389,7 +1389,7 @@ const PRODUCTS: Product[] = [
     rating: 4.9,
     reviewsCount: 112,
     department: "Beleza, Higiene e Saúde",
-    category: "Cuidados Capilares",
+    category: "Shampoo e Condicionador",
     stock: 25
   },
   {
