@@ -7,7 +7,7 @@ export default function Footer() {
         {/* MÉTODOS DE PAGAMENTO */}
         <div className="mb-12 text-center">
           <h3 className="text-sm font-black uppercase tracking-widest text-slate-900 mb-6">
-            ✅ Formas de Pagamento
+            
           </h3>
           <div className="flex justify-center mb-8">
             <img
@@ -21,20 +21,19 @@ export default function Footer() {
         {/* DIVIDER */}
         <div className="border-t border-slate-200 pt-8 mb-8"></div>
 
-        {/* LOGO E COPYRIGHT */}
+        {/* COPYRIGHT */}
         <div className="text-center">
-          <div className="mb-6">
-            <img
-              src="https://raw.githubusercontent.com/gustavojax/jap-o-box-brasil/main/src/assets/images/3.png"
-              alt="PagBank"
-              className="mx-auto h-20 w-auto object-contain"
-            />
-          </div>
-          <p className="text-sm font-bold text-slate-600">
+          <p className="text-sm font-bold text-slate-900 mb-2">
+            Japão Box Brasil
+          </p>
+          <p className="text-sm font-bold text-slate-600 mb-3">
             © 2026 Japão Box Brasil. Todos os direitos reservados.
           </p>
-          <p className="text-xs text-slate-500 mt-2">
-            Desenvolvido por GUSTAVO JAX AUDIOVISUAL (gustavojaxaudivisual@gmail.com)
+          <p className="text-xs text-slate-500">
+            Desenvolvido por GUSTAVO JAX AUDIOVISUAL
+          </p>
+          <p className="text-xs text-slate-500 mt-1">
+            gustavojaxaudivisual@gmail.com
           </p>
         </div>
       </div>
