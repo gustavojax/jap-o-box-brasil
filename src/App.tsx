@@ -12,6 +12,7 @@ import AuthModal from "./components/AuthModal";
 import ClubModal from "./components/ClubModal";
 import WhatsAppFloat from "./components/WhatsAppFloat";
 import About from "./components/About";
+import Footer from "./components/Footer";
 
 import ClientDashboard from "./components/ClientDashboard";
 import AdminDashboard from "./components/AdminDashboard";
@@ -444,18 +445,7 @@ export default function App() {
           ) : (
             <p className="text-center">Por favor, faça o login.</p>
           )}
-          <footer className="w-full bg-white border-t border-slate-200 text-slate-600 pt-12 pb-24 mt-12">
-            <div className="max-w-7xl mx-auto px-4 text-center">
-              <div className="mb-6">
-                <img
-                  src="https://raw.githubusercontent.com/gustavojax/jap-o-box-brasil/main/src/assets/images/3.png"
-                  alt="PagBank"
-                  className="mx-auto h-24 w-auto object-contain"
-                />
-              </div>
-              <p>© 2026 Japão Box Brasil. Todos os direitos reservados.</p>
-            </div>
-          </footer>
+          <Footer />
         </main>
       ) : (
         // ✅ STORE (PADRÃO)
