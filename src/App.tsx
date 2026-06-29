@@ -192,6 +192,7 @@ export default function App() {
     return [
       "Todos",
       "Skincare e Tratamentos Faciais",
+      "Shampoo e Condicionador",
       "Cuidados Capilares",
       "Maquiagem",
       "Aparelhos Estéticos e Tecnologia",
