@@ -34,7 +34,7 @@ export default function Footer() {
             © 2026 Japão Box Brasil. Todos os direitos reservados.
           </p>
           <p className="text-xs text-slate-500 mt-2">
-            Desenvolvido com ❤️ para trazer o Japão até você
+            Desenvolvido por GUSTAVO JAX AUDIOVISUAL (gustavojaxaudivisual@gmail.com)
           </p>
         </div>
       </div>
