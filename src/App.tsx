@@ -326,6 +326,7 @@ export default function App() {
             <Testimonials />
             <BlogSection />
           </main>
+          <Footer />
         </>
       ) : activeTab === "redirect" ? (
         <main className="flex-1 bg-white py-12 px-4">
@@ -409,9 +410,13 @@ export default function App() {
               </div>
             </div>
           </div>
+          <Footer />
         </main>
       ) : activeTab === "about" ? (
-        <About />
+        <>
+          <About />
+          <Footer />
+        </>
       ) : activeTab === "admin" ? (
         // ✅ ADMIN PANEL - RESTAURADO
         isAdmin ? (
