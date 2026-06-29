@@ -1,9 +1,8 @@
 import React, { useState, useMemo } from "react";
-import { X, ShoppingBag, AlertTriangle, Loader2, Trash2, Scale, CreditCard, ChevronDown } from "lucide-react";
+import { X, ShoppingBag, Loader2, Trash2, Scale, CreditCard, ChevronDown, AlertCircle } from "lucide-react";
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
-import CustomsWarningModal from "./CustomsWarningModal";
 
 const YEN_TO_BRL_RATE = 0.038; 
 
@@ -15,12 +14,10 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [estimatedWeight, setEstimatedWeight] = useState<number>(500);
   const [installments, setInstallments] = useState<number>(1);
   const [showInstallmentDetails, setShowInstallmentDetails] = useState(false);
-  const [showCustomsWarning, setShowCustomsWarning] = useState(false);
-  const [customsAccepted, setCustomsAccepted] = useState(false);
+  const [showWarningBanner, setShowWarningBanner] = useState(true);
 
   // Garantimos que cartItems seja sempre tratado como array para evitar erros de undefined
   const safeCartItems = cartItems || [];
@@ -51,17 +48,8 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setCartItems(prevItems => (prevItems || []).filter((_, idx) => idx !== indexToRemove));
   };
 
-  const handleProceedToCheckout = () => {
-    setShowCustomsWarning(true);
-  };
-
-  const handleCustomsWarningAccept = () => {
-    setCustomsAccepted(true);
-    setShowCustomsWarning(false);
-  };
-
   const handleWhatsApp = async () => {
-    if (safeCartItems.length === 0 || !acceptedTerms || !customsAccepted) return;
+    if (safeCartItems.length === 0) return;
     
     setIsSubmitting(true);
     const itemsList = safeCartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
@@ -77,7 +65,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           totalPedido: calculos.totalGeral.toFixed(2),
           parcelamento: installments,
           valorParcela: calculos.valorParcela.toFixed(2),
-          customsWarningAccepted: true,
           createdAt: serverTimestamp()
         });
       }
@@ -193,41 +180,29 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </div>
             <div className="flex justify-between font-black text-lg text-gray-900"><span>Total</span><span>R$ {calculos.totalGeral.toFixed(2)}</span></div>
             
-            <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl">
-              <h3 className="font-black text-amber-900 text-[10px] uppercase mb-1 flex items-center gap-1.5">
-                <AlertTriangle className="w-3.5 h-3.5" /> Informações Importantes
-              </h3>
-              <label className="flex items-center gap-2 text-[10px] font-bold text-amber-900 cursor-pointer">
-                <input type="checkbox" checked={acceptedTerms} onChange={(e) => setAcceptedTerms(e.target.checked)} className="rounded text-red-600 focus:ring-red-500" />
-                Li os termos e concordo.
-              </label>
-              
-              {/* Aviso de Alfândega */}
-              {acceptedTerms && !customsAccepted && (
-                <div className="mt-2 pt-2 border-t border-amber-200">
-                  <p className="text-[10px] text-amber-900 mb-2">
-                    ⚠️ <strong>Você ainda precisa confirmar as taxas alfandegárias</strong>
+            {/* BANNER DE AVISO DE ALFANDEGA */}
+            {showWarningBanner && (
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-start gap-3">
+                <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+                <div className="flex-1 text-[11px] text-blue-900">
+                  <span className="font-bold block mb-1">⚠️ Aviso Importante</span>
+                  <p>
+                    As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não tem controle ou responsabilidade sobre esses valores. Agradecemos a compreensão! 🇯🇵📦
                   </p>
-                  <button
-                    onClick={handleProceedToCheckout}
-                    className="w-full bg-amber-600 hover:bg-amber-700 text-white py-2 rounded-lg font-black text-[10px] uppercase transition-colors"
-                  >
-                    Confirmar Aviso de Alfândega
-                  </button>
                 </div>
-              )}
-
-              {customsAccepted && (
-                <div className="mt-2 pt-2 border-t border-amber-200 flex items-center gap-2 text-green-700">
-                  <span className="text-sm">✓</span>
-                  <span className="text-[10px] font-black">Aviso de alfândega confirmado</span>
-                </div>
-              )}
-            </div>
+                <button
+                  onClick={() => setShowWarningBanner(false)}
+                  className="flex-shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
+                  aria-label="Fechar aviso"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            )}
 
             <button 
               onClick={handleWhatsApp} 
-              disabled={isSubmitting || safeCartItems.length === 0 || !acceptedTerms || !customsAccepted}
+              disabled={isSubmitting || safeCartItems.length === 0}
               className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3.5 rounded-xl font-black uppercase text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-200"
             >
               {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Processando...</> : "Finalizar via WhatsApp"}
@@ -236,13 +211,13 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
         </div>
       </div>
 
-      {/* Modal de Aviso Alfandegário */}
-      <CustomsWarningModal 
-        isOpen={showCustomsWarning}
-        onClose={() => setShowCustomsWarning(false)}
-        onAccept={handleCustomsWarningAccept}
-        type="checkout"
-      />
     </>
   );
 }
+
+
+
+
+
+
+
