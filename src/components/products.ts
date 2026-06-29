@@ -1515,7 +1515,68 @@ const PRODUCTS: Product[] = [
     department: "Beleza, Higiene e Saúde",
     category: "Aparelhos Estéticos e Tecnologia",
     stock: 10
-  }
+  },
+  {
+    id: "the-answer-super-lamellar-shampoo",
+    name: "The Answer Super Lamellar Shampoo",
+    jpName: "ジアンサー スーパーラメラ シャンプー",
+    description: "Shampoo premium japonês com tecnologia Super Lamellar, desenvolvido para limpar suavemente enquanto fortalece e repara os fios com queratina hidrolisada, ceramidas e ácidos nutritivos.",
+    priceBRL: 119.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/0ybH6wq8/The-Answer-Super-Lamellar-Shampoo.webp",
+    rating: 5.0,
+    reviewsCount: 8,
+    department: "Beleza, Higiene e Saúde",
+    category: "Shampoo e Condicionador",
+    stock: 5
+  },
+  {
+    id: "the-answer-ex-moist-treatment",
+    name: "The Answer EX Moist Treatment",
+    jpName: "ジアンサー EX モイスト トリートメント",
+    description: "Tratamento intensivo para cabelos secos e danificados. Proporciona hidratação profunda, maciez e recuperação da fibra capilar.",
+    priceBRL: 119.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/k2rS7T0Z/The-Answer-EX-Moist-Treatment.jpg",
+    rating: 5.0,
+    reviewsCount: 6,
+    department: "Beleza, Higiene e Saúde",
+    category: "Shampoo e Condicionador",
+    stock: 5
+  },
+  {
+    id: "the-answer-ex-gloss-treatment",
+    name: "The Answer EX Gloss Treatment",
+    jpName: "ジアンサー EX グロス トリートメント",
+    description: "Tratamento capilar desenvolvido para cabelos danificados por calor. Promove brilho intenso, alinhamento dos fios e toque sedoso.",
+    priceBRL: 119.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/HLZBK7wv/The-Answer-EX-Gloss-Treatmen.jpg",
+    rating: 5.0,
+    reviewsCount: 5,
+    department: "Beleza, Higiene e Saúde",
+    category: "Shampoo e Condicionador",
+    stock: 5
+  },
+  {
+    id: "the-answer-ex-repair-treatment",
+    name: "The Answer EX Repair Treatment",
+    jpName: "ジアンサー EX リペア トリートメント",
+    description: "Tratamento reparador indicado para cabelos coloridos e quimicamente danificados. Auxilia na reconstrução da fibra, reduz a quebra e prolonga a vitalidade da cor.",
+    priceBRL: 119.00,
+    serviceFeeBRL: 0,
+    shippingEstBRL: 35.00,
+    image: "https://i.ibb.co/r2DjdxL0/The-Answer-EX-Repair-Treatment.webp",
+    rating: 5.0,
+    reviewsCount: 7,
+    department: "Beleza, Higiene e Saúde",
+    category: "Shampoo e Condicionador",
+    stock: 5
+  },
+
 ];
 
 export default PRODUCTS;
