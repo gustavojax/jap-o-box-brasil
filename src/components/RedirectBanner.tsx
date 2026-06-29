@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Plane, ChevronDown, ChevronUp, Info, AlertCircle } from 'lucide-react';
+import { ArrowRight, Plane, ChevronDown, ChevronUp, Info, AlertCircle, X } from 'lucide-react';
 
 interface RedirectBannerProps {
   onRedirectClick: () => void;
@@ -10,6 +10,7 @@ const YEN_TO_BRL_RATE = 0.038;
 
 export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps) {
   const [isTableOpen, setIsTableOpen] = useState(false);
+  const [showWarningBanner, setShowWarningBanner] = useState(true);
 
   return (
     <>
@@ -57,6 +58,28 @@ export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps)
           </div>
         </div>
 
+        {/* BANNER DE AVISO FECHÁVEL */}
+        {showWarningBanner && (
+          <div className="bg-blue-50 border-t border-blue-200 py-4 px-4">
+            <div className="max-w-4xl mx-auto flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
+              <div className="flex-1 text-sm text-blue-900">
+                <span className="font-bold">⚠️ Aviso Importante</span>
+                <p className="mt-1">
+                  As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não tem controle ou responsabilidade sobre esses valores. Agradecemos a compreensão! 🇯🇵📦
+                </p>
+              </div>
+              <button
+                onClick={() => setShowWarningBanner(false)}
+                className="flex-shrink-0 text-blue-600 hover:text-blue-800 transition-colors"
+                aria-label="Fechar aviso"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* ABA RETRÁTIL DA TABELA DE PREÇOS */}
         {isTableOpen && (
           <div className="bg-slate-50 border-t border-slate-200 py-6 px-4 animate-fadeIn text-left">
@@ -87,15 +110,6 @@ export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps)
                   <span className="text-right font-black text-red-600">
                     20% <span className="text-slate-400 font-normal text-[10px] block sm:inline">do valor dos produtos</span>
                   </span>
-                </div>
-              </div>
-
-              {/* AVISO IMPORTANTE */}
-              <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-start gap-2 text-[11px] text-blue-900 leading-relaxed">
-                <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
-                <div>
-                  <span className="font-bold block mb-0.5">⚠️ Aviso Importante</span>
-                  As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não tem controle ou responsabilidade sobre esses valores. Agradecemos a compreensão! 🇯🇵📦
                 </div>
               </div>
             </div>
