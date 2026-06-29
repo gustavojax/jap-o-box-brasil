@@ -11,6 +11,7 @@ import BudgetModal from "./components/BudgetModal";
 import AuthModal from "./components/AuthModal";
 import ClubModal from "./components/ClubModal";
 import WhatsAppFloat from "./components/WhatsAppFloat";
+import About from "./components/About";
 
 import ClientDashboard from "./components/ClientDashboard";
 import AdminDashboard from "./components/AdminDashboard";
@@ -409,12 +410,7 @@ export default function App() {
           </div>
         </main>
       ) : activeTab === "about" ? (
-        <main className="flex-1 bg-slate-50 py-12 px-4">
-          <div className="max-w-4xl mx-auto bg-white rounded-3xl shadow-xl overflow-hidden border border-slate-100 p-8 md:p-12">
-            <h1 className="text-3xl font-black text-slate-900 mb-6">✨ Bem-vindos à Japão Box Brasil ✨</h1>
-            <p className="text-slate-600 mb-4">Iniciamos nossa empresa com um sonho: levar até o Brasil os melhores produtos do Japão.</p>
-          </div>
-        </main>
+        <About />
       ) : activeTab === "admin" ? (
         // ✅ ADMIN PANEL - RESTAURADO
         isAdmin ? (
