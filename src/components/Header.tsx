@@ -12,6 +12,9 @@ interface HeaderProps {
   user: any;
   onLogout: () => void;
   onLogoClick: () => void;
+  onAboutClick?: () => void;
+  onRedirectClick?: () => void;
+  activeTab?: string;
 }
 
 export default function Header({
@@ -25,6 +28,9 @@ export default function Header({
   user,
   onLogout,
   onLogoClick,
+  onAboutClick,
+  onRedirectClick,
+  activeTab = "store",
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -188,6 +194,31 @@ export default function Header({
               </div>
             )}
           </div>
+
+          {/* 🆕 BOTÕES DE NAVEGAÇÃO */}
+          <div className="flex gap-2 flex-1 sm:flex-none justify-stretch sm:justify-end">
+            <button
+              onClick={onRedirectClick}
+              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer border shadow-sm ${
+                activeTab === "redirect"
+                  ? "bg-red-600 text-white border-red-700 hover:bg-red-700"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              📦 Redirecionamento
+            </button>
+            <button
+              onClick={onAboutClick}
+              className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer border shadow-sm ${
+                activeTab === "about"
+                  ? "bg-red-600 text-white border-red-700 hover:bg-red-700"
+                  : "bg-white text-slate-700 border-slate-200 hover:bg-slate-50"
+              }`}
+            >
+              ✨ Sobre
+            </button>
+          </div>
+
           <div className="text-[11px] text-slate-500 font-semibold text-center sm:text-right py-1 sm:py-0">
             Filtro Ativo: <span className="text-slate-900 font-black">{selectedCategory}</span>
           </div>
