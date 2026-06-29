@@ -244,7 +244,9 @@ export default function App() {
   onLogoClick={() => setActiveTab("store")}
   onAboutClick={() => setActiveTab("about")}
   onRedirectClick={() => setActiveTab("redirect")}
+  onAdminClick={() => setActiveTab("admin")}
   activeTab={activeTab}
+  isAdmin={isAdmin}
 />
 
       {notification && (
