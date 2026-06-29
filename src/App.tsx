@@ -242,6 +242,9 @@ export default function App() {
   user={user}
   onLogout={handleLogout}
   onLogoClick={() => setActiveTab("store")}
+  onAboutClick={() => setActiveTab("about")}
+  onRedirectClick={() => setActiveTab("redirect")}
+  activeTab={activeTab}
 />
 
       {notification && (
