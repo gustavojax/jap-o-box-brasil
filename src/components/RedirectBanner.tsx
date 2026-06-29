@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ArrowRight, Plane, ChevronDown, ChevronUp, Info, ShieldAlert } from 'lucide-react';
-import CustomsWarningModal from './CustomsWarningModal';
+import { ArrowRight, Plane, ChevronDown, ChevronUp, Info, AlertCircle } from 'lucide-react';
 
 interface RedirectBannerProps {
   onRedirectClick: () => void;
@@ -11,22 +10,6 @@ const YEN_TO_BRL_RATE = 0.038;
 
 export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps) {
   const [isTableOpen, setIsTableOpen] = useState(false);
-  const [showCustomsWarning, setShowCustomsWarning] = useState(false);
-  const [redirectAccepted, setRedirectAccepted] = useState(false);
-
-  const handleComoFunciona = () => {
-    if (!redirectAccepted) {
-      setShowCustomsWarning(true);
-    } else {
-      onRedirectClick();
-    }
-  };
-
-  const handleCustomsWarningAccept = () => {
-    setRedirectAccepted(true);
-    setShowCustomsWarning(false);
-    onRedirectClick();
-  };
 
   return (
     <>
@@ -63,7 +46,7 @@ export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps)
               </button>
 
               <button
-                onClick={handleComoFunciona}
+                onClick={onRedirectClick}
                 className="w-full sm:w-auto bg-red-600 text-white font-black px-8 py-3 rounded-full flex items-center justify-center gap-2 hover:bg-red-700 transition-all shadow-lg hover:shadow-red-600/30"
               >
                 COMO FUNCIONA
@@ -107,12 +90,12 @@ export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps)
                 </div>
               </div>
 
-              {/* AVISO IMPORTANTE ALFANDEGÁRIO */}
-              <div className="bg-amber-50 border border-amber-200 p-3 rounded-xl flex items-start gap-2 text-[11px] text-amber-900 leading-relaxed">
-                <ShieldAlert className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
+              {/* AVISO IMPORTANTE */}
+              <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-start gap-2 text-[11px] text-blue-900 leading-relaxed">
+                <AlertCircle className="w-4 h-4 text-blue-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <span className="font-bold block mb-0.5">Informativo de Importação (Regras 2026):</span>
-                  O valor da taxa de serviço acima e o frete internacional são calculados e fixados na hora do fechamento físico da sua caixa. Lembre-se que envios internacionais podem estar sujeitos a tributações alfandegárias na entrada do Brasil.
+                  <span className="font-bold block mb-0.5">⚠️ Aviso Importante</span>
+                  As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não tem controle ou responsabilidade sobre esses valores. Agradecemos a compreensão! 🇯🇵📦
                 </div>
               </div>
             </div>
@@ -120,13 +103,13 @@ export default function RedirectBanner({ onRedirectClick }: RedirectBannerProps)
         )}
       </div>
 
-      {/* Modal de Aviso Alfandegário */}
-      <CustomsWarningModal 
-        isOpen={showCustomsWarning}
-        onClose={() => setShowCustomsWarning(false)}
-        onAccept={handleCustomsWarningAccept}
-        type="redirect"
-      />
     </>
   );
 }
+
+
+
+
+
+
+
