@@ -14,7 +14,9 @@ interface HeaderProps {
   onLogoClick: () => void;
   onAboutClick?: () => void;
   onRedirectClick?: () => void;
+  onAdminClick?: () => void;
   activeTab?: string;
+  isAdmin?: boolean;
 }
 
 export default function Header({
@@ -30,7 +32,9 @@ export default function Header({
   onLogoClick,
   onAboutClick,
   onRedirectClick,
+  onAdminClick,
   activeTab = "store",
+  isAdmin = false,
 }: HeaderProps) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -217,6 +221,18 @@ export default function Header({
             >
               ✨ Sobre
             </button>
+            {isAdmin && (
+              <button
+                onClick={onAdminClick}
+                className={`flex-1 sm:flex-none px-4 py-2 text-xs font-bold rounded-xl transition-all cursor-pointer border shadow-sm ${
+                  activeTab === "admin"
+                    ? "bg-amber-600 text-white border-amber-700 hover:bg-amber-700"
+                    : "bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100"
+                }`}
+              >
+                🔐 Admin
+              </button>
+            )}
           </div>
 
           <div className="text-[11px] text-slate-500 font-semibold text-center sm:text-right py-1 sm:py-0">
