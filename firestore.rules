@@ -1,0 +1,59 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ==========================================
+    // 🔐 REGRAS DE SEGURANÇA - FIRESTORE
+    // ==========================================
+    
+    // Função para verificar se o usuário está autenticado
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Função para verificar se é admin
+    function isAdmin() {
+      return isAuthenticated() && 
+             exists(/databases/$(database)/documents/admins/$(request.auth.token.email));
+    }
+    
+    // ==========================================
+    // 📦 COLEÇÃO: ORDERS (Pedidos)
+    // ==========================================
+    match /orders/{orderId} {
+      // ✅ CRIAR: Qualquer usuário autenticado pode criar pedidos
+      allow create: if isAuthenticated() && 
+                       request.resource.data.userId == request.auth.token.email;
+      
+      // ✅ LER: 
+      // - Admins podem ler todos os pedidos
+      // - Usuários podem ler apenas seus próprios pedidos
+      allow read: if isAdmin() || 
+                     (isAuthenticated() && resource.data.userId == request.auth.token.email);
+      
+      // ✅ ATUALIZAR: Apenas admins podem atualizar pedidos
+      allow update: if isAdmin();
+      
+      // ✅ DELETAR: Apenas admins podem deletar pedidos
+      allow delete: if isAdmin();
+    }
+    
+    // ==========================================
+    // 👤 COLEÇÃO: ADMINS
+    // ==========================================
+    match /admins/{adminEmail} {
+      // ✅ LER: Apenas admins podem ler a lista de admins
+      allow read: if isAdmin();
+      
+      // ✅ CRIAR/ATUALIZAR: Apenas admins podem gerenciar admins
+      allow write: if isAdmin();
+    }
+    
+    // ==========================================
+    // 🛡️ DEFAULT: NEGAR TUDO
+    // ==========================================
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
