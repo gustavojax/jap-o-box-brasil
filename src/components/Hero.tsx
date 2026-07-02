@@ -2,16 +2,10 @@ import React from "react";
 import { Sparkles, ArrowRight } from "lucide-react";
 
 interface HeroProps {
-  onScrollToCatalog: () => void;
-  onOpenBudgetModal: () => void;
-  onOpenClubModal: () => void;
+  onClubClick: () => void;
 }
 
-export default function Hero({ 
-  onScrollToCatalog, 
-  onOpenBudgetModal, 
-  onOpenClubModal 
-}: HeroProps) {
+export default function Hero({ onClubClick }: HeroProps) {
   
   return (
     <div className="relative bg-slate-950 text-white overflow-hidden py-20 px-4 text-center">
@@ -27,33 +21,25 @@ export default function Hero({
           Sem Taxas Ocultas!
         </h1>
         <p className="text-xs md:text-sm text-slate-400 max-w-2xl mx-auto leading-relaxed">
-          Nós compramos em lojas físicas ou direto de sites japoneses rústicos, preparamos a caixa no nosso armazém japonês localizado em Mie e despachamos direto para seu endereço no Brasil. Você simula o preço exato com impostos estimados antes de pagar!
+          Nós compramos em lojas físicas ou direto de sites japoneses, preparamos a caixa no nosso armazém localizado em Mie e despachamos direto para seu endereço no Brasil com rastreio completo e sem surpresas na alfândega.
         </p>
       </div>
       
-      {/* BOTÕES DE AÇÃO TOTALMENTE ALINHADOS E SIMÉTRICOS */}
+      {/* BOTÕES DE AÇÃO */}
       <div className="flex flex-wrap gap-4 justify-center mt-8 max-w-3xl mx-auto">
         
-        {/* BOTÃO 1: VER PRODUTOS */}
+        {/* BOTÃO: CLUBE SAKURA */}
         <button 
-          onClick={onScrollToCatalog}
-          className="bg-white text-slate-950 px-6 py-3 rounded-xl font-black text-sm uppercase tracking-wider hover:bg-slate-100 transition-all cursor-pointer flex items-center justify-center gap-2 min-w-[200px]"
-        >
-          Explorar Catálogo <ArrowRight className="w-4 h-4" />
-        </button>
-
-        {/* BOTÃO 2: CLUBE SAKURA (REESTILIZADO PARA ACABAR COM A QUEBRA DO DESIGN) */}
-        <button 
-          onClick={onOpenClubModal}
-          className="bg-slate-900/50 text-yellow-400 border border-slate-800 px-6 py-3 rounded-xl font-black text-sm uppercase tracking-wider hover:bg-slate-800 hover:text-yellow-300 transition-all cursor-pointer flex items-center justify-center gap-2 min-w-[240px] shadow-md"
+          onClick={onClubClick}
+          className="bg-red-600 hover:bg-red-700 text-white px-8 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           Conhecer Clube de Assinatura 🌸
         </button>
 
-        {/* BOTÃO 3: PERSONAL SHOPPER */}
+        {/* BOTÃO: PERSONAL SHOPPER */}
         <button 
-          onClick={onOpenBudgetModal}
-          className="bg-slate-900 text-slate-300 border border-slate-800 px-6 py-3 rounded-xl font-black text-sm uppercase tracking-wider hover:bg-slate-800 transition-all cursor-pointer flex items-center justify-center gap-2 min-w-[200px]"
+          onClick={() => alert("Personal Shopper em breve!")}
+          className="bg-slate-800 hover:bg-slate-700 text-slate-100 border border-slate-700 px-8 py-3 rounded-xl font-black text-sm uppercase tracking-wider transition-all cursor-pointer flex items-center justify-center gap-2"
         >
           <Sparkles className="w-4 h-4 text-amber-400" /> Personal Shopper
         </button>
