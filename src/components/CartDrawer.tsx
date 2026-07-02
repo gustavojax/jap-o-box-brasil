@@ -12,6 +12,13 @@ interface CartDrawerProps {
   setCartItems: React.Dispatch<React.SetStateAction<CartItem[]>>;
 }
 
+// Declaração para o TypeScript reconhecer o gtag global (vem do script no index.html)
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+  }
+}
+
 export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDrawerProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [estimatedWeight, setEstimatedWeight] = useState<number>(500);
@@ -19,7 +26,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
   const [showInstallmentDetails, setShowInstallmentDetails] = useState(false);
   const [showWarningBanner, setShowWarningBanner] = useState(true);
 
-  // Garantimos que cartItems seja sempre tratado como array para evitar erros de undefined
   const safeCartItems = cartItems || [];
 
   const subtotalProdutos = useMemo(() => {
@@ -42,15 +48,13 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     return { freteYen, valorFreteBRL, totalGeral, valorParcela };
   }, [subtotalProdutos, estimatedWeight, installments]);
 
-  console.log("DADOS CHEGANDO NO CARRINHO:", cartItems);
-
   const handleRemoveItem = (indexToRemove: number) => {
     setCartItems(prevItems => (prevItems || []).filter((_, idx) => idx !== indexToRemove));
   };
 
   const handleWhatsApp = async () => {
     if (safeCartItems.length === 0) return;
-    
+
     setIsSubmitting(true);
     const itemsList = safeCartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
     const itemsSummary = safeCartItems.map(i => `${i.product?.name} (x${i.quantity})`).join(", ");
@@ -72,6 +76,20 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
       console.error("Erro ao registrar pedido:", error);
     } finally {
       setIsSubmitting(false);
+    }
+
+    // ==========================================
+    // 🎯 CONVERSÃO DO GOOGLE ADS
+    // Substitua "AW-XXXXXXXXX/SEU_LABEL_AQUI" pelo valor
+    // exato que o Google Ads te deu na tela de instalação manual da tag.
+    // ==========================================
+    if (typeof window.gtag === "function") {
+      window.gtag("event", "conversion", {
+        send_to: "AW-18292163095/MwNZCIrohskcEJeEsZJE",
+        value: calculos.totalGeral,
+        currency: "BRL",
+        transaction_id: `${Date.now()}`, // evita contar a mesma conversão duas vezes
+      });
     }
 
     const parcelamentoMsg = installments > 1 
@@ -112,7 +130,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                   </div>
                 ))}
                 
-                {/* Estimativa de Frete */}
                 <div className="pt-2 space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-100">
                   <label className="text-[10px] font-black text-slate-500 uppercase tracking-wider flex items-center gap-1">
                     <Scale className="w-3.5 h-3.5" /> Estimativa de Frete
@@ -125,7 +142,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                   </select>
                 </div>
 
-                {/* Simulador de Parcelamento */}
                 <div className="pt-2 space-y-2 bg-blue-50 p-3 rounded-xl border border-blue-200">
                   <label className="text-[10px] font-black text-blue-700 uppercase tracking-wider flex items-center gap-1">
                     <CreditCard className="w-3.5 h-3.5" /> Parcelamento no Cartão
@@ -142,7 +158,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                     ))}
                   </select>
                   
-                  {/* Detalhes da Parcela */}
                   {installments > 1 && (
                     <div className="mt-2 pt-2 border-t border-blue-200 space-y-1">
                       <button
@@ -180,7 +195,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             </div>
             <div className="flex justify-between font-black text-lg text-gray-900"><span>Total</span><span>R$ {calculos.totalGeral.toFixed(2)}</span></div>
             
-            {/* BANNER DE AVISO DE ALFANDEGA */}
             {showWarningBanner && (
               <div className="bg-blue-50 border border-blue-200 p-3 rounded-xl flex items-start gap-3">
                 <AlertCircle className="w-5 h-5 text-blue-600 flex-shrink-0 mt-0.5" />
@@ -210,7 +224,6 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           </div>
         </div>
       </div>
-
     </>
   );
 }
