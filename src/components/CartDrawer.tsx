@@ -3,6 +3,7 @@ import { X, ShoppingBag, Loader2, Trash2, Scale, CreditCard, ChevronDown, AlertC
 import type { CartItem } from "../types";
 import { auth, db } from "../firebase";
 import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { trackAddToCart, trackBeginCheckout, trackPurchase } from "../utils/analytics";
 
 const YEN_TO_BRL_RATE = 0.038; 
 
@@ -52,6 +53,9 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     setCartItems(prevItems => (prevItems || []).filter((_, idx) => idx !== indexToRemove));
   };
 
+  // ==========================================
+  // 🎯 RASTREAMENTO: CLIQUE EM "FINALIZAR VIA WHATSAPP"
+  // ==========================================
   const handleWhatsApp = async () => {
     if (safeCartItems.length === 0) return;
 
@@ -59,8 +63,18 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     const itemsList = safeCartItems.map(i => `${i.quantity}x ${i.product?.name}`).join("\n");
     const itemsSummary = safeCartItems.map(i => `${i.product?.name} (x${i.quantity})`).join(", ");
     const userEmail = auth?.currentUser?.email || "Cliente Web / Sem Login";
+    const transactionId = `JAP-${Date.now()}`; // ID único do pedido
 
     try {
+      // 📊 RASTREAR: Início do Checkout (clique em finalizar)
+      trackBeginCheckout({
+        items_count: safeCartItems.length,
+        total_value: calculos.totalGeral,
+        currency: "BRL",
+        installments: installments,
+      });
+
+      // 💾 Salvar pedido no Firebase
       if (db) {
         await addDoc(collection(db, "orders"), {
           userId: userEmail,
@@ -69,34 +83,37 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
           totalPedido: calculos.totalGeral.toFixed(2),
           parcelamento: installments,
           valorParcela: calculos.valorParcela.toFixed(2),
+          transactionId: transactionId, // ✨ Novo: ID único do pedido
           createdAt: serverTimestamp()
         });
+
+        console.log("✅ Pedido salvo no Firebase com ID:", transactionId);
       }
+
+      // 📊 RASTREAR: Compra/Conversão completa (Google Ads + Google Analytics)
+      trackPurchase({
+        transaction_id: transactionId,
+        value: calculos.totalGeral,
+        currency: "BRL",
+        items_count: safeCartItems.length,
+        installments: installments,
+        shipping_value: calculos.valorFreteBRL,
+      });
+
+      console.log("✅ Conversão registrada no Google Ads e Google Analytics!");
+
     } catch (error) {
       console.error("Erro ao registrar pedido:", error);
     } finally {
       setIsSubmitting(false);
     }
 
-    // ==========================================
-    // 🎯 CONVERSÃO DO GOOGLE ADS
-    // Substitua "AW-XXXXXXXXX/SEU_LABEL_AQUI" pelo valor
-    // exato que o Google Ads te deu na tela de instalação manual da tag.
-    // ==========================================
-    if (typeof window.gtag === "function") {
-      window.gtag("event", "conversion", {
-        send_to: "AW-18292163095/MwNZCIrohskcEJeEsZJE",
-        value: calculos.totalGeral,
-        currency: "BRL",
-        transaction_id: `${Date.now()}`, // evita contar a mesma conversão duas vezes
-      });
-    }
-
+    // 💬 Abrir WhatsApp com mensagem
     const parcelamentoMsg = installments > 1 
       ? `\n💳 Parcelado em ${installments}x de R$ ${calculos.valorParcela.toFixed(2)}`
       : "";
 
-    const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\n--- RESUMO ---\nProdutos: R$ ${subtotalProdutos.toFixed(2)}\nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)} (${estimatedWeight}g)\n---\nTOTAL: R$ ${calculos.totalGeral.toFixed(2)}${parcelamentoMsg}\n\n*Estou ciente que o frete exato será confirmado após o fechamento da caixa.*\n\n✓ Declaro estar ciente dos riscos de tributação alfandegária.`;
+    const msg = `Olá! Gostaria de finalizar meu pedido:\n\n${itemsList}\n\n--- RESUMO ---\nProdutos: R$ ${subtotalProdutos.toFixed(2)}\nFrete Internacional Est.: R$ ${calculos.valorFreteBRL.toFixed(2)}${parcelamentoMsg}\n\n💰 TOTAL: R$ ${calculos.totalGeral.toFixed(2)}\n\n🆔 ID do Pedido: ${transactionId}`;
 
     window.open(`https://wa.me/817014074971?text=${encodeURIComponent(msg)}`, '_blank');
   };
@@ -201,7 +218,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
                 <div className="flex-1 text-[11px] text-blue-900">
                   <span className="font-bold block mb-1">⚠️ Aviso Importante</span>
                   <p>
-                    As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não tem controle ou responsabilidade sobre esses valores. Agradecemos a compreensão! 🇯🇵📦
+                    As taxas de importação, tributos e eventuais cobranças alfandegárias são definidas pelos órgãos competentes e são de responsabilidade do comprador. A Japão Box Brasil não se responsabiliza por essas taxas adicionais.
                   </p>
                 </div>
                 <button
@@ -217,7 +234,7 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
             <button 
               onClick={handleWhatsApp} 
               disabled={isSubmitting || safeCartItems.length === 0}
-              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3.5 rounded-xl font-black uppercase text-xs transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-red-200"
+              className="w-full bg-red-600 hover:bg-red-700 disabled:bg-gray-400 text-white py-3.5 rounded-xl font-black uppercase text-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               {isSubmitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Processando...</> : "Finalizar via WhatsApp"}
             </button>
@@ -227,10 +244,3 @@ export default function CartDrawer({ onClose, cartItems, setCartItems }: CartDra
     </>
   );
 }
-
-
-
-
-
-
-
