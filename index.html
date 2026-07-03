@@ -1,13 +1,16 @@
 <!doctype html>
 <html lang="pt-BR">
   <head>
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag (gtag.js) - com tratamento de erro -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18292163095"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'AW-18292163095');
+      gtag('config', 'AW-18292163095', {
+        'anonymize_ip': true,
+        'allow_google_signals': false
+      });
     </script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
